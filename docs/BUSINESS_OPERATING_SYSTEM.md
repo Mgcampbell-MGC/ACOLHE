@@ -319,12 +319,22 @@ SQLite is the truth; the Sheet is a view; a weekly `.xlsx` goes off-box.
 
 It is a Tuesday in March. The cron ran at 06:00 and the email arrived at
 06:03: `ACOLHE 10/03 — 4 novas · 1 fecha em 4 dias · sistema OK`. She reads
-it on her phone. One row says LICITAR: Icatu/MA — no, Icatu is REJECTED, it
-paid 0,0% of last year's invoices. The LICITAR row is Maracás/BA, 180 kits,
-suggested R$ 298,00, cost floor R$ 189,40 including a quoted co-packer and
-Correios contract freight, buyer paid 91% of prior-year invoices, atestado
-qualitative, 12 days to deliver against 9 needed. She opens the platform,
-enters R$ 298,00, and types LICITEI · 298,00 into her column. Twelve minutes.
+it on her phone. One row says NÃO LICITAR: Icatu/MA — it paid 0,0% of last
+year's liquidated invoices. The LICITAR row is a município near Fortaleza/CE,
+180 kits, delivery to one CRAS address: goods R$ 198,78 + LTL freight
+R$ 53,99 on the published SP→CE table + a quoted co-packer at R$ 5,00 =
+**cost floor R$ 257,77**. Estimate R$ 420,00, anchor at 75% = R$ 315,00,
+**gross 18%, net of Simples 14%.** Thin — and that is the honest number, not
+the 51% the inherited plan carried, because the plan had no freight and no
+assembly in it at all. Buyer paid 91% of prior-year invoices; atestado
+qualitative; 12 days to deliver against 3 + 7 needed. She opens the platform,
+enters R$ 315,00, and types LICITEI · 315,00 into her column. Twelve minutes.
+
+The row below it is Aracaju/SE, 300 kits, **delivery to each beneficiary's
+home** — parcel freight R$ 188,40 per kit on top of R$ 198,78 of goods
+against a R$ 359 ceiling. NÃO LICITAR, and the reason says why: *frete por
+encomenda excede a margem*. Six months ago that tender would have been bid
+and lost money.
 
 Two rows say VERIFICAR: one buyer is under 25.000 people and SICONFI has
 nothing on it; one tender's transit to Roraima has never been measured. She
