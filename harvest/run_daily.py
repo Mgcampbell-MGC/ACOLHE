@@ -33,9 +33,29 @@ DEFAULT_STATE = os.environ.get("ACOLHE_STATE", os.path.expanduser("~/.acolhe/sta
 DEFAULT_CACHE = os.environ.get("ACOLHE_CACHE", os.path.expanduser("~/.acolhe/cache"))
 
 
+def _default_buyer_screen(cnpj, cod_ibge):
+    """SICONFI payment-risk screen for one buyer. Returns (passed, reason, evidence).
+
+    Called with the codigoIbge PNCP itself puts on every tender row -- never
+    with a code typed or remembered. On 2026-09-19 a typed code screened the
+    wrong municipio and was reported as verification; this path cannot make
+    that mistake because it never handles a code a human wrote down.
+    """
+    from screen.buyer import ScreenRequest, SiconfiUnavailable, screen_buyer
+
+    try:
+        return screen_buyer(ScreenRequest(cnpj=str(cnpj or ""),
+                                          cod_ibge=str(cod_ibge or "")))
+    except SiconfiUnavailable as exc:
+        return False, f"SICONFI indisponivel: {exc}", {"outcome": "UNSCREENABLE"}
+
+
+_VERDICT_PT = {"PASS": "PAGA", "REJECT": "NAO PAGA", "UNSCREENABLE": "NÃO VERIFICÁVEL"}
+
+
 def run(day, out_xlsx, client=None, state_dir=None, cache_dir=None,
         modalidades=(6, 7, 8), today=None, now=None, do_descend=True,
-        min_interval=1.1):
+        min_interval=1.1, buyer_screen=None):
     """Run one day. Returns everything the caller might want to inspect.
 
     day        'YYYYMMDD' -- the publication day to harvest (yesterday, in cron)
@@ -73,6 +93,21 @@ def run(day, out_xlsx, client=None, state_dir=None, cache_dir=None,
             cand["items_status"] = rec["items_status"]
             cand["items"] = rec["items"]
             cand["items_error"] = rec.get("error")
+
+    # 4b. screen the buyer -- with PNCP's own codigoIbge, never a typed code.
+    # A REJECT is a rule-6 failure the workbook renders as NAO LICITAR with
+    # the reason; UNSCREENABLE stays visible as exactly that.
+    screen = buyer_screen if buyer_screen is not None else _default_buyer_screen
+    for cand in candidates:
+        passed, reason, evidence = screen(cand.get("cnpj"), cand.get("ibge"))
+        outcome = (evidence or {}).get("outcome") or ("PASS" if passed else "UNSCREENABLE")
+        cand["buyer_outcome"] = outcome
+        cand["buyer_verdict"] = _VERDICT_PT.get(outcome, outcome)
+        cand["buyer_reason"] = reason
+        cand["buyer_evidence"] = evidence
+        if outcome == "REJECT":
+            cand.setdefault("rule_results", {})["6"] = {
+                "passed": False, "is_flag": False, "reason": reason}
 
     # 5. the workbook -- her columns are read back before anything is written
     build(out_xlsx, candidates, health=report, today=today,

@@ -72,11 +72,20 @@ def test_rule_12_reads_the_real_config_without_crashing():
 def test_unmeasured_transit_is_verificar_not_pass():
     """config/ufs.yaml ships every transit_days as null until freight lands."""
     table = feasibility_from_config()
-    assert table.get("MA") is None, "fixture expects MA transit still unmeasured"
-    r = rule_5_prazo_entrega(15, uf="MA", uf_feasibility=table)
+    # MA/BA/PE/CE/PA/SE/RN/MG were measured on 2026-09-19; PI was not.
+    assert table.get("PI") is None, "fixture expects PI transit still unmeasured"
+    r = rule_5_prazo_entrega(15, uf="PI", uf_feasibility=table)
     assert not r.passed
     assert r.evidence["outcome"] == "UNVERIFIABLE"
     assert "UNMEASURED" in r.reason
+
+
+def test_measured_transit_from_config_makes_rule_5_decide():
+    """Sao Luis/MA: 8 dias uteis by PAC balcao, measured. needed = 3 + 8."""
+    table = feasibility_from_config(quantity=100)
+    assert table.get("MA") == 3 + 8
+    assert not rule_5_prazo_entrega(5, uf="MA", uf_feasibility=table).passed
+    assert rule_5_prazo_entrega(15, uf="MA", uf_feasibility=table).passed
 
 
 def test_measured_transit_still_works():

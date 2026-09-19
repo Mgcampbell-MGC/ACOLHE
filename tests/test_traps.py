@@ -488,3 +488,36 @@ def test_hooded_and_plain_towels_are_separate_skus():
     assert hooded == "TOALHA_CAPUZ" and ok_h is True
     assert plain == "TOALHA_BANHO" and ok_p is True
     assert hooded != plain
+
+
+# --------------------------------------------------------------------------
+# THE PROPAGATION RULE - 'when a correction lands, propagate it to every claim
+# that depends on it.' Found broken the same day it was written into the
+# README: cost_table.csv had the banheira at R$18,90 while skus.yaml still
+# said R$29,71, and three lines skus.yaml called UNPRICED were priced.
+# --------------------------------------------------------------------------
+
+def test_skus_yaml_cost_observed_matches_the_cost_table():
+    import csv
+    import os
+
+    import yaml
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    table = {}
+    with open(os.path.join(root, "data", "cost_table.csv")) as fh:
+        for row in csv.DictReader(fh):
+            if (row.get("cost_per_bom_unit") or "").strip():
+                table.setdefault(row["sku"], set()).add(
+                    round(float(row["cost_per_bom_unit"]), 2))
+    with open(os.path.join(root, "config", "skus.yaml")) as fh:
+        skus = yaml.safe_load(fh)["skus"]
+
+    drift = []
+    for sku, body in skus.items():
+        observed = body.get("cost_observed")
+        if observed is None or sku not in table:
+            continue
+        if round(float(observed), 2) not in table[sku]:
+            drift.append(f"{sku}: skus.yaml says {observed}, cost_table has {sorted(table[sku])}")
+    assert not drift, "\n".join(drift)

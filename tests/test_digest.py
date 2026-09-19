@@ -227,3 +227,51 @@ def test_unavailable_never_reads_as_an_empty_kit(tmp_path):
     headers = [c.value for c in ws[1]]
     why = ws.cell(row=2, column=headers.index("Por quê") + 1).value
     assert "Nao e um kit vazio" in why
+
+
+# -- the log ACCUMULATES: Monday's bid is still there on Tuesday --------------
+
+def test_a_prior_tender_and_her_lance_survive_into_the_next_days_sheet(tmp_path):
+    """The first version rebuilt MINHAS APOSTAS from today's candidates only,
+    so a tender she bid on Monday vanished from Tuesday's sheet along with
+    the lance she typed. The only compounding asset was not compounding."""
+    path = str(tmp_path / "ACOLHE.xlsx")
+    monday = _cand(pncp_key="mon-1/2026", municipio="Segunda")
+    build(path, [monday], health=_Health(), today=TODAY)
+
+    wb = load_workbook(path)
+    ws = wb[SHEET_BIDS]
+    headers = [c.value for c in ws[1]]
+    ws.cell(row=2, column=headers.index("Eu licitei?") + 1).value = "SIM"
+    ws.cell(row=2, column=headers.index("Meu lance (R$)") + 1).value = 301.50
+    wb.save(path)
+
+    # Tuesday: a different tender is today's candidate
+    tuesday = _cand(pncp_key="tue-2/2026", municipio="Terca")
+    build(path, [tuesday], health=_Health(),
+          today=TODAY + datetime.timedelta(days=1))
+
+    ws = load_workbook(path)[SHEET_BIDS]
+    headers = [c.value for c in ws[1]]
+    rows = {ws.cell(row=r, column=headers.index("Nº PNCP") + 1).value:
+            {h: ws.cell(row=r, column=i + 1).value for i, h in enumerate(headers)}
+            for r in range(2, ws.max_row + 1)}
+    assert "mon-1/2026" in rows and "tue-2/2026" in rows
+    assert rows["mon-1/2026"]["Eu licitei?"] == "SIM"
+    assert rows["mon-1/2026"]["Meu lance (R$)"] == 301.50
+    assert rows["mon-1/2026"]["Data"] == TODAY.isoformat()          # original date kept
+    assert rows["mon-1/2026"]["Município"] == "Segunda"
+
+
+def test_srp_is_shown_on_every_hoje_row(tmp_path):
+    """An ARP binds her for 12 months at a fixed price; a call-off she cannot
+    serve is a sanction. She must see SIM/NAO on the row, never infer it."""
+    path = str(tmp_path / "ACOLHE.xlsx")
+    build(path, [_cand(pncp_key="a/2026", srp=True), _cand(pncp_key="b/2026", srp=False)],
+          health=_Health(), today=TODAY)
+    ws = load_workbook(path)[SHEET_TODAY]
+    headers = [c.value for c in ws[1]]
+    col = headers.index("Registro de preços?") + 1
+    got = {ws.cell(row=r, column=headers.index("Link PNCP") + 1).value.split("/")[-2]:
+           ws.cell(row=r, column=col).value for r in range(2, ws.max_row + 1)}
+    assert set(got.values()) == {"SIM", "NÃO"}

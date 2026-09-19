@@ -189,9 +189,15 @@ def test_rule10_flags_advance_payment_as_an_opportunity():
     assert "Prioritise" in got.reason
 
 
-def test_rule11_unlogged_bid_fails():
-    assert not rule_11_log_the_bid(False).passed
-    assert rule_11_log_the_bid(True).passed
+def test_rule11_unlogged_is_a_flag_not_a_gate():
+    """Logging happens AT BID TIME. Before she bids nothing is logged, and
+    treating that as a rejection made every admissible tender read NAO
+    LICITAR -- found by the risk register. The obligation stands as a flag."""
+    before = rule_11_log_the_bid(False)
+    assert before.passed and before.is_flag
+    assert "not yet logged" in before.reason
+    after = rule_11_log_the_bid(True)
+    assert after.passed and not after.is_flag
 
 
 # -- the whole engine -------------------------------------------------------

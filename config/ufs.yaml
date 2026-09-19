@@ -9,11 +9,12 @@
 # difference, ~6 points, so an out-of-state supplier must beat an SP one by
 # more than 6% to be cheaper.
 #
-# transit_days is UNVERIFIED for every UF until data/freight.md lands with
-# Correios' own published delivery days per destination. The values below are
-# deliberately null so rule 5 cannot silently wave a tender through on a
-# number nobody measured. A null transit day makes rule 5 return VERIFICAR,
-# not PASS.
+# transit_days: MEASURED 2026-09-19 for eight UFs -- Correios PAC balcao,
+# public calculator, SP 03005-000 to the CAPITAL CEP, in dias uteis (see
+# data/freight.md and data/cost_freight.csv). Interior CEPs may differ and
+# were not measured. Every other UF is deliberately null so rule 5 cannot
+# wave a tender through on a number nobody measured: a null transit day
+# makes rule 5 return VERIFICAR, not PASS.
 
 home_uf: SP
 
@@ -23,14 +24,14 @@ home_uf: SP
 buy_and_assemble_days: 3
 
 target:
-  MG: {priority: 1, transit_days: null}
-  MA: {priority: 1, transit_days: null}
-  BA: {priority: 1, transit_days: null}
-  CE: {priority: 1, transit_days: null}
-  PE: {priority: 1, transit_days: null}
-  SE: {priority: 1, transit_days: null}
-  PA: {priority: 1, transit_days: null}
-  RN: {priority: 1, transit_days: null}
+  MG: {priority: 1, transit_days: 5}
+  MA: {priority: 1, transit_days: 8}
+  BA: {priority: 1, transit_days: 6}
+  CE: {priority: 1, transit_days: 7}
+  PE: {priority: 1, transit_days: 6}
+  SE: {priority: 1, transit_days: 8}
+  PA: {priority: 1, transit_days: 8}
+  RN: {priority: 1, transit_days: 7}
 
 secondary:
   PB: {priority: 2, transit_days: null}

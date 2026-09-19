@@ -1,0 +1,353 @@
+# Order-to-cash stages for a won municipal kit order (Lei 14.133/2021, SRP or single order).
+# Source map: docs/ORDER_TO_CASH.md (same stage ids). Every number here is traceable to a
+# statute article or an edital clause named in `basis`. Day counts are CALENDAR days unless
+# `unit: dias_uteis`. `null` = no source fixes it (UNVERIFIED) - the tracker must treat it as
+# unbounded, never default it.
+#
+# Semantics for the tracker:
+#   expected_days.{min,typical,max}  - from the previous stage's completion event
+#   document_required                - what must exist for this stage to count as done
+#   blocking_if_missing              - stages that cannot legally/contractually start without it
+#   clock_restart                    - true if a defect here restarts an earlier clock
+#   controllable_by_us               - whether the supplier can shorten it
+
+version: 1
+day_zero: homologacao
+units_note: "1 dia util ~ 1.4 dias corridos; the tracker should convert with the buyer's municipal calendar when known"
+
+stages:
+
+  - id: S1_homologacao_adjudicacao
+    name: "Homologação e adjudicação"
+    basis:
+      statute: "Lei 14.133/2021 art. 71 IV"
+      editais: ["bomsucessodosul 14.1-14.4", "coronelxavierchaves 12.11", "coronelxavierchaves 15.4", "irece 14.4"]
+    produced_by: autoridade_superior_do_orgao
+    document_produced: "termo de adjudicacao + termo de homologacao (platform + PNCP existeResultado/valorTotalHomologado)"
+    document_required: []
+    expected_days: {min: 0, typical: 0, max: 0}
+    blocking_if_missing: [S2_convocacao_ata]
+    controllable_by_us: false
+    clock_restart: false
+    watch_for:
+      - "art. 71 I-III: saneamento / revogacao / anulacao still possible"
+      - "art. 90 par.3: proposal validity expires without convocacao -> released"
+      - "homologacao does not create a right to contract (CXC 15.4, Irece 14.4)"
+
+  - id: S2_convocacao_ata
+    name: "Convocação para assinar Ata de Registro de Preços (ou contrato)"
+    basis:
+      statute: "Lei 14.133/2021 art. 90 caput e par.1-2; art. 91 par.4"
+      editais: ["agrolandia 21.1 (5 d.u., via e-mail)", "bocaiuvadosul 14.1 (5 dias)", "bomsucessodosul 15.1 (5 d.u.)", "coronelxavierchaves 9.1 (5 dias)", "irece 10.1 (5 d.u.)", "saojoaodoparaiso 12.1/12.5 (5 d.u.)"]
+    produced_by: setor_de_licitacoes
+    document_produced: "e-mail de convocacao"
+    document_required:
+      - "certidoes vigentes: Receita/PGFN, Estadual, Municipal, FGTS (CRF), CNDT"
+    expected_days:
+      convocacao_after_homologacao: {min: 1, typical: null, max: null, note: "no edital bounds it - UNVERIFIED"}
+      signature_window_after_convocacao: {min: 1, typical: 5, max: 10, note: "5 dias ou 5 d.u.; extendable once por igual periodo (art. 90 par.1) on written request within the window"}
+    blocking_if_missing: [S3_ata_assinada_publicada]
+    controllable_by_us: partial
+    clock_restart: false
+    fail_modes:
+      - "miss the window -> decai o direito; cadastro de reserva called (art. 90 par.2; agrolandia 21.3)"
+      - "recusa injustificada = descumprimento total (art. 90 par.5); multa 20% valor total da ata (bocaiuvadosul 15.1; bomsucessodosul 27.1)"
+      - "regularidade fiscal re-checked before formalizing (art. 91 par.4)"
+
+  - id: S3_ata_assinada_publicada
+    name: "Ata assinada e publicada (vigência 12 meses)"
+    basis:
+      statute: "Lei 14.133/2021 arts. 83, 84, 94; Decreto 11.462/2023 art. 22 (federal model)"
+      editais: ["bocaiuvadosul ARP 3.1 (eficacia apos publicacao no DOM)", "coronelxavierchaves ARP 3.1 (12 meses da divulgacao)", "agrolandia 9.10/9.13 (PNCP)", "bocaiuvadosul 14.3 (PNCP)"]
+    produced_by: orgao_gerenciador
+    document_produced: "Ata de Registro de Precos assinada; extrato publicado (PNCP /api/consulta/v1/atas: numeroAtaRegistroPreco, dataAssinatura, vigenciaInicio, vigenciaFim, dataPublicacaoPncp)"
+    document_required:
+      - "Ata assinada (digital ICP-Brasil aceita)"
+      - "Declaracao Anexo IV IN RFB 1.234/2012, 2 vias, 2a via com recibo (LEGAL_FINDINGS s.1)"
+      - "comprovante de optante Simples Nacional (irece 9.9/ARP 11.14; belterra 13.8)"
+    expected_days:
+      publication_after_signature: {min: 1, typical: 5, max: 28, note: "art. 94: ate 20 d.u. para divulgacao no PNCP como condicao de eficacia; typical is INFERENCE"}
+    blocking_if_missing: [S4_ordem_fornecimento_empenho]
+    controllable_by_us: false
+    clock_restart: false
+    obligations_created:
+      us: "compromisso de fornecimento por 12 meses ao preco registrado (art. 83); vedado acrescimo de quantitativos (Dec. 11.462 art. 23)"
+      buyer: "nenhuma obrigacao de comprar (art. 83; agrolandia 4.2; bocaiuvadosul 14.4/ARP 2.2)"
+    exits_for_us:
+      - "ex ante: cotar quantitativo inferior ao maximo, obrigando-se nos limites (art. 82 IV; agrolandia 9.4.1)"
+      - "revisao de preco por fato superveniente, com planilha (Dec. 11.462 art. 27; bomsucessodosul 19.1 adopts arts. 25-27)"
+      - "liberacao sem penalidade se recusar REDUZIR preco a pedido do gerenciador (Dec. 11.462 art. 26 par.1)"
+      - "cancelamento a pedido por caso fortuito/forca maior (Dec. 11.462 art. 29 II; bomsucessodosul 20.1.1)"
+    can_decline_call_off: false
+
+  - id: S4_ordem_fornecimento_empenho
+    name: "Ordem de fornecimento + Nota de Empenho (call-off)"
+    basis:
+      statute: "Lei 4.320/1964 arts. 58, 60, 61; Lei 14.133/2021 art. 95; MCASP 10a ed. 4.4.2.1"
+      editais: ["bomsucessodosul 18.2, 21.1 (retirar em 5 d.u.), 21.6 (forca de contrato)", "coronelxavierchaves ARP 3.1.2, 3.2, 8.2.1-8.2.4 (e-mail; deemed received 2 d.u.)", "irece ARP 15.1", "saojoaodoparaiso 14.1, 14.7", "agrolandia 5.1", "bocaiuvadosul 8.1, 8.5", "belterra 4.1-4.2"]
+    produced_by: ordenador_de_despesa_da_unidade_requisitante
+    document_produced: "Nota de Empenho (credor, especificacao, importancia, dotacao) + Ordem de Fornecimento/Compra (quantidades, locais)"
+    document_required:
+      - "Nota de Empenho with number, our CNPJ, items/qty/unit price matching the Ata, dotacao"
+      - "Ordem de Fornecimento/Compra"
+      - "our e-mail acknowledgment same day"
+    expected_days:
+      after_ata_effective: {min: 0, typical: null, max: 365, note: "UNBOUNDED under SRP (art. 83). Under single-order contract the empenho usually comes with the convocacao (INFERENCE)"}
+      retirada_window: {min: 0, typical: 2, max: 7, note: "bomsucessodosul 21.1: 5 d.u.; CXC 8.2.4: deemed received 2 d.u. after e-mail"}
+    blocking_if_missing: [S5_compra_montagem_expedicao, S6_entrega_recebimento_provisorio, S8_nota_fiscal, S9_liquidacao, S10_pagamento]
+    controllable_by_us: false
+    clock_restart: false
+    hard_rule: "NOTHING SHIPS BEFORE THE EMPENHO EXISTS (Lei 4.320 art. 60). No empenho number -> no liquidacao basis (art. 63 par.2 II)."
+    fail_modes:
+      - "empenho value/qty != Ata -> request correction before delivery (reforco/anulacao, MCASP 4.4.2.1)"
+      - "not retiring/acknowledging in window -> cancelamento do registro (Dec. 11.462 art. 28 II; agrolandia 12.1.2; CXC 11.1.2; irece 9.1.4; bomsucessodosul 20.1.2.1.4)"
+      - "year-end: empenho in exercise N, delivery in N+1 -> restos a pagar nao processados (S11)"
+      - "last month of mayoral mandate: duodecimo cap (Lei 4.320 art. 59 par.1); LRF art. 42 last two quadrimestres"
+
+  - id: S5_compra_montagem_expedicao
+    name: "Compra de insumos, montagem, expedição (nosso prazo interno)"
+    basis:
+      editais: ["belterra 4.1 (imediato)", "bomsucessodosul 23.1 (5 d.u.)", "irece 8.1/9.1 (5 dias)", "agrolandia 5.2 (10 dias)", "saojoaodoparaiso 14.1 (10 d.u.)", "bocaiuvadosul 8.5 (15 d.u.)", "coronelxavierchaves TR 6 / ARP 8.1 (20 dias corridos, from 1st d.u. after OC e-mail)"]
+    produced_by: us
+    document_produced: "NF-e emitida (see S8) + comprovante de transporte"
+    document_required:
+      - "Nota de Empenho in hand (S4)"
+      - "stock or confirmed supplier lead time that fits the deadline"
+    expected_days:
+      delivery_deadline_from_empenho:
+        min: 0
+        typical: 10
+        max: 21
+        by_edital:
+          belterra: {days: 0, unit: dias_corridos, note: "imediato"}
+          bomsucessodosul: {days: 5, unit: dias_uteis}
+          irece: {days: 5, unit: dias_corridos}
+          agrolandia: {days: 10, unit: dias_corridos}
+          saojoaodoparaiso: {days: 10, unit: dias_uteis}
+          bocaiuvadosul: {days: 15, unit: dias_uteis}
+          coronelxavierchaves: {days: 20, unit: dias_corridos}
+    blocking_if_missing: [S6_entrega_recebimento_provisorio]
+    controllable_by_us: true
+    clock_restart: false
+    working_capital_note: "With 'imediato'/5-day windows, buying only after the empenho is not feasible; either hold stock at own risk or accept late fines (bomsucessodosul 27.4.1: 5% on day 1; CXC: 2%/day; irece/SJP: 0.3%/day). The handoff's 'buy on day 11' assumes an empenho on ~day 10 - not guaranteed under SRP."
+    fail_modes:
+      - "late delivery: multa de mora from day 1; rescisao/cancelamento do registro (CXC 8.2.5)"
+      - "extension only by written, justified request BEFORE the deadline (SJP 14.3; CXC 8.2)"
+
+  - id: S6_entrega_recebimento_provisorio
+    name: "Entrega e recebimento provisório"
+    basis:
+      statute: "Lei 14.133/2021 art. 140 II a; art. 92 par.7 (entrega = adimplemento)"
+      editais: ["belterra 11.11 (no ato)", "bomsucessodosul 23.4 I (sumario, pelo fiscal)", "bocaiuvadosul 8.3 a (em 5 d.u. apos entrega)", "agrolandia 5.3-5.4 (local/horario; NF acompanha)"]
+    produced_by: fiscal_do_contrato
+    document_produced: "DANFE carimbado/assinado com data (recebimento provisorio)"
+    document_required:
+      - "DANFE + copia do empenho + copia da OF + certidoes + Anexo IV (bomsucessodosul 22.1: NF em 2 vias)"
+      - "proof of delivery with date (photo of stamped DANFE)"
+    expected_days: {min: 0, typical: 0, max: 7, note: "bocaiuvadosul: ate 5 d.u. apos entrega; others: no ato"}
+    blocking_if_missing: [S7_recebimento_definitivo]
+    controllable_by_us: partial
+    clock_restart: false
+    fail_modes:
+      - "rejection in whole or part (art. 140 par.1) -> substitution window: 24h (CXC TR 8; bocaiuvadosul ARP), 48h (bocaiuvadosul 8.4; belterra 11.11), 5 dias (agrolandia 5.5), 30 dias (SJP 15.3)"
+      - "partial delivery only with matching NF and express acceptance (CXC ARP 8.7); agrolandia 27.2: definitivo requires entrega total"
+
+  - id: S7_recebimento_definitivo
+    name: "Recebimento definitivo / atesto"
+    basis:
+      statute: "Lei 14.133/2021 art. 140 II b (termo detalhado), par.3 (prazos em regulamento ou contrato); art. 117"
+      editais: ["bomsucessodosul 23.4 II (5 d.u. do provisorio, mediante termo)", "bocaiuvadosul 8.3 b (ate 8 d.u. apos provisorio)", "agrolandia 27.2 (entrega total)", "irece 12.1.2; ARP 10.3 (amostras: tempo medio 30 dias)", "saojoaodoparaiso 16.2 (Termo de Recebimento Definitivo)", "belterra 12.4 (atestacao por servidor)", "bocaiuvadosul 13.2 (NF atestada pelo secretario)"]
+    produced_by: gestor_do_contrato_ou_comissao
+    document_produced: "Termo de Recebimento Definitivo, or atesto on the NF/DANFE"
+    document_required:
+      - "copy/photo of the signed termo or attested DANFE, with date"
+    expected_days:
+      after_provisorio:
+        min: 0
+        typical: null
+        max: null
+        by_edital:
+          bomsucessodosul: {days: 5, unit: dias_uteis}
+          bocaiuvadosul: {days: 8, unit: dias_uteis}
+          agrolandia: null
+          coronelxavierchaves: null
+          irece: {days: null, note: "no deadline; ARP 10.3 sample analysis avg 30 dias"}
+          saojoaodoparaiso: null
+          belterra: null
+        note: "5 of 7 fix NO deadline (UNVERIFIED whether a municipal regulamento does). Tracker must not assume a number."
+    blocking_if_missing: [S9_liquidacao, S10_pagamento]
+    controllable_by_us: false
+    clock_restart: true
+    restart_rank: 2
+    restart_note: "Payment term in agrolandia, irece, belterra, saojoaodoparaiso (and effectively bomsucessodosul) starts only here. Rejection restarts S6-S7 after substitution."
+    escalation: "written follow-up every 5 d.u. where no deadline exists"
+
+  - id: S8_nota_fiscal
+    name: "Nota fiscal (NF-e) emitida e apresentada/protocolada"
+    basis:
+      guidance: "NF-e MOC 7.0 Anexo I: ZB02 xNEmp (Nota de Empenho, compras publicas), ZB03 xPed, ZB04 xCont, I60 xPed, Z03 infCpl, E16a indIEDest=9, B25a indFinal=1, B11a idDest=2, C21 CRT=1"
+      statute: "IN RFB 1.234/2012 art. 4 XI e art. 6 (Anexo IV) - see LEGAL_FINDINGS s.1"
+      editais: ["bocaiuvadosul 13.1 a-e (certidoes, copia do empenho, n. do empenho + dados bancarios no corpo)", "bomsucessodosul ARP 9.3.3.1-9.3.3.6; 22.1 (2 vias + empenho + OF + termo definitivo); ARP 11.1 (CNPJ destinatario)", "coronelxavierchaves TR 7 (dados bancarios BB/CEF, PIX; certidoes a cada pagamento)", "irece ARP 11.2 (elementos conferidos)", "saojoaodoparaiso 16.1 (protocolo ate 5o d.u. do mes seguinte, com oficio), 16.6", "belterra 13.2", "agrolandia 5.4 (NF acompanha a mercadoria)"]
+    produced_by: us
+    document_produced: "NF-e XML + DANFE"
+    document_required:
+      - "NF-e to the exact CNPJ on the empenho (prefeitura or fundo - verify)"
+      - "xNEmp = empenho number; xPed = OF number; xCont = Ata number"
+      - "infCpl line: pregao, processo, Ata, OF, EMPENHO, item, banco/agencia/conta (CNPJ-linked), PIX, 'Optante pelo Simples Nacional - IN RFB 1.234/2012 art. 4 XI'"
+      - "item description prefixed by the Ata wording; marca; lote; unit price = registered price"
+      - "attachments: 5 certidoes vigentes, copia do empenho, copia da OF, Anexo IV assinado, comprovante Simples"
+      - "protocolo/recibo de entrega da NF (where NF is presented after S7)"
+    expected_days:
+      emission: {min: 0, typical: 0, max: 0, note: "NF-e travels with the goods -> emission = shipment date"}
+      presentation_after_definitivo: {min: 0, typical: 1, max: 7, note: "bomsucessodosul 22.1 wants termo definitivo emitido previamente; SJP 16.1 by 5th d.u. of following month"}
+    blocking_if_missing: [S9_liquidacao, S10_pagamento]
+    controllable_by_us: true
+    clock_restart: true
+    restart_rank: 1
+    restart_clauses:
+      bocaiuvadosul: "13.3 - prazo para pagamento iniciar-se-a apos a comprovacao da regularizacao"
+      bomsucessodosul: "22.4 suspenso ate reparacao; ARP 11.3 vencimento 15 dias apos reapresentacao"
+      coronelxavierchaves: "TR 7 - prazo contado a partir de sua reapresentacao"
+      irece: "9.4.1 / ARP 11.3 - sobrestado, reinicia apos regularizacao"
+      belterra: "13.4 - sobrestado, reinicia apos regularizacao"
+      saojoaodoparaiso: "16.7 - prorroga automaticamente, sem compensacao"
+      agrolandia: "no explicit clause; 8.2 c allows refusal of documentos fiscais em desacordo"
+    restart_triggers:
+      - "missing/wrong empenho, Ata or OF number"
+      - "wrong CNPJ destinatario"
+      - "description not matching Ata; value != empenho"
+      - "expired certidao"
+      - "missing Simples proof / Anexo IV where payment is conditioned on it (irece, belterra)"
+      - "missing bank data / account not linked to our CNPJ (bocaiuvadosul 13.5)"
+
+  - id: S9_liquidacao
+    name: "Liquidação da despesa"
+    basis:
+      statute: "Lei 4.320/1964 arts. 62, 63 (bases: contrato/ata, nota de empenho, comprovantes de entrega); MCASP 10a ed. 4.4.2.2-4.4.2.3"
+      editais: ["bocaiuvadosul 13.6 (5 d.u. para conferencia e aprovacao)", "irece ARP 10.2.2, 11.1-11.2", "bomsucessodosul 22.2 (certidoes)"]
+    produced_by: contabilidade_do_orgao
+    document_produced: "registro de liquidacao (internal); no document is sent to us"
+    document_required:
+      - "matching set: Ata/contrato + Nota de Empenho + NF + termo/atesto + certidoes"
+    expected_days: {min: 0, typical: 3, max: 7, note: "bocaiuvadosul 13.6: 5 d.u.; others silent - INFERENCE"}
+    blocking_if_missing: [S10_pagamento]
+    controllable_by_us: false
+    clock_restart: false
+    fail_modes:
+      - "any mismatch among the art. 63 par.2 documents -> back to S8 (restart)"
+      - "pending fine -> withheld (bocaiuvadosul ARP 8.8)"
+
+  - id: S10_pagamento
+    name: "Ordem de pagamento e crédito em conta"
+    basis:
+      statute: "Lei 4.320/1964 arts. 64-65; Lei 14.133/2021 arts. 141 (ordem cronologica por fonte; par.1 II ME/EPP; par.3 publicacao mensal), 143 (parcela incontroversa), 145 (sem antecipacao), 92 V-VI"
+      editais:
+        agrolandia: "27.1: ate 30 dias do recebimento definitivo E atesto da NF, ordem cronologica; TR 9.1: 30 dias apos atesto"
+        bocaiuvadosul: "13.1: ate 30 dias da apresentacao da NF (+13.6: 5 d.u. conferencia); ARP 8.1: 30 dias do recebimento ou atesto"
+        bomsucessodosul: "22.1.1-22.1.3: 10 (MEI) / 20 (ME-EPP) / 30 dias corridos, from receipt of NF + empenho + OF + termo definitivo; Decreto Municipal 3.283/2025"
+        coronelxavierchaves: "TR 7: ate 30 dias apos a entrega do objeto e da NF"
+        irece: "edital 9.2-9.3: ate 30 dias do atesto; ARP 11.1: no mes subsequente ate o 10o dia (CONFLICT - ARP is the signed instrument)"
+        saojoaodoparaiso: "16.1-16.2: NF protocolada ate 5o d.u. do mes seguinte; pagamento apos Termo de Recebimento Definitivo; NO day count"
+        belterra: "13.1/13.3: ate 30 dias do atesto; 3.1: 30 dias apos entrega e NF com certidoes"
+    produced_by: tesouraria_do_orgao
+    document_produced: "ordem bancaria (data do pagamento = data de emissao da OB: irece 9.5/ARP 11.11; belterra 13.5)"
+    document_required:
+      - "nothing new from us, but certidoes must still be valid on payment day (CXC TR 7; irece 11.5)"
+    expected_days:
+      from_trigger_event:
+        min: 20
+        typical: 30
+        max: null
+        by_edital:
+          bomsucessodosul: {days: 20, unit: dias_corridos, trigger: "receipt of NF + empenho + OF + termo definitivo", our_porte: "ME"}
+          agrolandia: {days: 30, unit: dias_corridos, trigger: "recebimento definitivo + atesto"}
+          bocaiuvadosul: {days: 30, unit: dias_corridos, trigger: "apresentacao da NF (edital) / recebimento ou atesto (ARP)"}
+          coronelxavierchaves: {days: 30, unit: dias_corridos, trigger: "entrega + NF"}
+          irece: {days: 30, unit: dias_corridos, trigger: "atesto", alt: "ARP: ate o 10o dia do mes subsequente a liquidacao"}
+          belterra: {days: 30, unit: dias_corridos, trigger: "atesto"}
+          saojoaodoparaiso: {days: null, trigger: "Termo de Recebimento Definitivo", note: "UNVERIFIED - no day count in the edital"}
+      bank_credit_after_ob: {min: 0, typical: 1, max: 2, note: "INFERENCE"}
+    blocking_if_missing: []
+    controllable_by_us: false
+    clock_restart: false
+    fail_modes:
+      - "certidao lapsed on payment day -> held until regularizacao (CXC TR 7); irece 11.5: 5 d.u. to fix, else rescisao (11.7)"
+      - "fonte de recursos not transferred (SUAS/convenio) -> LEGAL_FINDINGS s.2; bocaiuvadosul 13.9 excludes such delays from interest"
+      - "ordem cronologica: we are behind older invoices of the same fonte (art. 141 caput)"
+
+  - id: S11_atraso_e_remedios
+    name: "Atraso no pagamento — remédios"
+    basis:
+      statute: "Lei 14.133/2021 art. 137 par.2 IV (2 meses da emissao da NF), par.3 I-II; art. 138 par.2; art. 141 par.1 II, par.2, par.3; art. 143; art. 92 V; art. 115 par.1"
+      editais:
+        bocaiuvadosul: "13.8 / ARP 8.11: atualizacao financeira + juros 1% a.m.; 13.9 exclusions"
+        bomsucessodosul: "22.5: EM = I x N x VP, I = 0.00016438 (6% a.a.); ARP 9.6: 0.5% a.m."
+        saojoaodoparaiso: "16.8-16.9: 6% a.a. (0.00016438/dia)"
+        irece: "ARP 11.9: atualizacao monetaria pelo indice da Ata (IPCA), sem juros"
+        agrolandia: "NONE"
+        coronelxavierchaves: "NONE"
+        belterra: "NONE"
+    produced_by: us
+    document_produced: "e-mail de cobranca; pedido art. 141 par.1 II; fatura de encargos moratorios; notificacao art. 137 par.2 IV"
+    document_required:
+      - "proof of NF emission date, protocolo, atesto date, and the buyer's published ordem cronologica (art. 141 par.3)"
+    expected_days:
+      first_written_followup_after_due: {min: 1, typical: 1, max: 3}
+      art_137_termination_right_after_nf_emission: {min: 61, typical: 61, max: 61, unit: dias_corridos, note: "'atraso superior a 2 (dois) meses, contado da emissao da nota fiscal'"}
+    blocking_if_missing: []
+    controllable_by_us: true
+    clock_restart: false
+    remedies_in_order:
+      - "written request to gestor citing the clause + position in published ordem cronologica (art. 141 par.3)"
+      - "release of parcela incontroversa (art. 143)"
+      - "ME jump-the-queue request with risco de descontinuidade (art. 141 par.1 II), copied to controle interno"
+      - "invoice moratory interest 'em fatura propria' where the edital provides (bomsucessodosul 22.5)"
+      - "at 2 months from NF emission: notice under art. 137 par.2 IV + par.3 II; suspend further call-offs on that Ata"
+      - "representacao ao Tribunal de Contas (art. 141 par.2)"
+      - "judicial cobranca; liquidated debt survives year-end as restos a pagar processados (MCASP 4.7.3)"
+    not_available_when: "delay caused or contributed to by us (art. 137 par.3 I; bocaiuvadosul 13.9; bomsucessodosul 22.5)"
+
+  - id: S12_restos_a_pagar
+    name: "Virada de exercício — restos a pagar"
+    basis:
+      statute: "Lei 4.320/1964 arts. 35, 36, 37, 59 par.1; Decreto 93.872/1986 arts. 67-69 (federal); LC 101/2000 art. 42"
+      guidance: "MCASP 10a ed. 4.7.1-4.7.5; SICONFI RREO Anexo 07 (data/siconfi_probe.md)"
+    produced_by: contabilidade_do_orgao
+    document_produced: "inscricao em restos a pagar (processados = liquidados; nao processados = nao liquidados)"
+    document_required:
+      - "atesto/termo definitivo dated on or before 31/12 (to be RPP, not RPNP)"
+    expected_days: {min: null, typical: null, max: null, note: "paid from next exercise's cash; ordem cronologica; no statutory day count"}
+    blocking_if_missing: []
+    controllable_by_us: partial
+    clock_restart: false
+    states:
+      RPP: "delivered + attested + unpaid at 31/12 -> 'em geral, nao podem ser cancelados' (MCASP 4.7.3); this is what rule_6_buyer_payment measures (saldo/inscritos, cancelados/inscritos)"
+      RPNP_em_liquidacao: "delivered, not attested at 31/12 -> may be anulado under the ente's own year-end norm (MCASP 4.7.2) - UNVERIFIED per municipio"
+      RPNP_a_liquidar: "empenho issued, not delivered at 31/12 -> same exposure; federal validity to 30/06 of year+2 (Dec. 93.872 art. 68 par.2)"
+    calendar_risks:
+      - "December: get the atesto before 31/12"
+      - "election year (2028): LRF art. 42 last two quadrimestres; Lei 4.320 art. 59 par.1 last month of mandate"
+
+# Summary numbers the tracker exposes (all derived from the stages above)
+summary:
+  empenho_to_ordem_bancaria_days:
+    best: {edital: bomsucessodosul, days: 34, note: "ME term 20 + 5 d.u. delivery + 5 d.u. definitivo"}
+    typical_range: {min: 40, max: 55, note: "30-day editais with 5-20 day delivery and 3-10 day atesto"}
+    worst_bounded: {edital: bocaiuvadosul, days: 69, note: "15 d.u. + 13 d.u. + 30"}
+    unbounded: [saojoaodoparaiso, irece_sample_analysis]
+  homologacao_to_ordem_bancaria_days:
+    single_order_best: 40
+    single_order_typical: {min: 45, max: 75}
+    srp: "ata formalisation 5-35 days + UNBOUNDED wait for the first empenho + the empenho_to_ordem_bancaria range"
+  handoff_assumption_check:
+    assumed: "win -> buy ~day 11 -> paid ~day 45"
+    verdict: "day 45 is a best-case single-order floor, not an SRP projection; 'buy on day 11' presumes an empenho by ~day 10 which no edital guarantees, and buying before the empenho is at our own risk (Lei 4.320 art. 60; Lei 14.133 art. 83)"
+  clock_restart_points_ranked:
+    - {rank: 1, stage: S8_nota_fiscal, why: "6 of 7 editais restart the full term on any NF/document defect"}
+    - {rank: 2, stage: S7_recebimento_definitivo, why: "5 of 7 fix no deadline; payment term starts only here in most"}
+    - {rank: 3, stage: S4_ordem_fornecimento_empenho, why: "SRP call-off is unbounded and unguaranteed (art. 83); compounds with year-end (S12)"}
+  always_in_our_control:
+    - "certidoes (5) valid at ARP signature, every empenho, every payment"
+    - "empenho number on the NF (xNEmp + infCpl)"
+    - "Anexo IV + Simples proof attached to every NF"
+    - "e-mail acknowledgment of every OF/empenho same day"

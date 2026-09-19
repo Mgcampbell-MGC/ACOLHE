@@ -119,11 +119,37 @@ when a row says LICITAR or a deadline is near. Bid. Record.
 - Export the bid log to CSV and copy `acolhe.sqlite` off-box.
 
 ### On every win (≤ 8 h per order, C9)
-**PENDING order-to-cash agent** for the day-by-day timeline from the seven
-real editais. Known already: nothing ships before the nota de empenho exists;
-the empenho number goes on the face of the NF or the payment clock restarts;
-the IN RFB 1.234 Anexo IV declaration is filed per contract or 1,2% is
-withheld with no RFB refund path.
+From `docs/ORDER_TO_CASH.md`, built from Lei 14.133 arts. 82–95 and 137–145,
+Lei 4.320, Decreto 11.462/2023, MCASP and the seven editais' own clauses
+(machine-readable in `config/order_to_cash.yaml`, 12 stages S1–S12):
+
+- **Count from the nota de empenho, not from homologação.** Empenho → cash is
+  **≈34 days best** (Bom Sucesso do Sul: ME/EPP term 20 dias corridos),
+  **≈40–55 typical** (five editais say "30 days", each from a *different*
+  event: atesto, NF presentation, entrega+NF, or "até o 10º dia do mês
+  subsequente"), **≈69 worst bounded** (Bocaiúva). Homologação → empenho adds
+  5–35 days for ARP signature/publication **plus an unbounded wait for the
+  first call-off under SRP.** The handoff's "~45 days" is a best-case
+  single-order floor, not a projection.
+- **She cannot freely decline an SRP call-off.** Art. 83 makes the registered
+  price a *compromisso de fornecimento*; refusing the empenho is
+  descumprimento total (art. 90 §5); Decreto 11.462 art. 28 II cancels her
+  registration, mirrored verbatim in four editais; fines of 20% of total value
+  (Bom Sucesso 27.1, Bocaiúva 15.1). Lawful exits are narrow and in writing
+  *before* the empenho.
+- **"Buy after the empenho" is infeasible where delivery is 5 days or
+  "imediato"** (Belterra, Bom Sucesso, Irecê): she must hold stock or eat
+  late fines (5% on day 1; 2%/day). This is a direct tension with the
+  made-to-order model and must be a rule, not a surprise.
+- **The empenho number goes in the NF-e XML** — MOC 7.0 Anexo I group ZB,
+  field `ZB02 xNEmp` — *and* in `infCpl` for the servidor doing the atesto.
+  A defective NF restarts the clock from resubmission in **6 of 7** editais.
+- **Recebimento definitivo has no deadline in 5 of 7** (art. 140 §3 delegates
+  it); most payment terms only start there. Two of the three most common
+  stalls are outside her control; the third — the five certidões at ARP
+  signature, every empenho and every payment — is entirely hers.
+- IN RFB 1.234 Anexo IV filed per contract, or 1,2% is withheld with no RFB
+  refund path.
 
 ---
 
@@ -167,8 +193,16 @@ penalty and possibly a bidding suspension — worse than not bidding.
 |---|---|---|---|
 | BOM, 16 of 17 lines | **R$ 176,32** | `data/cost_table.csv`, observed catalogue prices, supplier CNPJ + UF on every row | FLOOR — `kit_enxoval` unpriced; assembly and freight not included |
 | Observed clearing price, 17-item kit | R$ 359,05 | PNCP Family A: homologado 1.795.250 ÷ 5.000 | quantity 5.000 UNVERIFIED (Family A carries none) |
-| Gross at that price | ~51% | computed | a CEILING, because the BOM is a floor |
-| Net of Simples Anexo I at RBT12 ≤ 180k | ~47% | 4,00% | PENDING company-setup agent to reconfirm the 2026 table |
+| Gross at that price, goods only | ~45% | computed on R$198,78 | a CEILING, because the BOM is a floor — and **before freight and assembly** |
+| **Freight per kit, SP → Northeast capital, one parcel per kit** | **R$ 132,90 – 188,40 = 37–52% of the kit price** | Correios PAC balcão, public calculator, 60×40×40 cm, 2026-09-19 (`data/freight.md`, 453 measured rows) | **MEASURED. This is the whole gross margin.** MA/SE/RN +23% vs PE/CE/PA; BA −13% |
+| Freight per kit, consolidated LTL to one municipal address | **~R$ 54 (15%)** at 100 kits; R$ 52,57 at 5.000 | STC Transportes published table, SP→CE only, 300 kg/m³ cubed | other states UNVERIFIED; **the delivery-address clause of each edital decides which mode applies** |
+| Gross after LTL freight, before assembly | **~36%** | computed | the honest working figure; per-parcel delivery is **loss-making** |
+| Dimensional weight | 60×40×40 = 16 kg cubic, price identical at 3 kg and 16 kg | Correios rule: max(physical, C×L×A/6.000) | only cubic centimetres move the price; split packing saves ~20% |
+| Correios contract, new CNPJ, no volume | exists (Clube Correios / Platinum, e-CNPJ only, no minimum) | Termo de Condições Comerciais 09/09/2026 | but PAC/SEDEX carry **no price reducers** on those packages; first discounted tier needs R$100k/month |
+| Net of Simples Anexo I at RBT12 ≤ 180k | ~47% | 4,00%, recomputed against the LC 155/2016 table | confirmed; LC 227/2026 takes effect only 01/01/2027 (art. 182 I b), so 2026 is unchanged |
+| One-time cost, nothing → bid-ready | **R$ 219 – R$ 1.013** (≈US$42–196) | `docs/COMPANY_SETUP.md`: JUCESP 218,99 · e-CNPJ A1 203–275 · contador month 1 · one portal credit | far inside the US$500 floor of C5 |
+| Fixed monthly cost | **R$ 196 – R$ 473** | contador 136–225 · TFE ~30 · VPS 30 · portal 0–165 | DAS variable at 4,00% |
+| Days to bid-ready | **10–15 business days** realistic | SP time-to-CNPJ 1 day 10 h (Mapa de Empresas) | 30+ if JUCESP/SEFAZ raise an exigência |
 | Kit tenders per working day | 5 (2026-09-15, one measured day) | `harvest/daily.py` live run | title-only, so a floor; handoff's ~4,0 reproduces |
 | National tenders per day, mod. 6/7/8 | 4.595 | PNCP Family A | measured |
 | Daily harvest cost | ~93 calls, ~2 min | measured | handoff's "~5.560 calls" was wrong by ~60× |
@@ -177,8 +211,11 @@ penalty and possibly a bidding suspension — worse than not bidding.
 | Editais with a quantitative atestado | 1 of 12 | 7 retrieved + handoff's 5 | the feared barrier is largely illusory |
 | Textile lines vs handoff | −44,8% on 5 comparable lines | re-measured | handoff had pack prices as unit prices |
 | Mochila | R$ 52,27 vs R$ 25,00 target | measured | the one line that went the wrong way; 30% of BOM |
-| Freight per kit | — | — | **UNQUOTED. PENDING freight agent.** Ships on dimensional weight |
-| Assembly per kit | — | — | **UNQUOTED. PENDING co-packer agent.** Never costed by anyone |
+| Freight per kit | see the four freight rows above | `data/freight.md`, `data/cost_freight.csv` | measured for parcels and one LTL lane; the rest of the LTL map is the gap |
+| Assembly per kit | — | `data/copacking.md`, 24 SP providers, 20 CNPJs resolved | **UNQUOTED — no provider publishes a per-kit price.** Only B2C per-order picks (R$4–19,50) exist, marked inference. One quote needed |
+| Co-packer with own-account freight | COTLOG (10.273.317/0001-55), Doma (27.541.681/0001-51, branch in Belém-PA), Paulista Express | published | **Northeast under their own contract: UNVERIFIED for every provider** |
+| Hand-assembly capacity evidenced | 7.500 kits / 10 working days | UP! Manuseios, published case | an events-handling ME, not a warehouse 3PL — matters for the 5.000-kit tail |
+| Contract-free per-parcel routes | Correios "com ou sem contrato"; Melhor Envio on CPF; Loggi pre-paid | published | cover the ~100-kit median only if the box fits **100 cm/side, 200 cm sum** — a bathtub kit box is at that limit |
 
 ---
 
@@ -261,18 +298,19 @@ SQLite is the truth; the Sheet is a view; a weekly `.xlsx` goes off-box.
 | Gap | Why it matters | What settles it |
 |---|---|---|
 | `kit_enxoval` line | last unpriced BOM line | the real edital text — PNCP Family B |
-| Freight per kit | largest unmeasured cost; dimensional weight | PENDING freight agent (Correios public calculator) |
+| Freight to the actual município CEP, and LTL lanes beyond SP→CE | parcels measured only to capital CEPs; interior bands may differ; only one road carrier publishes a table | re-run the Correios form POST against the editais' own delivery CEPs; read each edital's *local de entrega* clause — one municipal address makes LTL (~R$55–95/kit) the mode, a household list makes it parcels and unbiddable |
 | Assembly per kit | never costed by anyone | PENDING co-packer agent; then one quote |
 | Co-packer lead time | feeds rule 5; can make short-notice tenders undeliverable | same |
 | Whether a co-packer ships on its own carrier contracts | would solve the freight problem entirely | same |
-| Transit days per UF | rule 5 returns UNVERIFIABLE until set | PENDING freight agent |
+| Transit days per UF | measured for 8 capitals (PAC 6–8 dias úteis); interior and the other 19 UFs not | being written into `config/ufs.yaml` from `cost_freight.csv`; rule 5 stays UNVERIFIABLE where nothing was measured |
 | Capital available | rule 12 cannot verify funding until set | **the founder sets the dial** |
 | Account-tier discount (~45%) | decides whether the whole basket is live | 15 supplier emails, never sent |
 | Body 3-packs "RN AO G" | size-graded or three RN? | the real edital wording |
 | Banheira band | R$18,90 / 23,65 / 29,71 on one word | the real edital wording |
 | Certidão validity periods | the renewal cadence of the company | PENDING habilitação agent |
 | Order-to-cash day count | the handoff's ~45 days is an assumption | PENDING order-to-cash agent |
-| Company setup costs | inherited figures unverified | PENDING company-setup agent |
+| Simples opt-in window | **≤60 days from CNPJ** (CGSN 140 art. 6º §5º I); miss it and she is in Lucro Presumido until January | a calendar item, not a research item — it goes on the setup checklist with a date |
+| SP TFE (R$362,95/yr) for a PJ at a home address | whether it applies | one question to the contador |
 | Family B availability | the reading rail; 503 on every attempt all day | **Monday 08:00 BRT scheduled re-check** |
 
 ---
@@ -313,15 +351,42 @@ She has spent 61 hours this month. She has never phoned anyone.
 
 ## 10. What could stop it
 
-**PENDING risk-register agent** for the ranked list. Known already, in order
-of how cheaply each is prevented:
+`docs/RISK_REGISTER.md` holds 45 ranked risks. Its top five, each verified
+at source before being written here, and what was done:
 
-1. Family B never returns → the machine finds but cannot read. *Decision.*
-2. Freight comes in at 15% of revenue rather than 2% → the margin halves.
-   *One measurement.*
-3. A stale cost is used because nothing checks `verified_at` against today.
-   *Code, one afternoon.*
-4. A certidão lapses and a won tender is lost at habilitação. *Expiry
-   tracker, once `documentos.yaml` exists.*
-5. The cron dies silently. *The daily heartbeat email, already designed.*
-6. She wins something above the fulfilment ceiling. *Rule 12, shipped today.*
+1. **Rule 2 rejected 7 of 7 real editais.** The quantitative-atestado search
+   spanned the whole document and matched `10%` / `5%` / `100%` from multa
+   and garantia clauses. The human reading is 1 ABSENT + 6 QUALITATIVE. The
+   day Family B returned text, every HOJE row would have read NÃO LICITAR.
+   *Fixed: markers now searched only inside the qualificação-técnica window;
+   the test runs over the real .txt files. Rule 10 likewise read a
+   prohibition as an offer — negation now handled.*
+2. **The diaper line was carried at 1/18 of a pack while wipes were carried
+   per pack** — opposite conventions, R$22,46 in the flattering direction on
+   the floor NO-BID relies on. *Fixed: pack basis, BOM → R$198,78.*
+3. **The bid log did not accumulate.** MINHAS APOSTAS was rebuilt from
+   today's candidates only, so Monday's bid and the lance she typed vanished
+   from Tuesday's sheet. *Fixed: prior rows carried forward verbatim.* Still
+   open: nothing bridges the workbook to `log/bidlog.py`, and the SQLite and
+   workbook live only on the VPS.
+4. **SRP call-offs she cannot refuse** — the single most dangerous
+   unaddressed risk: everything else loses a tender or margin; this turns a
+   *win* into a sanction. *SRP is now on every HOJE row; a rule that treats
+   ≤5-day call-offs on an ARP as stock-holding is still to build.*
+5. **Empate ficto works against the out-of-state ME, and a day-one company
+   has no atestado at all.** The cheapest fix in the register: one private
+   sale of a few kits to any PJ with a signed declaração.
+
+Also from the register and confirmed: `skus.yaml` had drifted from the cost
+table the same day the propagation rule was written (*fixed, with a drift
+test*); `suggest_bid` returned a price with freight at R$0,00 on cubed goods
+(*fixed: unquoted freight now blocks like an unpriced line*); rule 11 was a
+gate rather than a flag and rejected every unlogged tender (*fixed*); and the
+buyer screen is never called with the `codigoIbge` PNCP already supplies —
+which is also how I screened the wrong municípios today (*retracted in
+`data/siconfi_screenability.md`; wiring is next*).
+
+Known already, unchanged: Family B never returning means the machine finds
+but cannot read (*decision*); a certidão lapsing loses a won tender
+(*expiry tracker, pending `documentos.yaml`*); the cron dying silently
+(*heartbeat email, designed, held*).

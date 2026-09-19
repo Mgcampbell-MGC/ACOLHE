@@ -110,6 +110,16 @@ def suggest_bid(estimate, bom, rbt12=180_000, anchor=OPENING_ANCHOR):
             f"NO BID: the BOM has {len(bom.gaps)} unpriced line(s), so the cost "
             f"floor is unknown. Any price here is a guess."
         )
+    if bom.freight_is_estimate and str(bom.freight_basis).upper().startswith("UNQUOTED"):
+        # A kit is a bag of air that ships on dimensional weight. With freight
+        # at R$0,00 the 'floor' is not a floor: on a Northeast lot it can be
+        # the whole gross margin. Unquoted freight blocks exactly like an
+        # unpriced line.
+        return None, (
+            f"NO BID: freight is UNQUOTED. The cost floor R$ {floor:,.2f} omits "
+            f"it entirely, and on cubed goods to the Northeast it can exceed the "
+            f"margin. Get one measured freight figure before pricing."
+        )
 
     anchored = estimate * anchor
     if anchored <= floor:

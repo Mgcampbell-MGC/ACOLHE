@@ -1,0 +1,136 @@
+# CNAE codes to register for ACOLHE COMÉRCIO DE ENXOVAIS LTDA.
+#
+# Source of every code and description: IBGE CONCLA, CNAE 2.3 subclasses, read
+# through the official IBGE data API on 2026-09-19:
+#   https://servicodados.ibge.gov.br/api/v2/cnae/subclasses/<code>
+# (the interactive page https://concla.ibge.gov.br/busca-online-cnae.html sat
+# behind a JavaScript challenge on 2026-09-19 and returned 403 to non-browser
+# clients; the API is the same IBGE dataset).
+#
+# Simples Nacional admissibility: checked against Resolução CGSN 140/2018,
+# Anexo VI (CNAEs impeditivos, art. 8 §1) and Anexo VII (CNAEs ambíguos,
+# art. 8 §2), read from the DREI copies on gov.br on 2026-09-19:
+#   https://www.gov.br/empresas-e-negocios/pt-br/drei/arquivos/AnexoVI.pdf
+#   https://www.gov.br/empresas-e-negocios/pt-br/drei/arquivos/AnexoVII.pdf
+# and cross-checked on the RFB copy of Anexo VII:
+#   https://normas.receita.fazenda.gov.br/sijut2consulta/anexoOutros.action?idArquivoBinario=50967
+# None of the codes below appears in either annex. All are commerce (revenda de
+# mercadorias), taxed under LC 123 Anexo I (LC 123 art. 18 §4 I).
+#
+# MEI: none of the codes below is in Anexo XI (ocupações permitidas ao MEI),
+# and Anexo XI contains the string "ATACAD" zero times (counted on the RFB PDF
+# https://www8.receita.fazenda.gov.br/simplesnacional/arquivos/manual/anexo_xi.pdf
+# and on https://normas.receita.fazenda.gov.br/sijut2consulta/anexoOutros.action?idArquivoBinario=64455).
+#
+# The "atividades" lines are IBGE's own index entries that map a product to
+# the subclass; they are the argument to use if a pregoeiro questions whether
+# the objeto social covers an item.
+
+verified_on: "2026-09-19"
+principal: "4642-7/01"
+
+cnaes:
+  - code: "4642-7/01"
+    description: "Comércio atacadista de artigos do vestuário e acessórios, exceto profissionais e de segurança"
+    kind: wholesale
+    covers: [vestuário, enxoval, lenços, meias, roupas infantis]
+    ibge_index_entries: ["ENXOVAL; COMÉRCIO ATACADISTA DE", "MODA MASCULINA, FEMININA, INFANTIL; COMÉRCIO ATACADISTA DE", "LENÇOS; COMÉRCIO ATACADISTA DE", "MEIAS; COMÉRCIO ATACADISTA DE"]
+    simples: admitted   # not in CGSN 140 Anexo VI/VII
+    anexo: I
+    role: principal
+
+  - code: "4781-4/00"
+    description: "Comércio varejista de artigos do vestuário e acessórios"
+    kind: retail
+    covers: [vestuário, enxoval, laços e tiaras, roupas infantis]
+    ibge_index_entries: ["ENXOVAL; COMÉRCIO VAREJISTA", "BLUSAS E CAMISAS PARA CRIANÇAS, COMÉRCIO VAREJISTA", "LAÇOS E TIARAS; COMÉRCIO VAREJISTA DE"]
+    simples: admitted
+    anexo: I
+    role: secondary
+
+  - code: "4641-9/02"
+    description: "Comércio atacadista de artigos de cama, mesa e banho"
+    kind: wholesale
+    covers: [cama mesa e banho, lençol, fronha, cobertor, manta, toalha, cueiro]
+    ibge_index_entries: ["LENÇOL, FRONHA, COBERTOR, COLCHA E SIMILARES, COMÉRCIO ATACADISTA DE", "ROUPA DE CAMA, MESA E BANHO; COMÉRCIO ATACADISTA DE"]
+    simples: admitted
+    anexo: I
+    role: secondary
+
+  - code: "4755-5/03"
+    description: "Comércio varejista de artigos de cama, mesa e banho"
+    kind: retail
+    covers: [cama mesa e banho]
+    simples: admitted
+    anexo: I
+    role: secondary
+
+  - code: "4646-0/02"
+    description: "Comércio atacadista de produtos de higiene pessoal"
+    kind: wholesale
+    covers: [fraldas descartáveis, sabonete, talco, absorventes, artigos de higiene pessoal]
+    ibge_index_entries: ["FRALDAS DESCARTÁVEIS; COMÉRCIO ATACADISTA DE", "SABONETES; COMÉRCIO ATACADISTA DE", "TALCO; COMÉRCIO ATACADISTA DE TALCO", "ARTIGOS DE HIGIENE PESSOAL; COMÉRCIO ATACADISTA DE"]
+    simples: admitted
+    anexo: I
+    role: secondary
+
+  - code: "4646-0/01"
+    description: "Comércio atacadista de cosméticos e produtos de perfumaria"
+    kind: wholesale
+    covers: [cremes e loções, óleo/loção infantil, colônia infantil, pomada para assaduras se classificada como cosmético]
+    ibge_index_entries: ["CREMES E LOÇÕES; COMÉRCIO ATACADISTA DE"]
+    simples: admitted
+    anexo: I
+    role: secondary
+    note: "Pomada para assaduras registrada como medicamento (ANVISA) seria 4644-3/01 (atacado de medicamentos) - NOT included; check the product's ANVISA registration before bidding on it. 4644-3/01 is not in Anexo VI/VII either but carries regulatory licensing (AFE) that a home-office ME will not have."
+
+  - code: "4772-5/00"
+    description: "Comércio varejista de cosméticos, produtos de perfumaria e de higiene pessoal"
+    kind: retail
+    covers: [fraldas descartáveis, cremes e loções, artigos de higiene pessoal]
+    ibge_index_entries: ["FRALDAS DESCARTÁVEIS; COMÉRCIO VAREJISTA", "CREMES E LOÇÕES; COMÉRCIO VAREJISTA"]
+    simples: admitted
+    anexo: I
+    role: secondary
+
+  - code: "4649-4/99"
+    description: "Comércio atacadista de outros equipamentos e artigos de uso pessoal e doméstico não especificados anteriormente"
+    kind: wholesale
+    covers: [brinquedos, puericultura (chupeta, mamadeira, mordedor), carrinhos de bebê, artigos de borracha e plástico para uso doméstico (banheira plástica)]
+    ibge_index_entries: ["BRINQUEDOS DE QUALQUER MATERIAL; COMÉRCIO ATACADISTA DE", "CHUPETA, MAMADEIRA, MORDEDOR; COMÉRCIO ATACADISTA DE", "CARRINHOS DE BEBE; COMÉRCIO ATACADISTA DE", "ARTIGOS DE BORRACHA E PLÁSTICO PARA USO DOMÉSTICO; COMÉRCIO ATACADISTA DE"]
+    simples: admitted
+    anexo: I
+    role: secondary
+    note: "There is NO dedicated CNAE for 'comércio atacadista de brinquedos' or 'de artigos de puericultura' in CNAE 2.3; IBGE indexes both under 4649-4/99. This one code is the wholesale cover for toys, puericultura and the plastic bathtub."
+
+  - code: "4763-6/01"
+    description: "Comércio varejista de brinquedos e artigos recreativos"
+    kind: retail
+    covers: [brinquedos]
+    ibge_index_entries: ["BRINQUEDOS DE QUALQUER MATERIAL; COMÉRCIO VAREJISTA"]
+    simples: admitted
+    anexo: I
+    role: secondary
+
+  - code: "4789-0/99"
+    description: "Comércio varejista de outros produtos não especificados anteriormente"
+    kind: retail
+    covers: [carrinhos para bebê, puericultura (residual)]
+    ibge_index_entries: ["CARRINHOS PARA BEBE; COMÉRCIO VAREJISTA"]
+    simples: admitted
+    anexo: I
+    role: secondary
+    note: "IBGE has no retail index entry for chupeta/mamadeira; 4789-0/99 is the residual retail class. Optional - drop it if the Junta or the contador objects to the count of secondary CNAEs (the Redesim collector accepts many, but keep the list defensible)."
+
+  - code: "4693-1/00"
+    description: "Comércio atacadista de mercadorias em geral, sem predominância de alimentos ou de insumos agropecuários"
+    kind: wholesale
+    covers: [kit misto (enxoval + higiene + puericultura) sold as one item]
+    simples: admitted
+    anexo: I
+    role: secondary
+    note: "Catch-all for editais whose item is 'KIT' with mixed families. Optional but cheap insurance against an objeto-social challenge."
+
+# Not included, on purpose:
+#   4644-3/01 Comércio atacadista de medicamentos e drogas de uso humano - needs ANVISA AFE; not a home-office activity.
+#   4759-8/99 Comércio varejista de outros artigos de uso pessoal e doméstico - only if she sells utilidades domésticas directly; not needed for the municipal kit.

@@ -100,8 +100,13 @@ ROWS = [
 ]
 
 
+def _unscreenable(cnpj, cod_ibge):
+    return False, "sem RREO", {"outcome": "UNSCREENABLE"}
+
+
 def _run(tmp_path, client, **kw):
     out = str(tmp_path / "ACOLHE.xlsx")
+    kw.setdefault("buyer_screen", _unscreenable)
     res = run(DAY, out, client=client, state_dir=str(tmp_path / "state"),
               cache_dir=str(tmp_path / "cache"), today=TODAY, now=NOW, **kw)
     return res, out
@@ -157,7 +162,7 @@ def test_a_harvest_failure_raises_and_writes_no_workbook(tmp_path):
     with pytest.raises(Unavailable):
         run(DAY, out, client=StubClient(ROWS, harvest_raises=True),
             state_dir=str(tmp_path / "state"), cache_dir=str(tmp_path / "cache"),
-            today=TODAY, now=NOW)
+            today=TODAY, now=NOW, buyer_screen=_unscreenable)
     assert not os.path.exists(out)
 
 
@@ -167,3 +172,56 @@ def test_health_sheet_reports_the_dropped_rows(tmp_path):
     text = " ".join(str(c.value) for row in ws.iter_rows() for c in row)
     assert "fora do prazo" in text          # the closed PR tender
     assert "outro programa" in text         # the school-uniform tender
+
+
+# -- the buyer screen is called with PNCP's codigoIbge, never a typed code ----
+
+def test_buyer_screen_receives_pncps_own_ibge_code_and_a_reject_becomes_nao_licitar(tmp_path):
+    """On 2026-09-19 a typed IBGE code screened the wrong municipio and was
+    reported as verification. The pipeline must hand the screen the code
+    PNCP put on the row, and nothing else."""
+    seen = []
+
+    def screen(cnpj, cod_ibge):
+        seen.append((cnpj, cod_ibge))
+        if cnpj.startswith("46316600"):
+            return False, "comprador deve 99,4% das faturas liquidadas", {"outcome": "REJECT"}
+        return True, "pagou 91%", {"outcome": "PASS"}
+
+    rows = [
+        _tender("46316600000164-1-000447/2025", "Nhamunda", "AM",
+                "AQUISICAO DE KIT MATERNIDADE") | {
+            "unidadeOrgao": {"municipioNome": "Nhamunda", "ufSigla": "AM",
+                             "codigoIbge": "1303007"}},
+        _tender("11111111000111-1-000001/2026", "Maracas", "BA",
+                "Fornecimento de Kit Enxoval de bebe") | {
+            "unidadeOrgao": {"municipioNome": "Maracas", "ufSigla": "BA",
+                             "codigoIbge": "2920601"}},
+    ]
+    res, out = _run(tmp_path, StubClient(rows), buyer_screen=screen)
+    assert ("46316600000164", "1303007") in seen
+    assert ("11111111000111", "2920601") in seen
+
+    by = {c["municipio"]: c for c in res["candidates"]}
+    assert by["Nhamunda"]["buyer_outcome"] == "REJECT"
+    assert by["Nhamunda"]["buyer_verdict"] == "NAO PAGA"
+    assert by["Maracas"]["buyer_verdict"] == "PAGA"
+
+    ws = load_workbook(out)[SHEET_TODAY]
+    headers = [c.value for c in ws[1]]
+    rows_out = {ws.cell(row=r, column=headers.index("Município") + 1).value:
+                {h: ws.cell(row=r, column=i + 1).value for i, h in enumerate(headers)}
+                for r in range(2, ws.max_row + 1)}
+    assert rows_out["Nhamunda"]["DECISÃO"] == "NAO LICITAR"
+    assert "99,4%" in rows_out["Nhamunda"]["Por quê"]
+    assert rows_out["Nhamunda"]["O comprador paga?"] == "NAO PAGA"
+    assert rows_out["Maracas"]["O comprador paga?"] == "PAGA"
+
+
+def test_an_unscreenable_buyer_stays_visible_as_exactly_that(tmp_path):
+    res, out = _run(tmp_path, StubClient(ROWS))     # default stub: UNSCREENABLE
+    assert all(c["buyer_outcome"] == "UNSCREENABLE" for c in res["candidates"])
+    ws = load_workbook(out)[SHEET_TODAY]
+    headers = [c.value for c in ws[1]]
+    col = headers.index("O comprador paga?") + 1
+    assert {ws.cell(row=r, column=col).value for r in range(2, ws.max_row + 1)} == {"NÃO VERIFICÁVEL"}

@@ -82,19 +82,86 @@ def rule_2_atestado(edital_text, config=None):
         return Result("2", True, "rule disabled")
 
     flat = strip_accents(edital_text or "").upper()
-    if not _any(cfg["clause_headings"], flat):
+    windows = _clause_windows(flat, cfg["clause_headings"],
+                              span=int(cfg.get("clause_span_chars", 3000)))
+
+    # MEASURED 2026-09-19: searching the WHOLE document for a percentage
+    # returned QUANTITATIVE for 7 of 7 real editais, on '10%', '5%', '100%'
+    # from multa and garantia clauses nowhere near the atestado. The marker
+    # must be found INSIDE the qualificacao tecnica clause, and that window
+    # must actually be about an atestado, or it is not our clause.
+    #
+    # ABSENT means no window is about an atestado -- not merely that no
+    # heading matched. Agrolandia/SC has a boilerplate 'capacidade tecnica'
+    # phrase and the word 'atestado' zero times in 41 pages: ABSENT.
+    relevant = [w for w in windows
+                if re.search(r"ATESTAD|COMPROVA[CÇ][AÃ]O\s+DE\s+(?:APTID|CAPACID)", w)]
+    if not relevant:
         return Result("2", True, "no qualificacao tecnica clause found",
                       {"clause": "ABSENT"})
 
-    hit = _any(cfg["quantitative_markers"], flat)
-    if hit:
-        return Result("2", False, f"QUANTITATIVE atestado: the clause demands "
-                      f"{hit!r}. A first-time bidder cannot satisfy a quantity "
-                      f"or percentage threshold.",
-                      {"clause": "QUANTITATIVE", "match": hit})
+    for window in relevant:
+        hit = _quantitative_near_atestado(window, cfg["quantitative_markers"])
+        if hit:
+            return Result("2", False, f"QUANTITATIVE atestado: the clause demands "
+                          f"{hit!r}. A first-time bidder cannot satisfy a quantity "
+                          f"or percentage threshold.",
+                          {"clause": "QUANTITATIVE", "match": hit})
     return Result("2", True, "QUALITATIVE atestado -- satisfied by one prior "
                   "sale of any size, public or private",
                   {"clause": "QUALITATIVE"})
+
+
+def _clause_windows(flat, headings, span=3000):
+    """The text that follows each clause heading, one window per occurrence.
+
+    A heading can appear more than once (an index, a cross-reference, the
+    clause itself). Every occurrence gets a window so the real one is never
+    missed; the caller decides which windows are genuinely about the topic.
+    """
+    out = []
+    for pat in headings or []:
+        for match in re.finditer(pat, flat, re.I | re.M):
+            # A heading is a LOCUS, not a boundary. Belterra/PA writes the
+            # whole requirement as '... COM ATESTADO DE CAPACIDADE TECNICA.'
+            # -- the phrase that matches the heading is the TAIL of the
+            # atestado mention, so a window starting after it never sees the
+            # word 'atestado'. Look a little before, too.
+            out.append(flat[max(0, match.start() - 300):match.end() + span])
+    return out
+
+
+_MARKER_REACH = 400   # chars either side of the word ATESTADO
+
+
+def _quantitative_near_atestado(window, markers):
+    """A quantity or percentage counts only if it sits NEXT TO the atestado.
+
+    'atestado ... comprovando no minimo 50% do quantitativo' is quantitative.
+    A '10%' multa two paragraphs later in the same clause is not. Searching
+    the whole window is how 7 of 7 real editais read QUANTITATIVE today.
+    """
+    for m in re.finditer(r"ATESTAD", window):
+        local = window[max(0, m.start() - _MARKER_REACH):m.end() + _MARKER_REACH]
+        hit = _any(markers, local)
+        if hit:
+            return hit
+    return None
+
+
+_NEGATION_BEFORE = re.compile(
+    r"(?:\bN[AÃ]O\b|\bVEDAD[AO]\b|\bPROIBID[AO]\b|\bNEM\b|\bSEM\b)[^.;]{0,120}$",
+    re.I,
+)
+
+
+def _negated(flat, start):
+    """True when the 120 chars before `start` negate what follows.
+
+    'nao sendo, em nenhuma hipotese, permitida a antecipacao de pagamentos'
+    is a PROHIBITION, and a naive grep read it as an offer.
+    """
+    return bool(_NEGATION_BEFORE.search(flat[max(0, start - 120):start]))
 
 
 def rule_3_modelo_do_orgao(edital_text, config=None):
@@ -303,11 +370,19 @@ def rule_10_pagamento_antecipado(edital_text, config=None):
     cfg = _cfg(config)["rule_10_pagamento_antecipado"]
     if not cfg.get("enabled", True):
         return Result("10", True, "rule disabled")
-    hit = _any(cfg["patterns"], edital_text)
-    if hit:
-        return Result("10", True, "PAGAMENTO ANTECIPADO is expressly provided "
-                      "(art. 145) -- the working-capital cost of this tender is "
-                      "zero. Prioritise it.", {"match": hit}, is_flag=True)
+    flat = strip_accents(edital_text or "").upper()
+    for pat in cfg["patterns"]:
+        for match in re.finditer(pat, flat, re.I | re.M):
+            if _negated(flat, match.start()):
+                # MEASURED: Bom Sucesso do Sul/PR forbids it in so many words
+                # and a plain grep offered it as a working-capital gift.
+                return Result("10", True, "advance payment is expressly FORBIDDEN "
+                              "in this edital", {"match": match.group(0),
+                                                 "negated": True})
+            return Result("10", True, "PAGAMENTO ANTECIPADO is expressly provided "
+                          "(art. 145) -- the working-capital cost of this tender is "
+                          "zero. Prioritise it.", {"match": match.group(0)},
+                          is_flag=True)
     return Result("10", True, "no advance payment", {"match": None})
 
 
@@ -316,10 +391,14 @@ def rule_11_log_the_bid(logged, config=None):
     if not cfg.get("enabled", True):
         return Result("11", True, "rule disabled")
     if not logged:
-        return Result("11", False, "bid not written to the bid log. PNCP never "
-                      "publishes who lost or what they bid, so an unlogged bid "
-                      "is information nobody can ever recover.", {})
-    return Result("11", True, "bid logged")
+        # A FLAG, not a gate. Logging happens AT BID TIME; before she bids
+        # nothing is logged yet, and treating that as a rejection made every
+        # admissible tender read NAO LICITAR. The obligation stands: an
+        # unlogged bid is information nobody can ever recover.
+        return Result("11", True, "not yet logged -- write the bid log the moment "
+                      "she bids. PNCP never publishes who lost or what they bid.",
+                      {"logged": False}, is_flag=True)
+    return Result("11", True, "bid logged", {"logged": True})
 
 
 def rule_12_can_she_carry_it(quantity, cogs_per_kit, config=None, capital=None):

@@ -73,13 +73,15 @@ skus:
       # 17,2 L conforms to exactly ONE tender line in the country. Pricing a
       # 17 L tub against a 24 L market is 36 margin points of fiction.
       capacity_required: true
-    cost_observed: 29.71
+    cost_observed: 18.90
     cost_basis: unit
     note: >
-      CONFIRMED AT SOURCE 2026-09-19: BANHEIRA INFANTIL 24 LITROS #BM2123
-      Monte Libano, R$29,71, at emilio.com.br. 40 conforming 20-25 L tubs in
-      the catalogue; cheapest R$29,71, median R$40,42. The 17,2 L at R$22,90
-      is correctly refused by spec control.
+      CORRECTED 2026-09-19: cheapest CONFORMING 20-25 L tub is R$18,90
+      (BANHEIRA ADOLETA 20 LITROS #0362 CAJOVIL, emilio.com.br), cross-checked
+      on the same ref at three SP sellers (17,89 / 18,05 / 18,90). 40
+      conforming tubs; median R$40,42. Band-sensitive: min 20 L = 18,90,
+      >=22 L = 23,65, exactly 24 L = 29,71. The 17,2 L at R$22,90 is
+      correctly refused by spec control.
       Inmetro: rigid baths are uncertified (Portaria 563/2016 covers
       inflatable only).
 
@@ -200,7 +202,7 @@ skus:
     match: ['FRALDA.*DESCART[ÁA]VEL', 'FRALDA\s+RN']
     anti: ['PANO', 'BAINHA']
     window: [0.30, 5.00]
-    cost_observed: null
+    cost_observed: 23.78
     cost_spec_risk: BLOCKING
     note: >
       UNPRICED. CONFIRMED ABSENT 2026-09-19: the supplier's 'fraldas
@@ -212,7 +214,7 @@ skus:
     match: ['UMEDECID', 'LEN[CÇ]O.*UMEDEC']
     anti: []
     window: [1.00, 20.00]
-    cost_observed: null
+    cost_observed: 6.02
     cost_spec_risk: BLOCKING
     note: >
       UNPRICED. CONFIRMED ABSENT 2026-09-19: zero rows at emilio.com.br on both
@@ -223,7 +225,7 @@ skus:
     match: ['SABONETE(?!IRA)']
     anti: ['SABONETEIRA', 'PORTA\s*(ALGOD|SABONETE)', '\bCESTA\b']
     window: [1.50, 25.00]
-    cost_observed: 17.01
+    cost_observed: 8.99
     cost_basis: unit
     cost_spec_risk: HIGH
     note: >
@@ -238,7 +240,7 @@ skus:
     window: [2.00, 25.00]
     spec:
       volume_ml: [100, 250]   # a kit shampoo is ~200ml, not a 400ml retail bottle
-    cost_observed: 21.39
+    cost_observed: 10.45
     cost_spec_risk: HIGH
     note: Only one SKU in the catalogue and it is 400ml retail. A ceiling, not a cost.
 
@@ -247,7 +249,7 @@ skus:
     match: ['\b[ÓO]LEO\b']
     anti: ['PETR[ÓO]LEO', 'ESSENCIAL', 'COZINHA', 'MACAQUINHO']
     window: [2.00, 25.00]
-    cost_observed: null
+    cost_observed: 23.89
     cost_spec_risk: BLOCKING
     note: >
       UNPRICED. CONFIRMED ABSENT 2026-09-19: zero rows at emilio.com.br on both

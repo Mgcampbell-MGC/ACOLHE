@@ -123,6 +123,36 @@ def read_back_her_columns(path):
     return kept
 
 
+def read_back_bid_rows(path):
+    """EVERY prior row of MINHAS APOSTAS, keyed by PNCP number, all columns.
+
+    The bid log must ACCUMULATE. The first version wrote only today's
+    candidates, so a tender she bid on Monday -- and the lance she typed --
+    vanished from Tuesday's sheet, surviving only in arquivo/. The one asset
+    that compounds was being rebuilt from scratch every morning.
+    """
+    if not os.path.exists(path):
+        return {}
+    try:
+        wb = load_workbook(path, data_only=True)
+    except Exception:
+        return {}
+    if SHEET_BIDS not in wb.sheetnames:
+        return {}
+    ws = wb[SHEET_BIDS]
+    headers = [c.value for c in ws[1]]
+    if "Nº PNCP" not in headers:
+        return {}
+    key_at = headers.index("Nº PNCP")
+    kept = {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if not row or key_at >= len(row) or not row[key_at]:
+            continue
+        kept[str(row[key_at])] = {h: (row[i] if i < len(row) else None)
+                                  for i, h in enumerate(headers) if h}
+    return kept
+
+
 def _decision(candidate):
     """What she should do, and why, in one readable line.
 
@@ -160,6 +190,7 @@ def build(path, candidates, health=None, today=None, stale=(), near_misses=()):
     """Write the workbook, preserving everything she has typed."""
     today = today or datetime.date.today()
     hers = read_back_her_columns(path)
+    prior_rows = read_back_bid_rows(path)
 
     if os.path.exists(path):                     # never destroy a prior day
         backup_dir = os.path.join(os.path.dirname(path) or ".", "arquivo")
@@ -173,7 +204,7 @@ def build(path, candidates, health=None, today=None, stale=(), near_misses=()):
     ws = wb.active
     ws.title = SHEET_TODAY
     cols = ["Município", "UF", "O que estão comprando", "Valor estimado (R$)",
-            "Fecha em", "Dias restantes", "DECISÃO", "Por quê",
+            "Registro de preços?", "Fecha em", "Dias restantes", "DECISÃO", "Por quê",
             "Lance sugerido (R$)", "Margem", "O comprador paga?", "Link PNCP"]
     ws.append(cols)
     _style_header(ws, len(cols))
@@ -188,6 +219,10 @@ def build(path, candidates, health=None, today=None, stale=(), near_misses=()):
         ws.append([
             c.get("municipio"), c.get("uf"), c.get("objeto"),
             c.get("valor_estimado"),
+            # An ARP binds HER for 12 months at a fixed price and the buyer to
+            # nothing (Lei 14.133 art. 83). A call-off she cannot serve is a
+            # sanction, not a lost sale. She must see this on every row.
+            "SIM" if c.get("srp") else "NÃO",
             (str(c.get("encerramento")) or "")[:10] or "não informado",
             left if left is not None else "não informado",
             decision, why,
@@ -197,14 +232,18 @@ def build(path, candidates, health=None, today=None, stale=(), near_misses=()):
             f"https://pncp.gov.br/app/editais/{(c.get('pncp_key') or '').replace('-', '/')}",
         ])
         row = ws.max_row
+        col_decision = cols.index("DECISÃO") + 1
+        col_days = cols.index("Dias restantes") + 1
         if decision == "LICITAR":
-            ws.cell(row=row, column=7).fill = GOOD_FILL
+            ws.cell(row=row, column=col_decision).fill = GOOD_FILL
         elif decision == "VERIFICAR":
-            ws.cell(row=row, column=7).fill = WARN_FILL
+            ws.cell(row=row, column=col_decision).fill = WARN_FILL
         if left is not None and left <= 5:
-            ws.cell(row=row, column=6).fill = WARN_FILL
-            ws.cell(row=row, column=6).font = Font(bold=True, color="C0392B")
-    _autosize(ws, [22, 5, 58, 18, 12, 14, 14, 52, 18, 10, 20, 46])
+            ws.cell(row=row, column=col_days).fill = WARN_FILL
+            ws.cell(row=row, column=col_days).font = Font(bold=True, color="C0392B")
+        if c.get("srp"):
+            ws.cell(row=row, column=cols.index("Registro de preços?") + 1).fill = WARN_FILL
+    _autosize(ws, [22, 5, 58, 18, 12, 12, 14, 14, 52, 18, 10, 20, 46])
 
     # ------------------------------------------------------------ PIPELINE
     ws = wb.create_sheet(SHEET_PIPELINE)
@@ -237,6 +276,17 @@ def build(path, candidates, health=None, today=None, stale=(), near_misses=()):
             c.get("objeto"), c.get("quantidade"), c.get("unit_cost"),
             c.get("suggested_bid"),
         ] + [mine.get(col, "") for col in HER_COLUMNS])
+        for offset in range(len(HER_COLUMNS)):
+            ws.cell(row=ws.max_row, column=9 + offset).fill = HERS_FILL
+
+    # THE LOG ACCUMULATES. Every prior row whose tender is not in today's
+    # candidates is carried forward VERBATIM -- its original date, the
+    # machine's columns as they stood, and everything she typed.
+    todays_keys = {str(c.get("pncp_key") or "") for c in ordered}
+    for key, prior in prior_rows.items():
+        if key in todays_keys:
+            continue
+        ws.append([prior.get(col, "") for col in cols])
         for offset in range(len(HER_COLUMNS)):
             ws.cell(row=ws.max_row, column=9 + offset).fill = HERS_FILL
     for offset in range(len(HER_COLUMNS)):

@@ -46,27 +46,46 @@ The operational consequence is that manual diligence on small buyers is not an
 edge case, it is the normal path, and the digest must make that visible rather
 than letting a silent UNSCREENABLE look like a quiet pass.
 
-## Two corrections to the agent report that produced screen/buyer.py
+## A retraction, and what actually held
 
-1. **Its named examples are wrong.** It reported Rodeiro/MG and Ribeirão
-   Corrente/SP as verified at raw-HTTP level to have "0 rows across every
-   exercício 2024-2026 × every período 1-6". Both return full, usable data on
-   the first call:
+**My earlier "correction" of the buyer-screen agent was wrong, and the agent
+was right.** I claimed Rodeiro/MG and Ribeirão Corrente/SP returned full,
+usable RREO data and therefore its named evidence "did not hold". I had typed
+IBGE codes from memory — 3143906 and 3543501 — instead of looking them up.
+Those codes belong to other municípios. The real codes, from the SICONFI
+`entes` table, are:
 
-   - Rodeiro/MG (3143906): 71 rows; inscritos R$22.624.463,06;
-     saldo 1,49%; cancelados 0,61% → PASS
-   - Ribeirão Corrente/SP (3543501): 43 rows; inscritos R$1.033.597,97;
-     saldo 7,02% → PASS
+| município | correct cod_ibge | rows, 2026 período 3 |
+|---|---|---|
+| Rodeiro/MG | **3156304** | **0 — UNSCREENABLE** |
+| Ribeirão Corrente/SP | **3543105** | **0 — UNSCREENABLE** |
+| (code I used) 3143906 | a different ente | 71 |
+| (code I used) 3543501 | a different ente | 43 |
 
-   Its headline *direction* survives — most small municípios genuinely cannot
-   be screened — but the specific verification behind it did not hold, and
-   its 34,5% sits at the bottom of the interval measured here.
+So the agent's two named examples stand. This is the exact "label right,
+identifier wrong" error class this project keeps catching, and this time it
+was mine. The adversarial risk-register workstream caught the mismatch by
+noticing the two SICONFI documents disagreed on the same município's code.
 
-2. **Its zero-row finding is CONFIRMED and is the important one.** SICONFI
-   omits zero-valued rows entirely, so a column is absent rather than zero:
-   - Nhamundá/AM has **no `Pagos (c)` row** — because it paid nothing.
-   - Ribeirão Corrente/SP has **no `Cancelados (d)` row**.
+What still holds from my measurement: the **45,0% screenable (n=60, ±12,6
+pp)** figure was drawn from `entes.json` with real `cod_ibge` values, not
+typed ones, so it is unaffected. The agent's 34,5% sits inside that interval.
+The business conclusion is unchanged and, if anything, firmer: **roughly half
+to two-thirds of small municípios cannot be screened, and rule 6 must return
+UNSCREENABLE for them — never a quiet pass.**
 
-   A reader that treats an absent column as "no data" drops exactly the worst
-   payers in Brazil out of the screen. `pagos` must be derived from the
-   published identity `c = (a+b) − d − e`, with the source recorded.
+## The finding that is confirmed and matters most
+
+SICONFI omits zero-valued rows entirely, so a column is *absent* rather than
+zero: Nhamundá/AM has **no `Pagos (c)` row** precisely because it paid
+nothing. A reader treating an absent column as "no data" drops the worst
+payers in Brazil out of the screen. `pagos` must be derived from the
+published identity `c = (a+b) − d − e`, with the source recorded.
+
+## Lesson written into the repo
+
+Never type an identifier. Resolve every município to its `cod_ibge` from the
+`entes` table, and every company to its UF from its CNPJ. `harvest/daily.py`
+already carries `unidadeOrgao.codigoIbge` from PNCP on every candidate; the
+buyer screen must be called with THAT, not with a looked-up or remembered
+code.
