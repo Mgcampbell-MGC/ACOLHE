@@ -1,8 +1,8 @@
 """One regression test per trap. Each of these produced a confidently wrong
 number in this project's history. None of them is hypothetical.
 
-Traps 3, 10 and 11 depend on modules not yet built and are listed as explicit
-TODOs at the foot of this file rather than being silently omitted.
+Trap 3 is the only one still outstanding: it needs the price-history puller.
+It is listed as an explicit TODO at the foot of this file, never silently omitted.
 """
 
 import os
@@ -13,6 +13,9 @@ import pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from parse.spec import classify  # noqa: E402
+from price.bom import build  # noqa: E402
+from price.cost import CostRow  # noqa: E402
+from price.margin import cost_floor, suggest_bid  # noqa: E402
 from parse.normalise import (  # noqa: E402
     capacity_of,
     is_bundle,
@@ -287,9 +290,95 @@ def test_trap9_inmetro_certified_skus_are_refused():
 
 
 # --------------------------------------------------------------------------
-# TODO - still need modules that do not exist yet. Listed so the gap stays
-# visible rather than silently missing from the suite.
-#   TRAP 3  recency filter      -> needs the price-history puller
-#   TRAP 10 retail vs wholesale -> needs price/cost.py schema
-#   TRAP 11 interstate +6 points-> needs price/cost.py
+# TRAP 10 - a retail price mistaken for a wholesale one. Every cost row must
+# carry a supplier CNPJ and a verified_at, enforced rather than trusted.
+# --------------------------------------------------------------------------
+
+def _row(**kw):
+    base = dict(
+        bom_line="body", sku="BODY", cost=7.56, basis="per_piece",
+        supplier="CONFECCOES EMILIO LTDA", supplier_cnpj="50191584000106",
+        supplier_uf="SP", product_ref="KIT BODY ML 3UN #302084",
+        url="https://www.emilio.com.br", verified_at="2026-09-19",
+    )
+    base.update(kw)
+    return CostRow(**base)
+
+
+def test_trap10_cost_row_requires_supplier_cnpj():
+    with pytest.raises(ValueError, match="CNPJ"):
+        _row(supplier_cnpj="")
+    with pytest.raises(ValueError, match="CNPJ"):
+        _row(supplier_cnpj="123")          # not 14 digits
+
+
+def test_trap10_cost_row_requires_verified_at_and_url():
+    with pytest.raises(ValueError, match="verified_at"):
+        _row(verified_at="")
+    with pytest.raises(ValueError, match="URL"):
+        _row(url="")
+
+
+def test_trap10_cost_row_requires_a_real_uf():
+    """A trading name is not an address."""
+    with pytest.raises(ValueError, match="UF"):
+        _row(supplier_uf="")
+    with pytest.raises(ValueError, match="UF"):
+        _row(supplier_uf="Sao Paulo")      # must be the 2-letter UF
+
+
+def test_trap10_a_good_row_is_accepted():
+    assert _row().landed_cost() == 7.56
+
+
+# --------------------------------------------------------------------------
+# TRAP 11 - interstate cost not loaded. LC 123 art. 13 §1 XIII (h) charges a
+# Simples optante the internal-minus-interstate ICMS difference: SP internal
+# 18% vs interstate-into-SP 12% = ~6 points.
+# Verified traps: atacadosaopaulo.com.br is in ES, rymo.com.br (listed by the
+# Sao Paulo sindicato itself) is in AM.
+# --------------------------------------------------------------------------
+
+def test_trap11_non_sp_supplier_is_loaded_six_points():
+    sp = _row(supplier_uf="SP", cost=10.00)
+    es = _row(supplier_uf="ES", cost=10.00)     # atacadosaopaulo.com.br
+    am = _row(supplier_uf="AM", cost=10.00)     # rymo.com.br
+
+    assert sp.landed_cost() == 10.00
+    assert es.landed_cost() == 10.60
+    assert am.landed_cost() == 10.60
+    assert es.is_interstate and am.is_interstate and not sp.is_interstate
+
+
+def test_trap11_cheaper_headline_can_lose_after_loading():
+    """An out-of-state supplier must beat SP by MORE than 6% to be cheaper."""
+    sp = _row(supplier_uf="SP", cost=10.00)
+    cheaper_looking = _row(supplier_uf="ES", cost=9.60)   # 4% cheaper headline
+
+    assert cheaper_looking.cost < sp.cost
+    assert cheaper_looking.landed_cost() > sp.landed_cost()
+
+
+def test_trap11_an_unpriced_line_never_becomes_zero():
+    """A gap must block, never silently cost R$0,00."""
+    import os
+
+    path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data", "cost_table.csv",
+    )
+    bom = build(path)
+    assert bom.gaps, "fixture expects unpriced lines"
+    assert bom.confidence() == "FLOOR_ONLY"
+    assert cost_floor(bom) is None
+    price, why = suggest_bid(476.05, bom)
+    assert price is None
+    assert "unpriced" in why.lower()
+
+
+# --------------------------------------------------------------------------
+# TODO - still needs a module that does not exist yet.
+#   TRAP 3  recency filter -> needs the price-history puller (dataResultado
+#           filter). The endpoint returns ~5 years silently; without the
+#           filter every pool is ~3x too large.
 # --------------------------------------------------------------------------
