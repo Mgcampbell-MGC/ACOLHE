@@ -12,3 +12,5 @@
 2026-09-19T16:29:46Z attempt=6 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/arquivos
 2026-09-19T16:34:46Z attempt=7 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/itens?pagina=1&tamanhoPagina=50
 2026-09-19T16:34:47Z attempt=7 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/arquivos
+2026-09-19T16:39:48Z attempt=8 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/itens?pagina=1&tamanhoPagina=50
+2026-09-19T16:39:49Z attempt=8 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/arquivos

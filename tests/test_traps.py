@@ -188,9 +188,17 @@ def test_trap4_shampoo_volume_band():
 
 
 def test_trap4_hooded_towel_is_a_different_product():
-    _, ok, why = classify("TOALHA DE BANHO COM CAPUZ 70X100")
-    assert ok is False
-    assert "capuz" in why.lower() or "hooded" in why.lower()
+    """A hooded towel must never share a price with a plain one.
+
+    It now earns its own SKU rather than simply being refused: a real edital
+    (Sao Joao do Paraiso/MA) asks for ONE of each in the same kit, so refusing
+    the hooded one outright would have made that tender unpriceable.
+    """
+    hooded, ok_h, _ = classify("TOALHA DE BANHO COM CAPUZ 70X100")
+    plain, ok_p, _ = classify("TOALHA DE BANHO SIMPLES 70X100")
+    assert hooded == "TOALHA_CAPUZ"
+    assert plain == "TOALHA_BANHO"
+    assert hooded != plain
 
 
 def test_trap4_sacola_is_not_a_mochila():
@@ -427,3 +435,56 @@ def test_trap4_cheapest_conforming_is_taken_from_a_sorted_set():
     ]
     assert min(conforming)[0] == 18.90
     assert 22.90 not in [p for p, _ in conforming]   # 17,2 L never conforms
+
+
+# --------------------------------------------------------------------------
+# TRAP 5, second form - 'CONTENDO' is not by itself a bundle marker.
+# Found on a real edital (Sao Joao do Paraiso/MA, retrieved 2026-09-19):
+# 'Lenco umedecido, contendo 48 lencos no pc' is a PACK COUNT. Treating it as
+# a bundle silently drops a real line from the harvest, and a line dropped for
+# a wrong reason looks exactly like a line that was never there.
+# --------------------------------------------------------------------------
+
+@pytest.mark.parametrize(
+    "descricao",
+    [
+        "Lenco umedecido, contendo 48 lencos no pc, sem alcool",
+        "Luva para bebe, contendo 01 par de luva, veste de 0 a 3 meses",
+        "Touca para bebe, contendo 01 touquinha, veste de 0 a 3 meses",
+    ],
+)
+def test_trap5_contendo_plus_a_count_is_a_pack_not_a_bundle(descricao):
+    assert is_bundle(descricao) is False
+    sku, ok, why = classify(descricao)
+    assert sku is not None, why
+    assert ok is True, why
+
+
+@pytest.mark.parametrize(
+    "descricao",
+    [
+        "600 KITS CONTENDO: Banheira, Mamadeira, Fralda de pano, Body",
+        "KIT CONTENDO Toalha, Cueiro, Body e Macacao",
+        "KIT MATERNIDADE COMPOSTO POR Banheira, Mochila e Toalha",
+    ],
+)
+def test_trap5_contendo_plus_distinct_articles_is_still_a_bundle(descricao):
+    assert is_bundle(descricao) is True
+
+
+def test_trap5_calca_family_counts_as_one_garment():
+    """'Calca tipo mijao' names ONE garment twice, not two garments."""
+    assert is_bundle("Calca tipo mijao, sem pe, 100% algodao, Tam. RN") is False
+    sku, ok, _ = classify("Calca tipo mijao, sem pe, 100% algodao, Tam. RN")
+    assert sku == "CALCA_MIJAO" and ok is True
+    # but a genuine two-garment set is still caught
+    assert is_bundle("CONJUNTO BODY + CULOTE SEM PE") is True
+
+
+def test_hooded_and_plain_towels_are_separate_skus():
+    """A real edital asks for BOTH in the same kit, so each needs its own SKU."""
+    hooded, ok_h, _ = classify("Toalha de banho com capuz, 85 cm x 85 cm, 100% algodao")
+    plain, ok_p, _ = classify("Toalha de banho simples, 85 cm x 85 cm, 100% algodao")
+    assert hooded == "TOALHA_CAPUZ" and ok_h is True
+    assert plain == "TOALHA_BANHO" and ok_p is True
+    assert hooded != plain

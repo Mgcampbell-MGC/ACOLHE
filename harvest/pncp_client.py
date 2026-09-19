@@ -170,6 +170,23 @@ class Failure(object):
         return f"<Failure {self.family} {self.status or self.error} {self.url}>"
 
 
+def route_label(url):
+    """A short name for the endpoint behind a URL.
+
+    Coarser than the URL, finer than the family. Both listing routes live in
+    Family A, so "which family served this page" cannot tell publicacao from
+    atualizacao -- and that distinction turns out to matter enormously (see
+    _harvest_modalidade on mixed-route pagination).
+    """
+    path = urllib.parse.urlsplit(url).path
+    if "/api/consulta/v1/" in path:
+        return "consulta/" + path.split("/api/consulta/v1/", 1)[1].strip("/")
+    if "/api/pncp/v1/" in path:
+        tail = path.split("/api/pncp/v1/", 1)[1].strip("/").split("/")[-1]
+        return "portal/" + tail
+    return path
+
+
 class Response(object):
     """What a Transport returns. Deliberately tiny so tests can fake it."""
 
@@ -288,6 +305,8 @@ class Cursor(object):
         self.seen_keys = set()
         self.expected_rows = {}     # modalidade -> totalRegistros
         self.expected_pages = {}    # modalidade -> totalPaginas
+        self.rows_served = 0        # rows PNCP handed us, duplicates included
+        self.page_routes = {}       # "modalidade:pagina" -> route label
         self.failures = []
         self.served_by = collections.Counter()
         self.load()
@@ -302,6 +321,8 @@ class Cursor(object):
         self.seen_keys = set(state.get("seen_keys", []))
         self.expected_rows = {int(k): v for k, v in state.get("expected_rows", {}).items()}
         self.expected_pages = {int(k): v for k, v in state.get("expected_pages", {}).items()}
+        self.rows_served = state.get("rows_served", 0)
+        self.page_routes = state.get("page_routes", {})
         self.failures = [Failure.from_dict(d) for d in state.get("failures", [])]
         self.served_by = collections.Counter(state.get("served_by", {}))
 
@@ -312,6 +333,8 @@ class Cursor(object):
             "expected_rows": self.expected_rows,
             "expected_pages": self.expected_pages,
             "rows_committed": self.rows_committed,   # derived; for humans reading the file
+            "rows_served": self.rows_served,
+            "page_routes": self.page_routes,
             "failures": [f.as_dict() for f in self.failures],
             "served_by": dict(self.served_by),
         }
@@ -359,11 +382,15 @@ class HarvestReport(object):
         self.expected_pages = {}
         self.pages_fetched = 0
         self.pages_skipped_cached = 0
-        self.rows_total = 0         # cumulative across runs, from the cursor
+        self.rows_total = 0         # DISTINCT tenders held, from the cursor
+        self.rows_served = 0        # rows PNCP handed us, duplicates included
         self.rows_new = 0           # emitted by THIS run
         self.rows_duplicate = 0     # suppressed by the cursor's seen_keys
-        self.failures = []
+        self.failures = []          # routes that died after their budget
+        self.attempt_failures = []  # EVERY failed HTTP attempt, incl. recovered
         self.served_by = collections.Counter()
+        self.routes_used = collections.Counter()
+        self.mixed_route_modalidades = []
         self.network_calls = 0
         self.cache_hits = 0
 
@@ -373,21 +400,56 @@ class HarvestReport(object):
 
     @property
     def missing(self):
-        """Rows PNCP said exist that we do not hold. Never negative."""
+        """Distinct tenders PNCP said exist that we do not hold.
+
+        Measured against DISTINCT rows, not rows served. PNCP will happily
+        hand back the same tender twice across a mixed-route sweep, and
+        counting those repeats as coverage is how a short harvest passes for
+        a full one.
+        """
         return max(0, self.total_expected - self.rows_total)
 
     @property
+    def route_mixed(self):
+        """True when one modalidade's pages came from more than one endpoint.
+
+        WHY THIS IS NOT MERELY COSMETIC: publicacao and atualizacao are
+        different server-side indexes over the same tenders, in different
+        orders. "Page 4" therefore means a different set of rows in each. If
+        page 4 comes from atualizacao while pages 1-3 came from publicacao,
+        the sweep can both repeat rows and skip rows that exist, and no count
+        of rows received will reveal it. Observed live on 2026-09-19: a 429
+        on publicacao page 4 sent that page to atualizacao, which returned 16
+        rows already seen -- and therefore 16 tenders never seen at all.
+        """
+        return bool(self.mixed_route_modalidades)
+
+    @property
     def complete(self):
-        return not self.failures and self.missing == 0 and self.total_expected > 0
+        return (not self.failures and self.missing == 0
+                and not self.route_mixed and self.total_expected > 0)
 
     @property
     def suspected_outage(self):
-        """True when the harvest is short or anything failed.
+        """True when the harvest is short, mixed, or anything failed.
 
         Deliberately pessimistic. A false alarm costs a human five minutes; a
         missed outage costs a day of tenders nobody knows are absent.
         """
-        return bool(self.failures) or self.missing > 0
+        return bool(self.failures) or self.missing > 0 or self.route_mixed
+
+    def attempts_by_status(self):
+        """Every failed HTTP attempt, including ones a retry recovered from.
+
+        report.failures only holds routes that died for good. A page that
+        took five 429s and then succeeded leaves no trace there -- but it is
+        exactly the early warning that the rate limit is biting and the
+        descent is about to start losing pages.
+        """
+        c = collections.Counter()
+        for f in self.attempt_failures:
+            c[f.kind()] += 1
+        return dict(c)
 
     def failures_by_status(self):
         """Failure counts grouped by kind, not strictly by status code.
@@ -401,14 +463,19 @@ class HarvestReport(object):
 
     def summary(self):
         verdict = "COMPLETE" if self.complete else "SUSPECTED OUTAGE"
+        mixed = (f" ROUTE_MIXED={self.mixed_route_modalidades}"
+                 if self.route_mixed else "")
         return (
             f"{verdict} day={self.day} modalidades={self.modalidades} "
-            f"rows={self.rows_total}/{self.total_expected} "
+            f"distinct={self.rows_total}/{self.total_expected} "
+            f"served={self.rows_served} "
             f"(new={self.rows_new} dup_suppressed={self.rows_duplicate}) "
             f"pages_fetched={self.pages_fetched} "
             f"network_calls={self.network_calls} cache_hits={self.cache_hits} "
-            f"served_by={dict(self.served_by)} "
-            f"failures={len(self.failures)}:{self.failures_by_status()}"
+            f"served_by={dict(self.served_by)} routes={dict(self.routes_used)} "
+            f"failed_attempts={len(self.attempt_failures)}:{self.attempts_by_status()} "
+            f"dead_routes={len(self.failures)}:{self.failures_by_status()}"
+            f"{mixed}"
         )
 
     def as_dict(self):
@@ -418,6 +485,7 @@ class HarvestReport(object):
             "expected_rows": self.expected_rows,
             "expected_pages": self.expected_pages,
             "rows_total": self.rows_total,
+            "rows_served": self.rows_served,
             "rows_new": self.rows_new,
             "rows_duplicate": self.rows_duplicate,
             "missing": self.missing,
@@ -426,7 +494,11 @@ class HarvestReport(object):
             "cache_hits": self.cache_hits,
             "complete": self.complete,
             "suspected_outage": self.suspected_outage,
+            "route_mixed": self.route_mixed,
+            "mixed_route_modalidades": self.mixed_route_modalidades,
             "served_by": dict(self.served_by),
+            "routes_used": dict(self.routes_used),
+            "attempts_by_status": self.attempts_by_status(),
             "failures": [f.as_dict() for f in self.failures],
         }
 
@@ -612,10 +684,13 @@ class PNCPClient(object):
                 payload = self.fetch_json(url, family)
             except Unavailable as exc:
                 failures.extend(exc.failures)
-                self.log("route_failed", question=question, family=family, url=url)
+                self.log("route_failed", question=question, family=family,
+                         route=route_label(url), url=url,
+                         statuses=[f.kind() for f in exc.failures])
                 continue
-            self.log("route_served", question=question, family=family, url=url)
-            return payload, family, failures
+            self.log("route_served", question=question, family=family,
+                     route=route_label(url), url=url)
+            return payload, family, route_label(url), failures
         raise Unavailable(question, failures)
 
     # -- Family A: the listing ---------------------------------------------
@@ -647,9 +722,9 @@ class PNCPClient(object):
     def fetch_page(self, day, modalidade, pagina, page_size):
         """One page of the listing. Returns (payload, family)."""
         question = f"listing day={day} mod={modalidade} page={pagina}"
-        payload, family, _ = self.fetch_first(
+        payload, family, route, _ = self.fetch_first(
             question, self.listing_routes(day, modalidade, pagina, page_size))
-        return payload, family
+        return payload, family, route
 
     # -- Family B: the descent into one compra ------------------------------
 
@@ -662,8 +737,8 @@ class PNCPClient(object):
         """
         url = (f"{BASE_B}/orgaos/{cnpj}/compras/{ano}/{sequencial}/itens"
                f"?pagina={pagina}&tamanhoPagina={page_size}")
-        payload, _, _ = self.fetch_first(f"itens {cnpj}/{ano}/{sequencial}",
-                                         [(FAMILY_B, url)])
+        payload, _, _, _ = self.fetch_first(f"itens {cnpj}/{ano}/{sequencial}",
+                                            [(FAMILY_B, url)])
         return payload
 
     def resultado_item(self, cnpj, ano, sequencial, numero_item):
@@ -674,7 +749,7 @@ class PNCPClient(object):
         """
         url = (f"{BASE_B}/orgaos/{cnpj}/compras/{ano}/{sequencial}"
                f"/itens/{numero_item}/resultados")
-        payload, _, _ = self.fetch_first(
+        payload, _, _, _ = self.fetch_first(
             f"resultados {cnpj}/{ano}/{sequencial}/{numero_item}",
             [(FAMILY_B, url)])
         return payload
@@ -683,8 +758,8 @@ class PNCPClient(object):
         """Edital PDF and annexes metadata. Family B only."""
         url = (f"{BASE_B}/orgaos/{cnpj}/compras/{ano}/{sequencial}/arquivos"
                f"?pagina={pagina}&tamanhoPagina={page_size}")
-        payload, _, _ = self.fetch_first(f"arquivos {cnpj}/{ano}/{sequencial}",
-                                         [(FAMILY_B, url)])
+        payload, _, _, _ = self.fetch_first(f"arquivos {cnpj}/{ano}/{sequencial}",
+                                            [(FAMILY_B, url)])
         return payload
 
     # -- the daily harvest --------------------------------------------------
@@ -731,6 +806,7 @@ class PNCPClient(object):
             cursor.seen_keys |= recovered
         report = HarvestReport(day, modalidades)
         start_calls, start_hits = self.network_calls, self.cache_hits
+        start_failures = len(self.failures)
 
         for modalidade in modalidades:
             self._harvest_modalidade(day, modalidade, page_size, max_pages,
@@ -741,20 +817,44 @@ class PNCPClient(object):
         report.expected_rows = dict(cursor.expected_rows)
         report.expected_pages = dict(cursor.expected_pages)
         report.rows_total = cursor.rows_committed
+        report.rows_served = cursor.rows_served
         report.served_by = collections.Counter(cursor.served_by)
         report.failures = list(cursor.failures)
+        # Every failed attempt this run, including ones a retry recovered
+        # from. Requirement 5 says EVERY failure, not just the fatal ones.
+        report.attempt_failures = self.failures[start_failures:]
         report.network_calls = self.network_calls - start_calls
         report.cache_hits = self.cache_hits - start_hits
+
+        # Which endpoint served each page, and whether any modalidade ended up
+        # stitched together from two differently-ordered indexes.
+        by_mod = collections.defaultdict(set)
+        for page_key, route in cursor.page_routes.items():
+            report.routes_used[route] += 1
+            by_mod[int(page_key.split(":")[0])].add(route)
+        report.mixed_route_modalidades = sorted(
+            m for m, routes in by_mod.items() if len(routes) > 1)
 
         # Requirement 6: surfaced, not swallowed. The caller still gets the
         # report -- we refuse to raise, because partial data is worth keeping.
         # But the outage is on the record before anyone looks at the rows.
         self.log("harvest_done", **report.as_dict())
+        if report.route_mixed:
+            # Loud and separate: this one is not an outage, it is a coverage
+            # hole that no row count can reveal on its own.
+            self.log("ROUTE_MIXED", day=day,
+                     modalidades=report.mixed_route_modalidades,
+                     routes=dict(report.routes_used),
+                     note="pages came from differently-ordered indexes; "
+                          "distinct coverage is not guaranteed")
         if report.suspected_outage:
             self.log("SUSPECTED_OUTAGE", day=day,
                      missing=report.missing,
                      expected=report.total_expected,
-                     got=report.rows_total,
+                     distinct=report.rows_total,
+                     served=report.rows_served,
+                     route_mixed=report.route_mixed,
+                     attempts=report.attempts_by_status(),
                      failures=report.failures_by_status())
         return report
 
@@ -763,7 +863,7 @@ class PNCPClient(object):
         # Page 1 tells us how many pages exist. On a resumed run it is a cache
         # hit, so asking again is free.
         try:
-            payload, family = self.fetch_page(day, modalidade, 1, page_size)
+            payload, family, route = self.fetch_page(day, modalidade, 1, page_size)
         except Unavailable as exc:
             # We do not even know what we are missing. That is the worst case
             # and it must be loud.
@@ -785,7 +885,7 @@ class PNCPClient(object):
             # report a fake outage.
             cursor.expected_rows[modalidade] = min(total_rows, last_page * page_size)
 
-        self._commit_page(modalidade, 1, payload, family, sink, cursor, report)
+        self._commit_page(modalidade, 1, payload, family, route, sink, cursor, report)
 
         pages = [p for p in range(2, last_page + 1)
                  if not cursor.is_done(modalidade, p)]
@@ -797,25 +897,26 @@ class PNCPClient(object):
                 futures = [pool.submit(self._try_page, day, modalidade, p, page_size)
                            for p in batch]
                 results = [f.result() for f in futures]
-            for pagina, payload, family, failures in results:
+            for pagina, payload, family, route, failures in results:
                 if failures:
                     cursor.failures.extend(failures)
                 if payload is None:
                     continue
-                self._commit_page(modalidade, pagina, payload, family,
+                self._commit_page(modalidade, pagina, payload, family, route,
                                   sink, cursor, report)
 
     def _try_page(self, day, modalidade, pagina, page_size):
         """Fetch one page without letting a failure kill the whole batch."""
         try:
-            payload, family = self.fetch_page(day, modalidade, pagina, page_size)
-            return pagina, payload, family, []
+            payload, family, route = self.fetch_page(day, modalidade, pagina, page_size)
+            return pagina, payload, family, route, []
         except Unavailable as exc:
             self.log("page_unreachable", day=day, modalidade=modalidade,
-                     pagina=pagina, statuses=[f.status for f in exc.failures])
-            return pagina, None, None, exc.failures
+                     pagina=pagina, statuses=[f.kind() for f in exc.failures])
+            return pagina, None, None, None, exc.failures
 
-    def _commit_page(self, modalidade, pagina, payload, family, sink, cursor, report):
+    def _commit_page(self, modalidade, pagina, payload, family, route,
+                     sink, cursor, report):
         """Deliver a page's rows, then mark it done. Order matters.
 
         Rows go to the sink first and the cursor is flushed after, so a crash
@@ -825,6 +926,8 @@ class PNCPClient(object):
         if cursor.is_done(modalidade, pagina):
             return
         rows = payload.get("data") or []
+        cursor.page_routes[f"{modalidade}:{pagina}"] = route
+        cursor.rows_served += len(rows)
         new_rows = 0
         for row in rows:
             key = row.get("numeroControlePNCP")
@@ -840,8 +943,8 @@ class PNCPClient(object):
             cursor.seen_keys.add(key)
             cursor.served_by[family] += 1
             # Requirement 5: which family served THIS row.
-            self.log("row", key=key, family=family, modalidade=modalidade,
-                     pagina=pagina)
+            self.log("row", key=key, family=family, route=route,
+                     modalidade=modalidade, pagina=pagina)
             if sink is not None:
                 sink(row)
             new_rows += 1

@@ -18,7 +18,6 @@ defaults:
   # This is the '\bBODY' regex that turned R$77k into an apparent R$1,08M.
   global_anti:
     - 'CONJUNTO'
-    - 'CONTENDO'
     - 'COMPOSTO\s+(?:DE|POR)'
     - '\bLOTE\b'
 
@@ -118,6 +117,20 @@ skus:
     cost_observed: 1.85
     cost_basis: per_piece_of_3
 
+  TOALHA_CAPUZ:
+    label: Toalha de banho com capuz
+    # A DIFFERENT, dearer product from a plain towel - and real editais ask
+    # for BOTH in the same kit, so it needs its own SKU rather than an
+    # anti-pattern on TOALHA_BANHO.
+    match: ['TOALHA.*CAPUZ', 'TOALHA\s+CAPUZ']
+    anti: ['MESA', 'PISO']
+    window: [4.00, 60.00]
+    spec:
+      size_cm: ['85X85', '80X80', '70X100']
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+    note: UNPRICED. Emilio's cheapest was R$21,26, which was 2x the target at that tier.
+
   TOALHA_BANHO:
     label: Toalha de banho infantil
     match: ['TOALHA.*(BANHO|FRALDA)', 'TOALHA FRALDA']
@@ -175,7 +188,7 @@ skus:
 
   FRALDA_PANO:
     label: Fralda de pano
-    match: ['FRALDA.*(PANO|BAINHA|BORDADA|LUXO)', 'FRALDA DE PANO']
+    match: ['FRALDA.*(PANO|TECIDO|BAINHA|BORDADA|LUXO)', 'FRALDA DE PANO']
     anti: ['DESCART[ÁA]VEL', 'TOALHA']
     window: [1.00, 25.00]
     cost_observed: null
@@ -250,6 +263,55 @@ skus:
     note: >
       UNPRICED AND UNSPECIFIED. A kit inside a kit. Cannot be priced until the
       real tender item text is read.
+
+  # ---- SKUs added from the Sao Joao do Paraiso/MA edital, a REAL kit spec
+  # retrieved 2026-09-19. Every pattern below is taken from its wording.
+
+  CALCA_MIJAO:
+    label: Calca tipo mijao / culote sem pe
+    match: ['\bMIJ[AÃ]O\b', '\bCULOTE\b', 'CAL[CÇ]A.*SEM\s+P[EÉ]']
+    anti: ['\bBODY\b.*\\+', 'ESCOLAR', 'JEANS']
+    window: [3.00, 35.00]
+    spec:
+      material: ['algod[ãa]o', 'canelado', 'suedine']
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+
+  LUVA:
+    label: Par de luvas para bebe
+    match: ['\bLUVA(?:S)?\b']
+    anti: ['DESCART[ÁA]VEL', 'CIR[ÚU]RGICA', 'LATEX', 'PROCEDIMENTO', 'ESCOLAR']
+    window: [1.00, 20.00]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+
+  TOUCA:
+    label: Touca para bebe
+    match: ['\bTOUCA\b', '\bTOUQUINHA\b', '\bGORRO\b']
+    anti: ['DESCART[ÁA]VEL', 'PISCINA', 'ESCOLAR']
+    window: [1.00, 20.00]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+
+  TALCO:
+    label: Talco infantil
+    match: ['\bTALCO\b']
+    anti: []
+    window: [1.50, 20.00]
+    spec:
+      weight_g: [80, 200]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+
+  CONDICIONADOR:
+    label: Condicionador infantil
+    match: ['\bCONDICIONADOR\b']
+    anti: []
+    window: [2.00, 25.00]
+    spec:
+      volume_ml: [100, 250]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
 
 # Excluded from every bid, deliberately.
 excluded:

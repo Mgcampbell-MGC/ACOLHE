@@ -244,3 +244,25 @@ may be absent or partial.** It was never used to source any figure above; every 
 `clauses.csv` was found and fetched independently. Re-run it with
 `scan.py` if the census is wanted — note Family A intermittently 500s on single-date queries, so it
 needs the retry logic it already has.
+
+---
+
+## 6. What this failure blocks downstream
+
+`data/cost_table.csv` in this repo is being priced against a 17-line Itaquaquecetuba BOM whose
+source is a handoff, not the edital. Three of its rows state their own dependency on the very text
+that could not be retrieved today:
+
+- **`kit_enxoval`** — `spec_risk: BLOCKING`, cost empty: *"UNPRICED AND UNSPECIFIED. A kit inside a
+  kit. … Cannot price until the real Itaquaquecetuba item text is read."*
+- **`banheira_lisa`** — `spec_risk: CAPACITY_BAND`: *"COST IS BAND-SENSITIVE: 'min 20L' = R$18,90;
+  '>=22L' = R$23,65; 'exactly 24L' = R$29,71. Re-price once the real edital wording is known."*
+  A single word in the item text moves this line by **57%**.
+- **`body_manga_longa`** — `spec_risk: SIZE_GRADED`: *"many 3-packs are labelled TAMANHO RN AO G
+  which may be size-graduated … If the edital demands a single size this price does not hold.
+  MUST VERIFY before banking."*
+
+So the unavailable spec is not a documentation gap — it is load-bearing for at least one unpriced
+line and two priced lines that can move materially. **Until
+`api/pncp/v1/…/2025/447/itens` or `pncp-api/v1/…/2025/447/arquivos/1` returns 200, the per-kit BOM
+total should be treated as provisional**, and no bid should be submitted against it.

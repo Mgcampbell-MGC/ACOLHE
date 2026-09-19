@@ -149,11 +149,30 @@ _BUNDLE_JOIN = re.compile(
     re.I,
 )
 _MULTI_GARMENT = re.compile(
-    r"\b(BODY|MACACAO|PAGAO|BERMUDA|CALCA|CULOTE|SHORTS?|BLUSA|CAMISETA|"
-    r"MIJAO|SARUEL|JARDINEIRA|VESTIDO)\b",
+    r"\b(BODY|MACACAO|PAGAO|BERMUDA|BLUSA|CAMISETA|JARDINEIRA|VESTIDO|"
+    r"SHORTS?|(?P<calca>CALCA|CULOTE|MIJAO|SARUEL))\b",
     re.I,
 )
 _KIT_CONTENTS = re.compile(r"\bCONTENDO\b|\bCOMPOSTO\s+(?:DE|POR)\b", re.I)
+
+# 'CONTENDO' alone does NOT make a bundle. Measured on a real edital:
+#   '600 KITS CONTENDO: Banheira, Mamadeira, Fralda...'  -> a bundle
+#   'Lenco umedecido, contendo 48 lencos no pc'          -> a PACK COUNT
+#   'Luva para bebe, contendo 01 par de luva'            -> a PACK COUNT
+# Treating the latter two as bundles silently drops real lines from a harvest.
+# A count plus a GENERIC noun names a kit without listing it:
+# 'COMPOSTO POR 17 ITENS', 'KIT DE BANHO 3 PECAS'.
+_GENERIC_CONTENTS = re.compile(
+    r"\d{1,3}\s*(?:ITENS?|ITEM|PE[CÇ]AS?|PRODUTOS?|VOLUMES?|ARTIGOS?)\b", re.I
+)
+# Articles that can appear in a kit. Two or more distinct ones after a
+# CONTENDO/COMPOSTO marker is what actually makes a bundle.
+_ARTICLES = re.compile(
+    r"\b(BANHEIRA|MAMADEIRA|FRALDA|BODY|MACACAO|PAGAO|TOALHA|CUEIRO|MANTA|"
+    r"COBERTOR|MEIA|LUVA|TOUCA|SABONETE|SHAMPOO|TALCO|OLEO|PENTE|ESCOVA|"
+    r"SABONETEIRA|MOCHILA|BOLSA|LENCO|CALCA|MIJAO|CHUPETA|PANO)\b",
+    re.I,
+)
 
 
 def is_bundle(descricao):
@@ -167,10 +186,25 @@ def is_bundle(descricao):
         return False
     flat = strip_accents(descricao).upper()
 
-    if _KIT_CONTENTS.search(flat):
-        return True
+    marker = _KIT_CONTENTS.search(flat)
+    if marker:
+        tail = flat[marker.end():]
+        distinct_after = {m.group(1).upper() for m in _ARTICLES.finditer(tail)}
+        # Two or more distinct articles after the marker: a real kit.
+        if len(distinct_after) >= 2:
+            return True
+        # A count followed by a GENERIC container noun -- '17 ITENS',
+        # '3 PECAS' -- is a kit whose contents simply are not enumerated here.
+        if _GENERIC_CONTENTS.search(tail):
+            return True
+        # A count followed by a SPECIFIC article -- 'contendo 48 lencos',
+        # 'contendo 01 par de luva' -- is a PACK COUNT, not a kit. Falling
+        # through here is the whole point: it must stay classifiable.
 
-    distinct = {m.group(1).upper() for m in _MULTI_GARMENT.finditer(flat)}
+    distinct = {
+        ("CALCA" if m.group("calca") else m.group(1)).upper()
+        for m in _MULTI_GARMENT.finditer(flat)
+    }
     if len(distinct) >= 2:
         return True
 

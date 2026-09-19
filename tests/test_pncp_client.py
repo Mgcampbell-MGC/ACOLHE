@@ -288,10 +288,11 @@ def test_listing_falls_back_to_the_second_route_when_the_first_dies(tmp_path):
         return ok(listing_payload(3, 1, 50))
 
     client, transport = make_client(tmp_path, handler, max_attempts=2)
-    payload, family = client.fetch_page("20260915", 6, 1, 50)
+    payload, family, route = client.fetch_page("20260915", 6, 1, 50)
 
     assert len(payload["data"]) == 3
     assert family == FAMILY_A
+    assert route == "consulta/contratacoes/atualizacao"
     assert any("atualizacao" in u for u in transport.calls)
     # The primary's failures survive the successful fallback.
     assert [f.status for f in client.failures] == [500, 500]
@@ -727,3 +728,102 @@ def test_a_connection_error_is_its_own_kind_too(tmp_path):
     with pytest.raises(Unavailable) as exc:
         client.fetch_json("https://pncp.gov.br/api/pncp/v1/i", FAMILY_B)
     assert {f.kind() for f in exc.value.failures} == {"OSError"}
+
+
+# --------------------------------------------------------------------------
+# 8. MIXED-ROUTE PAGINATION -- the coverage hole no row count reveals
+#
+# Observed live on 2026-09-19: publicacao page 4 took five 429s, the client
+# fell back to atualizacao, and atualizacao's page 4 returned 16 tenders we
+# already had. Sixteen tenders that exist were therefore never fetched at all,
+# while the row count still read "200 of 200". These tests pin that behaviour
+# down so the report can never again call such a harvest complete.
+# --------------------------------------------------------------------------
+
+def test_route_label_distinguishes_the_two_family_a_endpoints():
+    """'family' is too coarse here: both listing routes are Family A."""
+    from harvest.pncp_client import route_label
+    assert route_label("https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao?x=1") \
+        == "consulta/contratacoes/publicacao"
+    assert route_label("https://pncp.gov.br/api/consulta/v1/contratacoes/atualizacao?x=1") \
+        == "consulta/contratacoes/atualizacao"
+    assert route_label(
+        "https://pncp.gov.br/api/pncp/v1/orgaos/1/compras/2026/2/itens") == "portal/itens"
+
+
+def test_a_sweep_stitched_from_two_indexes_is_never_called_complete(tmp_path):
+    """The live failure, reproduced exactly.
+
+    Page 2 falls back to the other index, which returns rows already seen.
+    Row counts look fine; distinct coverage does not. The report must refuse
+    to call this complete and must name the modalidade.
+    """
+    page_size = 50
+
+    def handler(url, n):
+        if "publicacao" in url and "pagina=2" in url:
+            return Response(429, "Limite de Requisicoes Excedido")
+        if "atualizacao" in url:
+            # A different index: its page 2 repeats page 1's tenders.
+            return ok(listing_payload(100, 1, page_size, prefix="M6"))
+        return page_of(url, 100, page_size, prefix="M6")
+
+    client, _ = make_client(tmp_path, handler, max_attempts=2)
+    report = client.harvest_day("20260915", (6,), page_size=page_size,
+                                sink=lambda r: None)
+
+    assert report.rows_served == 100, "PNCP handed us 100 rows"
+    assert report.rows_total == 50, "but only 50 distinct tenders"
+    assert report.rows_duplicate == 50
+    assert report.route_mixed is True
+    assert report.mixed_route_modalidades == [6]
+    assert report.complete is False, "row count alone would have said complete"
+    assert report.suspected_outage is True
+    assert "ROUTE_MIXED" in report.summary()
+    assert "ROUTE_MIXED" in [e["event"] for e in client.events]
+
+
+def test_a_single_route_sweep_is_not_flagged_as_mixed(tmp_path):
+    """The flag must not cry wolf on an ordinary healthy harvest."""
+    client, _ = make_client(tmp_path, lambda u, n: page_of(u, 120, 50, "M6"))
+    report = client.harvest_day("20260915", (6,), page_size=50,
+                                sink=lambda r: None)
+    assert report.route_mixed is False
+    assert report.mixed_route_modalidades == []
+    assert report.routes_used == {"consulta/contratacoes/publicacao": 3}
+    assert report.complete is True
+
+
+def test_recovered_retries_are_still_reported(tmp_path):
+    """A page that took four 429s and then succeeded leaves report.failures
+    empty. That is the early warning that the rate limit is biting, and it
+    must not vanish just because the page eventually arrived."""
+    state = {"n": 0}
+
+    def handler(url, n):
+        if "pagina=2" in url and state["n"] < 3:
+            state["n"] += 1
+            return Response(429, "Limite de Requisicoes Excedido")
+        return page_of(url, 100, 50, prefix="M6")
+
+    client, _ = make_client(tmp_path, handler, max_attempts=5)
+    report = client.harvest_day("20260915", (6,), page_size=50,
+                                sink=lambda r: None)
+
+    assert report.failures == [], "nothing died for good"
+    assert report.attempts_by_status() == {429: 3}, "but three attempts failed"
+    assert len(report.attempt_failures) == 3
+    assert "failed_attempts=3:{429: 3}" in report.summary()
+
+
+def test_rows_served_and_distinct_rows_are_reported_separately(tmp_path):
+    """Conflating the two is how a short harvest passes for a full one."""
+    client, _ = make_client(tmp_path, lambda u, n: page_of(u, 137, 50, "M6"))
+    report = client.harvest_day("20260915", (6,), page_size=50,
+                                sink=lambda r: None)
+    assert report.rows_served == 137
+    assert report.rows_total == 137
+    d = report.as_dict()
+    assert d["rows_served"] == 137 and d["rows_total"] == 137
+    assert "distinct=137/137" in report.summary()
+    assert "served=137" in report.summary()
