@@ -698,8 +698,12 @@ class PNCPClient(object):
                 # Measured: the 429 clears in ~30s and carries no Retry-After,
                 # so we have to pick the number ourselves. Hold the shared
                 # gate, not just this thread.
+                #
+                # And do NOT also sleep here: the next acquire() already waits
+                # behind the gate we just pushed forward. Doing both made the
+                # 429 backoff twice the intended delay.
                 self.limiter.penalize(delay)
-            if attempt + 1 < self.max_attempts:
+            elif attempt + 1 < self.max_attempts:
                 self.sleeper(delay)
 
         raise Unavailable(url, failures)

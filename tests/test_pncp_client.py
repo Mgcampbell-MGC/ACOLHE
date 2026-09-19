@@ -205,7 +205,7 @@ def test_a_200_with_unparseable_body_is_not_cached(tmp_path):
 # 2. BACKOFF
 # --------------------------------------------------------------------------
 
-@pytest.mark.parametrize("status", [429, 500, 502, 503, 504])
+@pytest.mark.parametrize("status", [500, 502, 503, 504])
 def test_retryable_statuses_are_retried_then_raise(tmp_path, status):
     delays = []
     client, transport = make_client(
@@ -217,6 +217,20 @@ def test_retryable_statuses_are_retried_then_raise(tmp_path, status):
 
     assert transport.count == 4, "must spend the whole retry budget"
     assert len(delays) == 3, "sleeps between attempts, not after the last"
+
+
+def test_429_is_retried_like_the_others_and_also_holds_the_gate(tmp_path):
+    """Split out from the parametrised case: a 429 additionally penalises the
+    shared limiter, so it sleeps more often than a plain 503 does."""
+    client, transport = make_client(
+        tmp_path, lambda u, n: Response(429, "Limite de Requisicoes Excedido"),
+        max_attempts=4)
+
+    with pytest.raises(Unavailable):
+        client.fetch_json("https://pncp.gov.br/api/consulta/v1/x", FAMILY_A)
+
+    assert transport.count == 4
+    assert client.limiter.penalties == 4
 
 
 @pytest.mark.parametrize("status", [400, 404])
@@ -662,7 +676,8 @@ def test_rate_limiter_spaces_requests(tmp_path):
     """Measured: ~30 requests in a burst earns a 429 for ~30s, shared across
     both families. The floor delay is what keeps a long descent alive."""
     import time as real_time
-    client, _ = make_client(tmp_path, lambda u, n: ok({"v": n}), min_interval=0.05)
+    client, _ = make_client(tmp_path, lambda u, n: ok({"v": n}),
+                            min_interval=0.05, sleeper=real_time.sleep)
     start = real_time.time()
     for i in range(5):
         client.fetch_json(f"https://pncp.gov.br/api/consulta/v1/a?i={i}", FAMILY_A)
