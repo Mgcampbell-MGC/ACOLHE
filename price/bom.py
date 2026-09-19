@@ -152,6 +152,11 @@ def build(cost_table_path, freight_per_kit=0.0, freight_is_estimate=True,
     limit = FRESHNESS_DAYS if freshness_days is None else freshness_days
     rows, gaps = load_cost_table(cost_table_path)
 
+    # Assembly parameters come from config/capital.yaml, the single source of
+    # truth, so a co-packer quote that lands there is used without a code
+    # change. The class-level defaults are only a fallback for a missing file.
+    fulfil = _fulfilment_config()
+
     fresh = []
     for row in rows:
         if is_stale(row, today=today, limit_days=limit):
@@ -169,10 +174,31 @@ def build(cost_table_path, freight_per_kit=0.0, freight_is_estimate=True,
             fresh.append(row)
     rows = fresh
 
-    return BOM(
+    bom = BOM(
         lines=rows,
         gaps=gaps,
         freight_per_kit=freight_per_kit,
         freight_is_estimate=freight_is_estimate,
         freight_basis=freight_basis,
     )
+    if fulfil.get("self_pack_max_kits") is not None:
+        bom.self_pack_max_kits = int(fulfil["self_pack_max_kits"])
+    bom.copacker_cost_per_kit = fulfil.get("copacker_cost_per_kit_brl")  # None = UNQUOTED
+    return bom
+
+
+def _fulfilment_config():
+    """The fulfilment block of config/capital.yaml, or {} if it is absent."""
+    import os
+
+    import yaml
+
+    path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "config", "capital.yaml",
+    )
+    try:
+        with open(path) as fh:
+            return (yaml.safe_load(fh) or {}).get("fulfilment") or {}
+    except FileNotFoundError:
+        return {}

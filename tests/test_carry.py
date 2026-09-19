@@ -126,3 +126,27 @@ def test_total_with_freight_includes_a_quoted_copacker():
     b.copacker_cost_per_kit = 5.0
     assert b.total_with_freight(quantity=1_000) == pytest.approx(5.0)
     assert b.total_with_freight(quantity=100) == pytest.approx(0.0)
+
+
+# -- config is the single source of truth for assembly parameters ----------
+
+def test_bom_assembly_parameters_come_from_capital_yaml():
+    """price/bom.py must not carry its own copy of the fulfilment numbers.
+    A co-packer quote landing in config/capital.yaml has to be picked up
+    with no code change; two sources of truth is how a stale default keeps
+    pricing lots after the real number is known."""
+    import os
+    import yaml
+    from price.bom import build
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    cfg = yaml.safe_load(open(os.path.join(root, "config", "capital.yaml")))
+    fulfil = cfg["fulfilment"]
+
+    bom = build(os.path.join(root, "data", "cost_table.csv"))
+    assert bom.self_pack_max_kits == fulfil["self_pack_max_kits"]
+    assert bom.copacker_cost_per_kit == fulfil["copacker_cost_per_kit_brl"]
+    # and the shipped config has NO quote yet, so a big lot is UNQUOTED
+    assert bom.copacker_cost_per_kit is None
+    cost, basis = bom.assembly_cost(1_000)
+    assert cost is None and "NO co-packer quote" in basis
