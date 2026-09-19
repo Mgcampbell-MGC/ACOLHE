@@ -2,9 +2,8 @@
 
 **What the business looks like when it is done and humming.** Written
 2026-09-19. Every number carries its provenance; every gap is marked
-UNVERIFIED or PENDING rather than smoothed over. Sections marked
-`PENDING <agent>` are being filled from source by a parallel workstream and
-must not be read as settled.
+UNVERIFIED or PENDING rather than smoothed over. The one remaining PENDING
+is PNCP Family B (the item-reading rail), re-checked Monday 2026-09-21.
 
 ---
 
@@ -99,7 +98,7 @@ this business would lose money silently.
 3. Descend into each candidate's item list — **PENDING Family B recovery.**
    Until then the scan is a floor: ~1 in 4 kit tenders describes itself
    generically and is only reachable through `/itens`.
-4. Run the twelve rules. Screen the buyer. Price the basket.
+4. Run the thirteen rules. Screen the buyer. Price the basket.
 5. Read HER columns back from the Sheet, then write the machine's columns.
    Never clear-and-rewrite. Keep a dated backup.
 6. Send the email. **Every day, including empty days** — a missing email must
@@ -113,9 +112,21 @@ when a row says LICITAR or a deadline is near. Bid. Record.
 - Re-harvest the wholesaler catalogues (VTEX / Shopify / WooCommerce public
   APIs). Every cost row carries `verified_at`; **the system must refuse to bid
   on a cost older than the freshness limit rather than quietly using it.**
-- Re-check certidão validity against `config/documentos.yaml` — **PENDING
-  habilitação agent** for the validity periods. The shortest one sets the
-  renewal cadence of the whole company.
+- Run the certidão tracker (`screen/documentos.py` over
+  `config/documentos.yaml`, 16 documents, 5 platforms — `docs/HABILITACAO.md`).
+  The shortest validity in the pack is **30 days: the CRF/FGTS** (Manual
+  CAIXA v19 item 2.7.1), and CAIXA only reissues from the 5th day before
+  expiry, so **the company runs on a 25-day cadence**; the 180-day certidões
+  (CNDT, SEFAZ-SP, PMSP, RFB/PGFN) ride a semester cycle with 30 days of
+  slack. An expired or never-recorded bid document blocks admission;
+  a period the issuer never fixed (cartão CNPJ, JUCESP, TJSP falência,
+  PGE-SP e-CRDA) is green on a fallback **and flagged UNVERIFIED** — the
+  printed *válida até* on the issued document always wins. Lei 14.133
+  art. 63 III demands the pack only from the winner after julgamento and
+  art. 64 II lets her refresh one that lapsed after the proposal date: the
+  real kill is a certidão already dead **on proposal day**, or a
+  state/municipal/falência upload that expired inside SICAF (IN 3/2018
+  art. 18 §2 — those are not auto-refreshed; RFB/PGFN, FGTS and CNDT are).
 - Export the bid log to CSV and copy `acolhe.sqlite` off-box.
 
 ### On every win (≤ 8 h per order, C9)
@@ -225,12 +236,13 @@ penalty and possibly a bidding suspension — worse than not bidding.
 config/
   skus.yaml          24 SKUs: match, anti-patterns, plausible price window,
                      spec dimensions that must agree before two rows share a median
-  rules.yaml         thresholds for the 12 rules — never in code
+  rules.yaml         thresholds for the 13 rules — never in code
   capital.yaml       capital DIAL, float days, self-pack ceiling, co-packer lead
   ufs.yaml           target UFs by priority; transit_days null until measured
-  documentos.yaml    PENDING — validity days per certidão, for the expiry tracker
-  order_to_cash.yaml PENDING — the stages after a win, machine-readable
-  cnaes.yaml         PENDING — CNAEs to register, Simples admissibility
+  documentos.yaml    16 documents + 5 platforms: validity days, whether the
+                     period was READ at the issuer, cost, ME/EPP relief
+  order_to_cash.yaml the 12 stages after a win, machine-readable
+  cnaes.yaml         CNAEs to register, Simples admissibility
 harvest/
   pncp_client.py     both API families, backoff, disk cache, resumable cursor,
                      ROUTE_MIXED detection, distinct ≠ served
@@ -244,7 +256,9 @@ price/
   bom.py             COST vs FLOOR; assembly line; a gap is never R$0
   margin.py          net of Simples; 75% anchor; NO BID when the floor is unknown
 screen/
-  rules.py           the 12 rules, pure functions, (passed, reason, evidence)
+  rules.py           the 13 rules, pure functions, (passed, reason, evidence)
+  documentos.py      certidão tracker: OK / RENOVAR / VENCIDA / FALTA per
+                     document; can_bid(); next_run() = the 25-day cadence
   buyer.py           SICONFI: PASS / REJECT / UNSCREENABLE; zero rows omitted
                      by SICONFI are derived from the published identity
 log/
@@ -255,11 +269,11 @@ report/
 data/
   cost_table.csv     17 lines, provenance on every one
   editais/           7 real editais, verbatim clause classification
-  siconfi_screenability.md, copacking.md (PENDING), freight.md (PENDING)
+  siconfi_screenability.md, copacking.md (24 SP providers), freight.md (453 rows)
 docs/
   LEGAL_FINDINGS.md  six statutory questions, primary sources, confidence labels
-  HABILITACAO.md, ORDER_TO_CASH.md, COMPANY_SETUP.md, RISK_REGISTER.md  PENDING
-tests/               272 tests. One per known measurement error, and growing.
+  HABILITACAO.md, ORDER_TO_CASH.md, COMPANY_SETUP.md, RISK_REGISTER.md
+tests/               353 tests. One per known measurement error, and growing.
 ```
 
 **Ownership rule for the Sheet:** the machine writes HOJE, PIPELINE and SAÚDE;
@@ -299,16 +313,17 @@ SQLite is the truth; the Sheet is a view; a weekly `.xlsx` goes off-box.
 |---|---|---|
 | `kit_enxoval` line | last unpriced BOM line | the real edital text — PNCP Family B |
 | Freight to the actual município CEP, and LTL lanes beyond SP→CE | parcels measured only to capital CEPs; interior bands may differ; only one road carrier publishes a table | re-run the Correios form POST against the editais' own delivery CEPs; read each edital's *local de entrega* clause — one municipal address makes LTL (~R$55–95/kit) the mode, a household list makes it parcels and unbiddable |
-| Assembly per kit | never costed by anyone | PENDING co-packer agent; then one quote |
-| Co-packer lead time | feeds rule 5; can make short-notice tenders undeliverable | same |
-| Whether a co-packer ships on its own carrier contracts | would solve the freight problem entirely | same |
+| Assembly per kit | 24 SP providers surveyed, 20 CNPJs resolved: **none publishes a per-kit price** | one quote — never sent (needs her go-ahead) |
+| Co-packer lead time | feeds rule 5 and rule 13; nothing published | same quote |
+| Whether a co-packer ships on its own carrier contracts | COTLOG (Cotia) and Doma (Guarulhos, Belém-PA branch) publish own-fleet fractional freight + kit assembly; **no price published** | same quote |
 | Transit days per UF | measured for 8 capitals (PAC 6–8 dias úteis); interior and the other 19 UFs not | being written into `config/ufs.yaml` from `cost_freight.csv`; rule 5 stays UNVERIFIABLE where nothing was measured |
 | Capital available | rule 12 cannot verify funding until set | **the founder sets the dial** |
 | Account-tier discount (~45%) | decides whether the whole basket is live | 15 supplier emails, never sent |
 | Body 3-packs "RN AO G" | size-graded or three RN? | the real edital wording |
 | Banheira band | R$18,90 / 23,65 / 29,71 on one word | the real edital wording |
-| Certidão validity periods | the renewal cadence of the company | PENDING habilitação agent |
-| Order-to-cash day count | the handoff's ~45 days is an assumption | PENDING order-to-cash agent |
+| PGE-SP e-CRDA and RFB/PGFN validity | both feed the tracker; PGE site answered 405, RFB norm is JS-only — 30 d / 180 d are fallbacks | read the *válida até* on the first issued certidão and record it |
+| Licitanet fees; BNC/BLL/PCP certificate requirement | which portals cost money to bid on | Licitanet is a JS shell (403) — UNVERIFIED; Compras.gov.br and BLL (plano por êxito) are free to bid on, BNC R$118,80 and PCP R$129 per process are READ |
+| Homologação → convocação, and first call-off under SRP | empenho → cash is measured (34/40–55/69 days) but the wait before the empenho is unbounded in all 7 editais | only the bid log will measure it |
 | Simples opt-in window | **≤60 days from CNPJ** (CGSN 140 art. 6º §5º I); miss it and she is in Lucro Presumido until January | a calendar item, not a research item — it goes on the setup checklist with a date |
 | SP TFE (R$362,95/yr) for a PJ at a home address | whether it applies | one question to the contador |
 | Family B availability | the reading rail; 503 on every attempt all day | **Monday 08:00 BRT scheduled re-check** |

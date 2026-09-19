@@ -1,0 +1,316 @@
+# The habilitação pack, one entry per document, for the expiry tracker.
+# Source and reasoning: docs/HABILITACAO.md (researched 2026-09-19).
+#
+# Fields
+#   validity_days        integer, or null when the issuer fixes no period (then
+#                        fallback_days is the conservative assumption an edital
+#                        may impose; treat as VERIFICAR, never PASS).
+#   validity_verified    true only when I read the norm/page that fixes the period.
+#   validity_on_document true when the issued document prints its own "válida até";
+#                        the tracker should read that date and prefer it.
+#   renewable_from_days  days before expiry when a fresh copy can be issued.
+#   cost_brl             0 = free (stated or automatic online emission); null = UNVERIFIED.
+#   required_for         bid | contract | payment (list). Under Lei 14.133 art. 63
+#                        II-III the certidões are demanded from the winner after
+#                        julgamento, and under art. 92 XVI again at every payment.
+#   me_epp_relief        text; LC 123 art. 43 §1 = 5 dias úteis + 5 to cure fiscal
+#                        and labour regularity after being declared winner.
+#
+# Shortest validity in the pack: 30 days (crf_fgts). The whole system runs on it.
+
+cycle:
+  shortest_validity_days: 30
+  renewal_cadence_days: 25          # CRF renewable from the 5th day before expiry
+  semester_cycle_days: 150          # 180-day certidões, reissued with 30 days of slack
+
+documents:
+
+  cnpj_comprovante:
+    name: Comprovante de Inscrição e Situação Cadastral (cartão CNPJ)
+    law: Lei 14.133/2021 art. 68 I
+    issuer: RFB
+    issuer_url: https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp
+    cost_brl: 0
+    validity_days: null
+    validity_verified: false
+    validity_on_document: false
+    fallback_days: 90                # customary edital demand, UNVERIFIED
+    required_for: [bid, contract, payment]
+    me_epp_relief: none
+    sicaf_auto: true
+    source: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm
+
+  ato_constitutivo:
+    name: Contrato social consolidado + Certidão Simplificada JUCESP
+    law: Lei 14.133/2021 art. 66
+    issuer: JUCESP
+    issuer_url: https://www.jucesponline.sp.gov.br/Pesquisa.aspx?IDProduto=4
+    cost_brl: 0                      # "Emite, gratuitamente" (JUCESP Online FAQ)
+    validity_days: null
+    validity_verified: false
+    validity_on_document: false
+    fallback_days: 90                # customary edital demand for the certidão simplificada, UNVERIFIED
+    required_for: [bid, contract]
+    me_epp_relief: none
+    sicaf_auto: false                # nível II upload
+    source: https://www.jucesponline.sp.gov.br/faq.aspx
+
+  certidao_rfb_pgfn:
+    name: Certidão Negativa de Débitos relativos a Créditos Tributários Federais e à Dívida Ativa da União
+    law: Lei 14.133/2021 art. 68 III e IV
+    issuer: RFB/PGFN
+    issuer_url: https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PJ/Emitir
+    cost_brl: 0                      # "Este serviço é gratuito para o cidadão" (gov.br)
+    validity_days: 180
+    validity_verified: false         # Portaria Conjunta RFB/PGFN 1.751/2014 art. 10 NOT READ (JS-only site; PGFN page restricted)
+    validity_on_document: true       # certificate prints "Válida até" — read it
+    required_for: [bid, contract, payment]
+    me_epp_relief: LC 123 art. 43 §1 (5 + 5 dias úteis)
+    sicaf_auto: true
+    source: https://www.gov.br/pt-br/servicos/emitir-certidao-de-regularidade-fiscal-perante-a-fazenda-nacional
+
+  certidao_sefaz_sp:
+    name: Certidão Negativa de Débitos Tributários Não Inscritos (SEFAZ-SP)
+    law: Lei 14.133/2021 art. 68 III; Portaria CAT-135/2014
+    issuer: SEFAZ-SP
+    issuer_url: https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx
+    cost_brl: 0                      # not stated on page; automatic emission (inference)
+    validity_days: 180               # Portaria CAT-135/2014 art. 6: "6 (seis) meses" unless the requesting body fixes another
+    validity_verified: true
+    validity_on_document: true
+    edital_may_override: true
+    required_for: [bid, contract, payment]
+    me_epp_relief: LC 123 art. 43 §1 (5 + 5 dias úteis)
+    sicaf_auto: false                # nível IV upload
+    source: https://legislacao.fazenda.sp.gov.br/Paginas/pcat1352014.aspx
+
+  certidao_pge_sp:
+    name: Certidão Negativa de Débitos Inscritos em Dívida Ativa (e-CRDA, PGE-SP)
+    law: Lei 14.133/2021 art. 68 III
+    issuer: PGE-SP
+    issuer_url: https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf
+    cost_brl: 0                      # "gerado de forma automática e gratuita" (PGE portal)
+    validity_days: null
+    validity_verified: false         # PGE site returned HTTP 405 to every fetch
+    validity_on_document: true       # UNVERIFIED but expected; read the issued e-CRDA
+    fallback_days: 30
+    required_for: [bid, contract, payment]
+    me_epp_relief: LC 123 art. 43 §1 (5 + 5 dias úteis)
+    sicaf_auto: false                # nível IV upload
+    source: https://www.portalcms.pge.sp.gov.br/pge/servicos-ao-cidadao/servicos-fiscais/certidoes-regularidade
+
+  certidao_pmsp_mobiliarios:
+    name: Certidão Conjunta de Débitos de Tributos Mobiliários (Prefeitura de São Paulo)
+    law: Lei 14.133/2021 art. 68 II e III; Portaria SF 182/2021
+    issuer: SF-PMSP
+    issuer_url: https://prefeitura.sp.gov.br/web/fazenda/w/servicos/certidoes/2394
+    cost_brl: 0                      # not stated on page; online emission (inference)
+    validity_days: 180               # Portaria SF 182/2021 via SF page 28638
+    validity_verified: true
+    validity_on_document: true
+    lead_time_days: 10               # "emissão em até 10 dias" when there are pendências
+    required_for: [bid, contract, payment]
+    me_epp_relief: LC 123 art. 43 §1 (5 + 5 dias úteis)
+    sicaf_auto: false                # nível IV upload
+    source: https://prefeitura.sp.gov.br/web/fazenda/w/servicos/certidoes/28638
+
+  crf_fgts:
+    name: Certificado de Regularidade do FGTS (CRF)
+    law: Lei 14.133/2021 art. 68 IV; Lei 8.036/1990 art. 27 "a"
+    issuer: CAIXA
+    issuer_url: https://consulta-crf.caixa.gov.br/consultacrf/pages/consultaEmpregador.jsf
+    cost_brl: 0                      # public online consultation (inference)
+    validity_days: 30                # Manual de Regularidade do Empregador v19 item 2.7.1
+    validity_verified: true
+    validity_on_document: true
+    renewable_from_days: 5           # item 2.7.2
+    required_for: [bid, contract, payment]
+    me_epp_relief: LC 123 art. 43 §1 (5 + 5 dias úteis)
+    sicaf_auto: true
+    source: https://www.caixa.gov.br/Downloads/fgts-manuais-e-cartilhas-operacionais/Manual_de_Regularidade_do_Empregador_v19.pdf
+
+  cndt:
+    name: Certidão Negativa de Débitos Trabalhistas (CNDT)
+    law: Lei 14.133/2021 art. 68 V; CLT art. 642-A (Lei 12.440/2011)
+    issuer: TST
+    issuer_url: https://cndt-certidao.tst.jus.br/inicio.faces
+    cost_brl: 0                      # CLT 642-A caput: "expedida gratuita e eletronicamente"
+    validity_days: 180               # CLT 642-A §4
+    validity_verified: true
+    validity_on_document: true
+    required_for: [bid, contract, payment]
+    me_epp_relief: LC 123 art. 43 §1 (5 + 5 dias úteis; art. 42 covers "fiscal e trabalhista")
+    sicaf_auto: true
+    source: https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12440.htm
+
+  certidao_falencia_tjsp:
+    name: Certidão de distribuição de Falências, Concordatas e Recuperações (e-SAJ) + complemento eproc "Comarcas e Turmas Recursais (Primeiro Grau) – Cível"
+    law: Lei 14.133/2021 art. 69 II
+    issuer: TJSP
+    issuer_url: https://esaj.tjsp.jus.br/sco/abrirCadastro.do
+    issuer_url_complement: https://certidoes.tjsp.jus.br/   # gov.br account; mandatory since 2025-11-05
+    cost_brl: 0                      # Provimento CSM 2.356/2016; Comunicado SPI 47/2016
+    validity_days: null              # TJSP fixes none
+    validity_verified: false
+    validity_on_document: false
+    fallback_days: 90                # customary edital demand; SICAF assumes 365 when none printed
+    lead_time_days: 5
+    required_for: [bid, contract]
+    me_epp_relief: none              # not fiscal/labour, LC 123 art. 43 does not cover it
+    sicaf_auto: false                # nível VI upload
+    source: https://www.tjsp.jus.br/Certidoes
+
+  balanco_patrimonial:
+    name: Balanço patrimonial e DRE do último exercício (or balanço de abertura for a company created this year)
+    law: Lei 14.133/2021 art. 69 I e §6; art. 65 §1
+    issuer: contador da empresa (ECD/SPED or JUCESP registration)
+    issuer_url: null
+    cost_brl: null                   # accountant fees UNVERIFIED
+    validity_days: 365               # annual; SICAF ties the update to the ECD deadline (FAQ Q15)
+    validity_verified: true
+    validity_on_document: false
+    required_for: [bid, contract]
+    me_epp_relief: >
+      Decreto 8.538/2015 art. 3 waives it for bens de pronta entrega (federal scope;
+      municipal editais usually copy it). SICAF FAQ Q18: an SRP ata is NOT pronta
+      entrega — expect it to be demanded in SRP pregões. New company: balanço de
+      abertura (art. 65 §1).
+    sicaf_auto: false                # nível VI upload
+    source: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/decreto/d8538.htm
+
+  atestado_capacidade_tecnica:
+    name: Atestado de capacidade técnica (qualitativo)
+    law: Lei 14.133/2021 art. 67 II, §§1-3
+    issuer: any prior buyer, public or private
+    issuer_url: null
+    cost_brl: 0
+    validity_days: null              # the attested fact does not expire; art. 67 §2 forbids time limits
+    validity_verified: true
+    validity_on_document: false
+    required_for: [bid]
+    me_epp_relief: none
+    sicaf_auto: false                # nível V upload (optional)
+    first_one: >
+      A private sale + signed declaration from the buyer; or a first public sale in an
+      edital without qualificação técnica, a dispensa (art. 75 II, R$ 65.492,11 in 2026)
+      or a tender below R$ 16.373,03 / entrega imediata where art. 70 III lets the
+      body waive habilitação, then request the atestado (art. 88 §3).
+    source: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm
+
+  declaracoes_edital:
+    name: Declarações do certame (atende requisitos; art. 7 XXXIII CF; reserva PcD; custos trabalhistas; não impedimento; ME/EPP; condições)
+    law: Lei 14.133/2021 art. 63 I, IV, §1; art. 68 VI; art. 14; art. 67 VI; Decreto 8.538 art. 13 §2
+    issuer: self
+    issuer_url: null
+    cost_brl: 0
+    validity_days: 0                 # issued per bid, on the platform
+    validity_verified: true
+    validity_on_document: false
+    required_for: [bid]
+    me_epp_relief: the ME/EPP declaration is what triggers LC 123 arts. 42-49
+    sicaf_auto: false
+    source: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm
+
+  in1234_anexo_iv:
+    name: Declaração IN RFB 1.234/2012 Anexo IV (optante do Simples Nacional) — 2 vias, na assinatura
+    law: IN RFB 1.234/2012 art. 6 e §5 (see docs/LEGAL_FINDINGS.md §1)
+    issuer: self
+    issuer_url: null
+    cost_brl: 0
+    validity_days: 0                 # per contract and per prorrogação
+    validity_verified: true
+    validity_on_document: false
+    required_for: [contract, payment]
+    me_epp_relief: it IS the relief (no IRRF withholding for Simples optants)
+    sicaf_auto: false
+    source: https://repositorio.cgu.gov.br/bitstream/1/41431/20/instrucao_normativa_1234_rfb_2012.pdf
+
+  ecnpj_a1:
+    name: Certificado digital e-CNPJ A1 (ICP-Brasil)
+    law: none (platform requirement; SICAF FAQ-sistema Q1/Q4; gov.br service page accepts conta gov.br prata/ouro instead)
+    issuer: AC ICP-Brasil (Certisign, Soluti, Valid; Serasa exited the market — NOT READ)
+    issuer_url: https://www.certisign.com.br/
+    cost_brl: 274.90                 # Certisign e-CNPJ A1, 12 months, à vista (2026-09-19)
+    cost_brl_range: [203.00, 274.90] # Valid combo R$ 203,00; Certisign PME R$ 219,90; Soluti PJ A1 R$ 235,00
+    validity_days: 365
+    validity_verified: true
+    validity_on_document: true
+    required_for: [bid, contract]
+    me_epp_relief: none
+    sicaf_auto: false
+    source: https://www.soluti.com.br/certificado-digital/e-cnpj
+
+  inscricoes_ie_ccm:
+    name: Inscrição estadual (Cadesp) e inscrição municipal (CCM)
+    law: Lei 14.133/2021 art. 68 II
+    issuer: SEFAZ-SP / SF-PMSP
+    issuer_url: null
+    cost_brl: 0
+    validity_days: null              # no expiry
+    validity_verified: true
+    validity_on_document: false
+    required_for: [bid]
+    me_epp_relief: none
+    sicaf_auto: false
+    source: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm
+
+  sicaf_crc:
+    name: SICAF — registro cadastral (nível I credenciamento) / Certificado de Registro Cadastral
+    law: Lei 14.133/2021 art. 70 II, art. 87; IN SEGES/MP 3/2018 arts. 9, 18
+    issuer: MGI / Compras.gov.br
+    issuer_url: https://www3.comprasnet.gov.br/sicaf-web/index.jsf
+    cost_brl: 0                      # "O SICAF é e continuará sendo gratuito"
+    validity_days: 365               # IN 3/2018 art. 18; auto-maintained while CNPJ valid at RFB (§1)
+    validity_verified: true
+    validity_on_document: true
+    auto_renew: true
+    required_for: [bid]
+    me_epp_relief: none
+    sicaf_auto: true
+    note: art. 18 §2 — uploaded certidões keep their own validity; níveis IV and VI expire on upload date
+    source: https://www.gov.br/compras/pt-br/acesso-a-informacao/legislacao/instrucoes-normativas/instrucao-normativa-no-3-de-26-de-abril-de-2018
+
+platforms:
+  compras_gov_br:
+    register_url: https://www.gov.br/pt-br/servicos/cadastrar-se-como-fornecedor-da-administracao-publica
+    cost_register_brl: 0
+    cost_bid_brl: 0
+    cost_win: none
+    certificate_required: gov.br prata/ouro OR e-CNPJ/e-CPF (gov.br service page); FAQ says certificate mandatory
+    training_url: https://treinamento.comprasnet.gov.br/seguro/loginPortal.asp
+    verified: true
+  bll:
+    register_url: https://bllcompras.com/Home/Login
+    cost_register_brl: 0
+    cost_bid_brl: 0                  # plano por êxito
+    cost_win: 1.5% of lote adjudicado, cap R$ 600 per lote (cap applies when lote > R$ 40.000); alt. plano trimestral R$ 630
+    certificate_required: UNVERIFIED
+    training_url: https://bll.org.br/bll-academy/
+    verified: true
+    source: https://bll.org.br/wp-content/uploads/2026/07/Regulamento-BLL-2026.pdf
+  bnc:
+    register_url: https://bnc.org.br/cadastro/
+    cost_register_brl: 0
+    cost_bid_brl: 118.80             # per process, post-paid, charged once a proposal is registered
+    cost_win: none
+    certificate_required: UNVERIFIED
+    training_url: http://agendadorbnc.genesisdesenvolvimento.com.br/agendadorFornecedor.php
+    verified: true
+    source: https://bnc.org.br/wp-content/uploads/2026/07/Regulamento-BNC-2026.pdf
+  portal_compras_publicas:
+    register_url: https://www.portaldecompraspublicas.com.br/cadastre-se
+    cost_register_brl: 0
+    cost_bid_brl: 129.00             # single credit (30 days); or R$ 165/month; or R$ 1.650/year
+    cost_win: none
+    certificate_required: UNVERIFIED
+    training_url: null               # "treinamento ao vivo com ambiente exclusivo de testes" inside paid plans
+    verified: true
+    source: https://www.portaldecompraspublicas.com.br/adesao/fornecedor
+  licitanet:
+    register_url: https://licitanet.com.br/fornecedor
+    cost_register_brl: null
+    cost_bid_brl: null               # paid plans (única/mensal/trimestral/semestral/anual) — NOT READ, JS-only site
+    cost_win: null
+    certificate_required: UNVERIFIED
+    training_url: null
+    verified: false
