@@ -196,3 +196,34 @@ def test_the_recall_ceiling_is_always_stated(tmp_path):
     ws = load_workbook(path)[SHEET_HEALTH]
     text = " ".join(str(c.value) for row in ws.iter_rows() for c in row)
     assert "1 em cada 4" in text
+
+
+# -- the descent's status reaches her, verbatim in meaning ------------------
+
+@pytest.mark.parametrize(
+    "status,expect",
+    [
+        ("UNAVAILABLE", "indisponivel"),
+        ("EMPTY", "VAZIA"),
+        ("BAD_KEY", "invalida"),
+    ],
+)
+def test_items_status_makes_the_verificar_reason_precise(tmp_path, status, expect):
+    """An outage and an empty list are opposite facts. She must see which,
+    or she will skip a real tender thinking it had nothing in it."""
+    path = str(tmp_path / "ACOLHE.xlsx")
+    build(path, [_cand(items_status=status)], health=_Health(), today=TODAY)
+    ws = load_workbook(path)[SHEET_TODAY]
+    headers = [c.value for c in ws[1]]
+    assert ws.cell(row=2, column=headers.index("DECISÃO") + 1).value == "VERIFICAR"
+    why = ws.cell(row=2, column=headers.index("Por quê") + 1).value
+    assert expect in why
+
+
+def test_unavailable_never_reads_as_an_empty_kit(tmp_path):
+    path = str(tmp_path / "ACOLHE.xlsx")
+    build(path, [_cand(items_status="UNAVAILABLE")], health=_Health(), today=TODAY)
+    ws = load_workbook(path)[SHEET_TODAY]
+    headers = [c.value for c in ws[1]]
+    why = ws.cell(row=2, column=headers.index("Por quê") + 1).value
+    assert "Nao e um kit vazio" in why

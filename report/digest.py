@@ -141,6 +141,18 @@ def _decision(candidate):
     if candidate.get("price_blocked"):
         return "VERIFICAR", candidate["price_blocked"]
 
+    # The descent (harvest/descend.py) says WHY there is nothing to price.
+    # An outage and an empty list are opposite facts and she must see which.
+    status = candidate.get("items_status")
+    if status == "UNAVAILABLE":
+        return "VERIFICAR", ("PNCP Familia B indisponivel - a lista de itens nao "
+                             "pode ser lida. Nao e um kit vazio; tente de novo.")
+    if status == "EMPTY":
+        return "VERIFICAR", ("o PNCP devolveu uma lista de itens VAZIA para esta "
+                             "licitacao - confira no edital")
+    if status == "BAD_KEY":
+        return "VERIFICAR", "chave PNCP invalida - nao foi possivel buscar os itens"
+
     return "VERIFICAR", "sem dados de itens - o PNCP nao entregou a lista"
 
 
