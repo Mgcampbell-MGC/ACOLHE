@@ -13,9 +13,12 @@ calculator returned the same price at 3 kg and at 16 kg. Road LTL cubes even
 harder (300 kg/m3 -> 28,8 kg per kit).
 
 So which mode an edital allows is the most important thing the edital parser
-must read. Until it can, this module returns the PARCEL figure as the
-conservative default -- the number that, if wrong, is wrong in the direction
-that costs a tender rather than the direction that loses money on one.
+reads: parse/entrega.py classifies the local de entrega (ONE_ADDRESS /
+CALLOFF / HOUSEHOLD / UNKNOWN) and its .freight_mode is the `mode` to pass
+here. Only a single-shot lot to one named seat is 'ltl'; everything else --
+parcelado, addresses per ordem de fornecimento, homes, silence -- is priced
+as PARCEL, the number that, if wrong, is wrong in the direction that costs a
+tender rather than the direction that loses money on one.
 
 Everything here is flagged is_estimate=True even though the parcel prices are
 measurements, because they were measured to the CAPITAL CEP and the buyer is

@@ -250,6 +250,8 @@ harvest/
 parse/
   normalise.py       THE FIVE FILTERS. Nothing bypasses it.
   spec.py            SKU classification with spec control (Filter 4)
+  entrega.py         local de entrega: ONE_ADDRESS / CALLOFF / HOUSEHOLD /
+                     UNKNOWN -> the freight mode; read on 9/9 real texts
 price/
   cost.py            a cost row REQUIRES supplier CNPJ, UF, URL, date;
                      non-SP loaded +6 pts (LC 123 art. 13 §1 XIII h)
@@ -273,7 +275,7 @@ data/
 docs/
   LEGAL_FINDINGS.md  six statutory questions, primary sources, confidence labels
   HABILITACAO.md, ORDER_TO_CASH.md, COMPANY_SETUP.md, RISK_REGISTER.md
-tests/               353 tests. One per known measurement error, and growing.
+tests/               370 tests. One per known measurement error, and growing.
 ```
 
 **Ownership rule for the Sheet:** the machine writes HOJE, PIPELINE and SAÚDE;
@@ -312,7 +314,7 @@ SQLite is the truth; the Sheet is a view; a weekly `.xlsx` goes off-box.
 | Gap | Why it matters | What settles it |
 |---|---|---|
 | `kit_enxoval` line | last unpriced BOM line | the real edital text — PNCP Family B |
-| Freight to the actual município CEP, and LTL lanes beyond SP→CE | parcels measured only to capital CEPs; interior bands may differ; only one road carrier publishes a table | re-run the Correios form POST against the editais' own delivery CEPs; read each edital's *local de entrega* clause — one municipal address makes LTL (~R$55–95/kit) the mode, a household list makes it parcels and unbiddable |
+| Freight to the actual município CEP, and LTL lanes beyond SP→CE | parcels measured only to capital CEPs; interior bands may differ; only one road carrier publishes a table | re-run the Correios form POST against the editais' own delivery CEPs. The *local de entrega* clause is now READ (`parse/entrega.py`, 9 of 9 real texts match the human reading): 4 name one seat, 4 leave the address to each ordem de fornecimento, 8 of 9 are *parcelado* — so only Belterra prices as LTL; every other bid must survive parcel freight |
 | Assembly per kit | 24 SP providers surveyed, 20 CNPJs resolved: **none publishes a per-kit price** | one quote — never sent (needs her go-ahead) |
 | Co-packer lead time | feeds rule 5 and rule 13; nothing published | same quote |
 | Whether a co-packer ships on its own carrier contracts | COTLOG (Cotia) and Doma (Guarulhos, Belém-PA branch) publish own-fleet fractional freight + kit assembly; **no price published** | same quote |
