@@ -138,8 +138,8 @@ API response and must be re-confirmed for the actual delivery CEP before being b
 
 **Register with Brascol, buy interim volume from JN Fraldas.**
 
-Brascol is the only supplier of the three offering a published path to deferred payment
-(boleto parcelado), it accepts MEI with **no minimum time in business**, it sits in Brás, and its
+Brascol is the only supplier **of the three studied here** offering a published path to deferred
+payment (boleto parcelado), it accepts MEI with **no minimum time in business**, it sits in Brás, and its
 perfumaria catalogue carries the precise BOM SKUs. Its R$500 atacado minimum is trivially met by
 a layette-kit run. The single unknown — which CNAEs qualify for boleto parcelado — is the one
 question worth resolving first, because it decides whether terms arrive in month 2 or never.
@@ -150,3 +150,23 @@ Its lack of published terms is the only mark against it.
 
 Tenda is the fallback: cheapest verified sabonete líquido and zero onboarding friction, but it
 will never extend terms, so it cannot be the backbone supplier.
+
+---
+
+## Addendum, 2026-09-19 — a second published route to terms
+
+The supplier sweep in `data/suppliers_shortlist.md` found one more, outside the three
+studied above, and it narrows the "only" in the recommendation:
+
+**MaxQualy** — `53.748.042/0001-71`, SP/Valinhos, CNAE 4646001 (atacadista de cosméticos e
+produtos de perfumaria), dedicated `lojista.maxqualy.com.br` storefront. It publishes
+**"Boleto 7 dias com 2% de desconto"** against a **R$ 300** minimum, openly, and — unlike
+Brascol's boleto parcelado — states no CNAE condition. It covers `shampoo_infantil`,
+`sabonete_liquido` and `oleo_infantil`; it is a cosmetics distributor and does **not**
+carry fraldas. Individual baby-line prices were not read, so nothing here is a price
+claim.
+
+This matters for risk #10 ("every priced supplier is prepay") more than for price: two
+independent published routes to terms is the difference between a float of ~34 days and
+one of ~6, which is the single biggest lever on how many tenders the capital can carry.
+Neither route has been tested and nobody has been contacted.

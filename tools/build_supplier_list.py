@@ -57,7 +57,15 @@ s["A2"].font = BLACK
 s["A3"] = ("Ordem sugerida: os dois primeiros valem mais que todos os outros juntos. "
            "Um resolve o preço do kit; o outro resolve tudo acima de 240 kits.")
 s["A3"].font = SMALL
-header(s, 5, ["#", "Contactar", "Porquê este", "O que isto destrava", "Quanto custa perguntar", "Contactado em", "Resposta"],
+s["A4"] = ("ACHADO DE 19/09, depois de varrer 17 novos atacadistas: o Emilio NAO e' caro. "
+           "O unico atacadista comparavel com preco publico (Paulimar, no Pari, com as MESMAS "
+           "referencias Minasrey) esta MAIS CARO em todas as linhas comparaveis. Trocar de fornecedor "
+           "e' um custo de seguranca, nao uma economia — o que ainda pode baratear o kit e' a tabela "
+           "de revenda do proprio Emilio, que ninguem nunca viu.")
+s["A4"].font = Font(name=FN, size=10, bold=True, color="C00000")
+s.merge_cells("A4:G4"); s.row_dimensions[4].height = 30
+s.row_dimensions[3].height = 14
+header(s, 6, ["#", "Contactar", "Porquê este", "O que isto destrava", "Quanto custa perguntar", "Contactado em", "Resposta"],
        [4, 30, 52, 52, 18, 14, 34])
 steps = [
     ("1", "Emilio (Confecções Emilio)",
@@ -93,14 +101,14 @@ steps = [
      "Pouco. Deixe por último.",
      "R$ 0"),
 ]
-r = 6
+r = 7
 for st in steps:
     put(s, r, list(st) + [None, None], fills={6: YELLOW, 7: YELLOW}, fonts={6: BLUE, 7: BLUE})
     s.row_dimensions[r].height = 56
     r += 1
 s.cell(row=r + 1, column=2, value="Regra que você me deu: eu não contacto ninguém sem a sua palavra. Diga 'pode mandar' e eu envio os textos das duas últimas abas para você aprovar antes de sair.").font = SMALL
 s.merge_cells(start_row=r + 1, start_column=2, end_row=r + 1, end_column=5)
-s.freeze_panes = "A6"
+s.freeze_panes = "A7"
 
 # ================================================================= GOODS
 g = wb.create_sheet("MERCADORIAS")
@@ -146,6 +154,66 @@ goods = [
      "https://www.martinsatacado.com.br",
      "FORA DE SP: pela LC 123 art. 13 §1 XIII (h) você paga a diferença de ICMS, ~6 pontos. Só vale se for >6% mais barato."),
 ]
+
+# Second sources found 2026-09-19 (data/suppliers_shortlist.csv). Lower priority
+# than the incumbents because almost none publishes a readable price.
+goods += [
+    ("A", "Paulimar Atacadista", "PAULIMAR CONFECCOES LTDA", "60.656.782/0001-43", "SP / São Paulo (Pari)",
+     "body, pagão, cueiro, pano de boca, toalha banho, meias; e uma SACOLA de kit a R$49,90",
+     "Sim — sem login", "não publicado", "não publicado",
+     "https://www.paulimar.com.br",
+     "A melhor segunda fonte têxtil encontrada, e a prova de que o Emilio é barato: mesmas refs Minasrey, preços MAIS ALTOS (pano de boca 2un R$13,75 vs R$5,55 do Emilio). Não tem banheira nem kit higiene."),
+    ("A", "MaxQualy (lojista)", "MAXQUALY ... LTDA", "53.748.042/0001-71", "SP / Valinhos",
+     "shampoo, sabonete líquido, óleo infantil (cosmético/perfumaria; NÃO fralda)",
+     "Sim — subdomínio lojista", "R$ 300,00 — publicado", "BOLETO 7 DIAS com 2% de desconto — publicado",
+     "https://lojista.maxqualy.com.br",
+     "O achado mais importante da varredura, e não é preço: é o SEGUNDO caminho publicado para pagar a prazo em todo o projeto, depois do Brascol — e sem restrição de CNAE. Preços das linhas de bebê não foram lidos um a um."),
+    ("B", "Yora Atacado", "YORA ... ", "00.213.833/0007-26", "SP / São Paulo",
+     "body, pagão, cueiro, pano de boca", "Não — login", "R$450 online", "não publicado",
+     "https://www.yoraatacado.com.br",
+     "Preços atrás de login. Um cadastro resolve — é a próxima a abrir depois do Brascol."),
+    ("B", "ABC Fraldas", "GALPAO DAS FRALDAS LTDA", "41.666.720/0001-78", "SP / Santo André",
+     "fralda descartável RN, toalhas umedecidas", "Parcial", "não publicado", "não publicado",
+     "https://abcfraldas.com.br",
+     "ATENÇÃO: o site assina 'Abc Fraldas Ltda' mas a razão social na Receita é GALPAO DAS FRALDAS LTDA. Use sempre a razão social em documento de habilitação."),
+    ("B", "7Y Distribuidora", "7Y DISTRIBUIDORA ...", "07.018.219/0001-67", "SP / São Paulo",
+     "fralda descartável RN, toalhas umedecidas", "Não", "não publicado", "não publicado",
+     "https://www.7ydistribuidora.com.br",
+     "Nenhum preço publicado em lugar nenhum do site. Segunda fonte de higiene, só por cotação."),
+    ("B", "Brindes SP", "BRINDES SP ...", "46.033.832/0001-05", "SP / São Paulo",
+     "mochila/bolsa PERSONALIZADA (sublimação, silk, bordado)", "Não — só cotação", "50 unidades", "não publicado",
+     "https://www.brindessp.com.br",
+     "Quando o edital pedir o brasão do município na bolsa, este é o caminho — e o mínimo de 50 peças cabe nos lotes pequenos. Sem preço publicado."),
+    ("C", "Mafessoni Baby & Kids", "MAFESSONI ...", "96.222.781/0001-38", "SP / Mairiporã",
+     "body, pagão", "Não — login", "não publicado", "não publicado",
+     "https://www.mafessoni.com.br", "Login. Não avaliado."),
+    ("C", "Markha Baby", "MARKHA ...", "03.383.226/0001-07", "SP / São Paulo",
+     "body, cobertor", "UNVERIFIED", "UNVERIFIED", "—",
+     "—", "Pouco lido. Fica como lead."),
+    ("C", "Paravati Atacado", "PARAVATI ...", "40.826.972/0001-54", "SP / São Paulo",
+     "não confirmado que tenha enxoval", "Não — login", "não publicado", "—",
+     "—", "Categoria de enxoval não confirmada. Lead fraco."),
+    ("C", "ISSAM", "ISSAM ...", "00.327.385/0003-68", "SP / São Paulo",
+     "saboneteira", "Não — login", "não publicado", "—",
+     "—", "Só uma linha, atrás de login."),
+    ("C", "Plasútil", "PLASUTIL ...", "56.450.877/0001-39", "SP",
+     "banheira, saboneteira", "Não — só cotação", "R$ 2.000 em mercadoria", "—",
+     "https://www.plasutil.com.br",
+     "CUIDADO: é o único CNPJ desta lista que a própria empresa não publica no site — veio de diretório e foi confirmado só por razão social. Confirme numa nota fiscal antes de confiar. Mínimo de R$2.000."),
+    ("D", "Era Uma Vez", "ERA UMA VEZ ... (CNAE VAREJISTA)", "38.479.807/0001-21", "SP / São Paulo",
+     "body, pagão, cobertor — a preço de VAREJO", "Sim", "não publicado", "—",
+     "https://www.lojaeraumavez.com.br",
+     "NÃO É ATACADO: CNAE 4781400, varejo. Body R$14,90 contra R$7,56 do Emilio; cobertor R$129,90 contra R$12,15. Serve de teto de preço e de referência de especificação, não de fornecedor."),
+    ("D", "Dugu Atacadista", "VOIGTEX TOALHAS E VARIEDADES LTDA", "44.073.063/0001-43", "SC / Joinville",
+     "cueiro, pano de boca, toalha banho — e um KIT ENXOVAL 10 PEÇAS pronto", "Sim", "não publicado", "—",
+     "https://www.duguatacadista.com.br",
+     "FORA DE SP (~6 pontos de ICMS contra). Mas é o único lugar encontrado que vende um kit enxoval já montado — vale olhar só pela especificação."),
+    ("D", "Luna Baby / Fazendo Arte / Luminati", "diversos", "ver data/suppliers_shortlist.csv", "SP, PR, ES",
+     "bolsa maternidade de consumidor final", "Sim (Luna, Fazendo Arte)", "—", "—",
+     "—",
+     "FORA DE ORÇAMENTO: o mercado de bolsa maternidade de consumidor começa em R$196,90 e vai a R$745. A mochila do Emilio custa R$52,27. Este não é o mercado certo para essa linha."),
+]
+
 r = 5
 for row in goods:
     put(g, r, list(row) + [None, None, None, None],
@@ -159,28 +227,28 @@ g.freeze_panes = "B5"
 # ============================================================== COVERAGE
 c = wb.create_sheet("CONCENTRACAO")
 c["A1"] = "Quantos fornecedores cada linha do kit tem hoje"; c["A1"].font = H1
-c["A2"] = ("Esta é a aba que explica por que o Emilio é o e-mail número 1. "
-           "Quinze das dezassete linhas têm UM fornecedor. Se ele disser não, o kit não existe.")
+c["A2"] = ("Depois da varredura de 19/09: seis linhas ganharam uma segunda fonte com preço legível. "
+           "Onze continuam com um só preço, e o Emilio sozinho ainda carrega a maioria delas.")
 c["A2"].font = BLACK
 header(c, 4, ["Linha do kit", "Fornecedores conhecidos", "Quantos", "Risco"], [30, 60, 10, 40])
 cov = [
     ("banheira_lisa", "Yanai (R$17,89) · Brascol (R$18,05) · Emilio (R$18,90) · Lar & Cia · Martins/MG", 5, "OK — cinco fontes, spread de 5,6%"),
-    ("mochila", "Emilio", 1, "ÚNICA FONTE"),
-    ("cobertor_infantil", "Emilio", 1, "ÚNICA FONTE"),
-    ("cueiro", "Emilio", 1, "ÚNICA FONTE"),
-    ("pagao", "Emilio", 1, "ÚNICA FONTE"),
-    ("body_manga_longa", "Emilio", 1, "ÚNICA FONTE"),
-    ("pano_de_boca", "Emilio", 1, "ÚNICA FONTE"),
-    ("par_de_meias", "Emilio", 1, "ÚNICA FONTE"),
-    ("toalha_banho_infantil", "Emilio", 1, "ÚNICA FONTE"),
-    ("kit_higiene_bebe", "Emilio", 1, "ÚNICA FONTE"),
-    ("saboneteira", "Emilio", 1, "ÚNICA FONTE"),
-    ("fralda_descartavel_rn", "JN Fraldas", 1, "ÚNICA FONTE"),
-    ("toalhas_umedecidas", "JN Fraldas", 1, "ÚNICA FONTE"),
-    ("shampoo_infantil", "JN Fraldas", 1, "ÚNICA FONTE"),
-    ("oleo_infantil", "JN Fraldas", 1, "ÚNICA FONTE"),
-    ("sabonete_liquido", "Tenda Atacado", 1, "ÚNICA FONTE"),
-    ("kit_enxoval (a bolsa)", "nenhum", 0, "SEM PREÇO E SEM FORNECEDOR — trava o gate do Step 0"),
+    ("body_manga_longa", "Emilio (R$7,56) · Paulimar (mais caro)", 2, "OK — segunda fonte com preço legível"),
+    ("pano_de_boca", "Emilio (R$5,55/3un) · Paulimar (R$13,75/2un)", 2, "OK — mas o Emilio é bem mais barato"),
+    ("toalha_banho_infantil", "Emilio (R$10,26/3un) · Paulimar (R$18,38/3un)", 2, "OK — idem"),
+    ("pagao", "Emilio · Paulimar", 2, "OK"),
+    ("mochila", "Emilio (R$52,27) · Paulimar sacola (R$49,90)", 2, "OK — mas especificações diferentes"),
+        ("cobertor_infantil", "Emilio · (Era Uma Vez só como teto de varejo)", 1, "ÚNICA FONTE no atacado"),
+    ("cueiro", "Emilio · Paulimar, Yora, Dugu (sem preço legível)", 1, "ÚNICA FONTE com preço"),
+                ("par_de_meias", "Emilio · Paulimar (sem preço legível)", 1, "ÚNICA FONTE com preço"),
+        ("kit_higiene_bebe", "Emilio — a varredura NÃO achou substituto", 1, "ÚNICA FONTE — categoria mais frágil"),
+    ("saboneteira", "Emilio · ISSAM, Plasútil (sem preço)", 1, "ÚNICA FONTE com preço"),
+    ("fralda_descartavel_rn", "JN Fraldas · ABC Fraldas, 7Y (sem preço legível)", 1, "ÚNICA FONTE com preço"),
+    ("toalhas_umedecidas", "JN Fraldas · ABC Fraldas, 7Y (sem preço)", 1, "ÚNICA FONTE com preço"),
+    ("shampoo_infantil", "JN Fraldas · MaxQualy (boleto 7 dias!)", 1, "ÚNICA FONTE com preço"),
+    ("oleo_infantil", "JN Fraldas · MaxQualy", 1, "ÚNICA FONTE com preço"),
+    ("sabonete_liquido", "Tenda Atacado · MaxQualy", 1, "ÚNICA FONTE com preço"),
+    ("kit_enxoval (a bolsa)", "Dugu/SC vende um kit 10 peças pronto — sem preço lido", 0, "AINDA SEM PREÇO — trava o gate do Step 0"),
 ]
 r = 5
 for line, who, n, risk in cov:
@@ -189,8 +257,8 @@ for line, who, n, risk in cov:
     c.row_dimensions[r].height = 22
     r += 1
 c.cell(row=r + 1, column=1, value="Emilio sozinho:").font = BOLD
-c.cell(row=r + 1, column=2, value="11 das 16 linhas com preço").font = BOLD
-c.cell(row=r + 2, column=1, value="Fonte: data/cost_table.csv, data/cost_banheira.csv, data/cost_toiletries.csv, docs/RISK_REGISTER.md risco #15.").font = SMALL
+c.cell(row=r + 1, column=2, value="11 das 16 linhas com preço — e a varredura confirmou que ele é o mais barato").font = BOLD
+c.cell(row=r + 2, column=1, value="Fonte: data/cost_table.csv, cost_banheira.csv, cost_toiletries.csv, suppliers_shortlist.csv, RISK_REGISTER #15.").font = SMALL
 c.freeze_panes = "A5"
 
 # ============================================================ CO-PACKERS
