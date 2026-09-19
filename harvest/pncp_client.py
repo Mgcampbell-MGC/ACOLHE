@@ -33,11 +33,15 @@ MEASURED 2026-09-19, by probing the live endpoints (not from documentation):
   * tamanhoPagina is bounded: < 10 gives 400 "must be greater than or equal
     to 10", > 50 gives 400 "Tamanho de pagina invalido". The usable window is
     10..50, so a full day costs ceil(rows/50) calls, not fewer.
-  * BOTH families sit behind ONE shared rate limiter. Roughly 30 requests in a
-    burst earns HTTP 429 "Limite de Requisicoes Excedido" for about 30
-    seconds, and the 429 carries NO Retry-After header. This is why the
-    default concurrency is 2 and there is a floor delay between requests. A
-    fast client here is a blocked client.
+  * BOTH families sit behind ONE rate limiter, and it is TIGHT. A burst of
+    roughly 30 requests earns HTTP 429 "Limite de Requisicoes Excedido" for
+    about 30 seconds, with NO Retry-After header to tell you how long. Even
+    at 1.5s between requests with concurrency 2, a national sweep began
+    collecting 429s around its eighth page. The limit is keyed on source IP,
+    so anything else on the same host spends the same budget. This is why the
+    default concurrency is 2 and why there is a floor delay between requests.
+    A fast client here is a blocked client, and the ~5.500-call daily descent
+    is governed by this limit far more than by bandwidth.
 
 A harvest that returns fewer tenders than the API itself said exist is a
 SUSPECTED OUTAGE, not a quiet market. HarvestReport carries expected-vs-got
@@ -91,7 +95,14 @@ DEFAULT_MAX_ATTEMPTS = 5
 DEFAULT_BACKOFF_BASE = 1.0
 DEFAULT_BACKOFF_CAP = 60.0
 DEFAULT_CONCURRENCY = 2       # Measured 429 ceiling. Do not raise casually.
-DEFAULT_MIN_INTERVAL = 0.35   # Floor between requests, shared across threads.
+# Floor between requests, shared across every worker thread. Measured
+# 2026-09-19: at 1.5s spacing with concurrency 2, a national sweep still
+# collected 429s from about the eighth page onward. The limit is per source
+# IP, so anything else egressing from the same host spends the same budget.
+# 1.0s is a compromise, not a safe number -- the retry path is what actually
+# carries a long descent, and a caller running a full 5,500-call day should
+# raise this rather than lower it.
+DEFAULT_MIN_INTERVAL = 1.0
 
 DEFAULT_CACHE = os.path.expanduser("~/.cache/acolhe/pncp")
 
@@ -381,7 +392,6 @@ class HarvestReport(object):
         self.expected_rows = {}
         self.expected_pages = {}
         self.pages_fetched = 0
-        self.pages_skipped_cached = 0
         self.rows_total = 0         # DISTINCT tenders held, from the cursor
         self.rows_served = 0        # rows PNCP handed us, duplicates included
         self.rows_new = 0           # emitted by THIS run
@@ -870,7 +880,7 @@ class PNCPClient(object):
             cursor.failures.extend(exc.failures)
             cursor.flush()
             self.log("modalidade_unreachable", day=day, modalidade=modalidade,
-                     statuses=[f.status for f in exc.failures])
+                     statuses=[f.kind() for f in exc.failures])
             return
 
         total_rows = payload.get("totalRegistros", 0)

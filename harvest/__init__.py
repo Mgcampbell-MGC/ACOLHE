@@ -23,6 +23,7 @@ from harvest.pncp_client import (
     USER_AGENT,
     jsonl_sink,
     keys_in_jsonl,
+    route_label,
 )
 
 __all__ = [
@@ -42,4 +43,5 @@ __all__ = [
     "USER_AGENT",
     "jsonl_sink",
     "keys_in_jsonl",
+    "route_label",
 ]
