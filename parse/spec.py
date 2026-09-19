@@ -28,7 +28,14 @@ _CONFIG_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config", "skus.yaml"
 )
 
-_CAPACITY_L = re.compile(r"(\d{1,3})(?:[,.](\d))?\s*(?:L\b|LITROS?\b)", re.I)
+# Sellers write capacity as '24 LITROS', '22 Lts', '20L', '17,2 L'. An earlier
+# version matched only 'L' with a word boundary, which silently dropped both
+# 'LITROS' and 'Lts' -- and dropping a stated capacity looks exactly like an
+# unstated one, so the error is invisible.
+_CAPACITY_L = re.compile(r"(\d{1,3})(?:[,.](\d))?\s*(?:LITROS?|LTS?|L)\b", re.I)
+
+# Guards against eating '0-6 MESES', '30 KG' or a product code.
+_CAPACITY_SANE = (5.0, 60.0)
 _VOLUME_ML = re.compile(r"(\d{2,4})\s*ML\b", re.I)
 _SIZE_CM = re.compile(r"(\d{2,3})\s*[X]\s*(\d{2,3})\s*(?:CM)?", re.I)
 
@@ -68,11 +75,14 @@ class Classifier:
     @staticmethod
     def capacity_litres(text):
         """Litres stated by the seller. None when unstated -- never inferred."""
-        match = _CAPACITY_L.search(strip_accents(text or "").upper())
-        if not match:
-            return None
-        whole, frac = match.group(1), match.group(2)
-        return float(f"{whole}.{frac}") if frac else float(whole)
+        flat = strip_accents(text or "").upper()
+        for match in _CAPACITY_L.finditer(flat):
+            whole, frac = match.group(1), match.group(2)
+            litres = float(f"{whole}.{frac}") if frac else float(whole)
+            lo, hi = _CAPACITY_SANE
+            if lo <= litres <= hi:
+                return litres
+        return None
 
     @staticmethod
     def volume_ml(text):

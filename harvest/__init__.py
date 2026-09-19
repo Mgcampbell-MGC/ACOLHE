@@ -22,6 +22,7 @@ from harvest.pncp_client import (
     Unavailable,
     USER_AGENT,
     jsonl_sink,
+    keys_in_jsonl,
 )
 
 __all__ = [
@@ -40,4 +41,5 @@ __all__ = [
     "Unavailable",
     "USER_AGENT",
     "jsonl_sink",
+    "keys_in_jsonl",
 ]

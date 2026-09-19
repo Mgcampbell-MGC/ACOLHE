@@ -271,7 +271,6 @@ class Cursor(object):
         self.seen_keys = set()
         self.expected_rows = {}     # modalidade -> totalRegistros
         self.expected_pages = {}    # modalidade -> totalPaginas
-        self.rows_committed = 0
         self.failures = []
         self.served_by = collections.Counter()
         self.load()
@@ -286,7 +285,6 @@ class Cursor(object):
         self.seen_keys = set(state.get("seen_keys", []))
         self.expected_rows = {int(k): v for k, v in state.get("expected_rows", {}).items()}
         self.expected_pages = {int(k): v for k, v in state.get("expected_pages", {}).items()}
-        self.rows_committed = state.get("rows_committed", 0)
         self.failures = [Failure.from_dict(d) for d in state.get("failures", [])]
         self.served_by = collections.Counter(state.get("served_by", {}))
 
@@ -296,7 +294,7 @@ class Cursor(object):
             "seen_keys": sorted(self.seen_keys),
             "expected_rows": self.expected_rows,
             "expected_pages": self.expected_pages,
-            "rows_committed": self.rows_committed,
+            "rows_committed": self.rows_committed,   # derived; for humans reading the file
             "failures": [f.as_dict() for f in self.failures],
             "served_by": dict(self.served_by),
         }
@@ -308,6 +306,18 @@ class Cursor(object):
                 fh.flush()
                 os.fsync(fh.fileno())
             os.replace(tmp, self.path)
+
+    @property
+    def rows_committed(self):
+        """Derived, never stored.
+
+        A separate counter can drift out of step with seen_keys after an
+        abrupt kill -- the counter is lost with the unflushed page while the
+        keys are recovered from the sink file. Deriving it means the number
+        the report prints is always the number of distinct rows we actually
+        hold.
+        """
+        return len(self.seen_keys)
 
     def is_done(self, modalidade, pagina):
         return f"{modalidade}:{pagina}" in self.done_pages
@@ -659,7 +669,7 @@ class PNCPClient(object):
         return Cursor(os.path.join(self.state_dir, name))
 
     def harvest_day(self, day, modalidades=MODALIDADES, page_size=MAX_PAGE_SIZE,
-                    max_pages=None, sink=None, cursor=None):
+                    max_pages=None, sink=None, cursor=None, reconcile_with=None):
         """Harvest one day nationally. Resumable, cached, and self-auditing.
 
         day is YYYYMMDD. sink is called with each new row and must persist it
@@ -669,6 +679,17 @@ class PNCPClient(object):
 
         max_pages caps pages per modalidade. It exists for smoke tests against
         the live API; a real descent leaves it None.
+
+        reconcile_with is the path of the JSONL the sink writes to. Pass it
+        whenever the harvest can be killed, which is always.
+
+        WHY: the cursor is flushed once per PAGE, but the sink writes once per
+        ROW. Kill the process halfway through a page and those rows are on
+        disk while the cursor has no memory of them -- resume would write them
+        a second time. The file the rows actually landed in is the only
+        trustworthy record of what we hold, so we read the keys back out of it
+        and seed the cursor. The cursor stays an optimisation for skipping
+        whole pages; it is not the source of truth.
         """
         if not (MIN_PAGE_SIZE <= page_size <= MAX_PAGE_SIZE):
             # Measured server behaviour: outside this window is a hard 400.
@@ -676,6 +697,13 @@ class PNCPClient(object):
                 f"tamanhoPagina must be {MIN_PAGE_SIZE}..{MAX_PAGE_SIZE}, got {page_size}")
 
         cursor = cursor or self.cursor_for(day, modalidades, page_size)
+        if reconcile_with:
+            recovered = keys_in_jsonl(reconcile_with)
+            extra = recovered - cursor.seen_keys
+            if extra:
+                self.log("cursor_reconciled", path=reconcile_with,
+                         recovered_rows=len(extra))
+            cursor.seen_keys |= recovered
         report = HarvestReport(day, modalidades)
         start_calls, start_hits = self.network_calls, self.cache_hits
 
@@ -792,11 +820,40 @@ class PNCPClient(object):
             if sink is not None:
                 sink(row)
             new_rows += 1
-        cursor.rows_committed += new_rows
         report.rows_new += new_rows
         report.pages_fetched += 1
         cursor.mark_done(modalidade, pagina)
         cursor.flush()
+
+
+def keys_in_jsonl(path, key_field="numeroControlePNCP"):
+    """Row keys already present in a JSONL sink file.
+
+    Used to rebuild dedupe state after a kill. Tolerates a truncated last
+    line: a process killed mid-write leaves one, and refusing to read the
+    whole file because of it would be worse than skipping that row (which
+    then simply gets refetched from cache and rewritten).
+    """
+    keys = set()
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                key = row.get(key_field)
+                if not key:
+                    key = hashlib.sha1(
+                        json.dumps(row, sort_keys=True, ensure_ascii=False).encode()
+                    ).hexdigest()
+                keys.add(key)
+    except OSError:
+        pass
+    return keys
 
 
 def jsonl_sink(path):

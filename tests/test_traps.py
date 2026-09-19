@@ -382,3 +382,48 @@ def test_trap11_an_unpriced_line_never_becomes_zero():
 #           filter). The endpoint returns ~5 years silently; without the
 #           filter every pool is ~3x too large.
 # --------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------
+# TRAP 4, second form - a stated capacity that the parser fails to READ looks
+# exactly like an unstated one, so the failure is invisible. Found live: 'L'
+# with a word boundary drops both '24 LITROS' and '22 Lts'.
+# --------------------------------------------------------------------------
+
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        ("BANHEIRA INFANTIL - 24 LITROS # BM2123", 24.0),
+        ("BANHEIRA ADOLETA - 20 LITROS # 0362 CAJOVIL", 20.0),
+        ("BANHEIRA PLASTIBABY 22 Lts", 22.0),
+        ("BANHEIRA 22 LT", 22.0),
+        ("BANHEIRA 20L AZUL", 20.0),
+        ("BANHEIRA SENSITIVE 17,2 L", 17.2),
+        # must NOT be read as a capacity
+        ("BANHEIRA BABY 0-6 MESES", None),
+        ("BANHEIRA SUPORTA 30 KG", None),
+        ("BANHEIRA BABY ROSA PLASTIBRASIL", None),
+    ],
+)
+def test_trap4_capacity_is_read_in_every_form_sellers_write_it(text, expected):
+    from parse.spec import classifier
+
+    assert classifier().capacity_litres(text) == expected
+
+
+def test_trap4_cheapest_conforming_is_taken_from_a_sorted_set():
+    """The R$29,71 error: a cheaper conforming tub existed in the same set and
+    was missed by reading an unsorted list. Assert ordering explicitly."""
+    from parse.spec import classifier
+
+    cat = [("BANHEIRA INFANTIL 24 LITROS", 29.71),
+           ("BANHEIRA ADOLETA 20 LITROS", 18.90),
+           ("BANHEIRA TRANSLUCIDA 20 LITROS", 24.08),
+           ("BANHEIRA SENSITIVE 17,2 L", 22.90)]
+    clf = classifier()
+    conforming = [
+        (price, name) for name, price in cat
+        if clf.classify(name)[1]
+    ]
+    assert min(conforming)[0] == 18.90
+    assert 22.90 not in [p for p, _ in conforming]   # 17,2 L never conforms
