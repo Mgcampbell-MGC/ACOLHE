@@ -139,10 +139,27 @@ def load_cost_table(path):
     return rows, gaps
 
 
+# A catalogue price has a shelf life. Measured in September and used to bid
+# in March it is fiction. Wholesalers reprice; a VTEX storefront can add a
+# login wall overnight and silently freeze every row at its last value. The
+# weekly re-harvest keeps rows fresh; this limit is what happens if it stops.
+FRESHNESS_DAYS = 30
+
+
 def staleness_days(row, today=None):
-    """How old a price is. A cost table nobody re-measures quietly rots."""
+    """How old a price is. A cost table nobody re-measures quietly rots.
+
+    Returns None when verified_at cannot be parsed -- and an unparseable date
+    is treated as STALE by is_stale(), never as fresh.
+    """
     try:
         seen = date.fromisoformat(row.verified_at)
     except (ValueError, TypeError):
         return None
     return ((today or date.today()) - seen).days
+
+
+def is_stale(row, today=None, limit_days=FRESHNESS_DAYS):
+    """True when this row may no longer be bid on."""
+    age = staleness_days(row, today)
+    return age is None or age > limit_days

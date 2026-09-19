@@ -141,8 +141,34 @@ class BOM:
 
 
 def build(cost_table_path, freight_per_kit=0.0, freight_is_estimate=True,
-          freight_basis="UNQUOTED"):
+          freight_basis="UNQUOTED", today=None, freshness_days=None):
+    """Assemble the BOM. A STALE row is a gap, exactly like an unpriced one.
+
+    Nothing else in the system re-checks a price's age, so this is the only
+    place a rotten cost table is stopped from producing a confident bid.
+    """
+    from price.cost import FRESHNESS_DAYS, is_stale, staleness_days
+
+    limit = FRESHNESS_DAYS if freshness_days is None else freshness_days
     rows, gaps = load_cost_table(cost_table_path)
+
+    fresh = []
+    for row in rows:
+        if is_stale(row, today=today, limit_days=limit):
+            age = staleness_days(row, today=today)
+            gaps.append({
+                "bom_line": row.bom_line,
+                "sku": row.sku,
+                "spec_risk": "STALE",
+                "reason": (f"price verified {row.verified_at or 'never'} is "
+                           f"{age if age is not None else 'unknown'} days old, "
+                           f"over the {limit}-day limit -- re-harvest before "
+                           f"bidding on it"),
+            })
+        else:
+            fresh.append(row)
+    rows = fresh
+
     return BOM(
         lines=rows,
         gaps=gaps,
