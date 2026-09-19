@@ -1,0 +1,87 @@
+# The 11 admission rules. Each threshold lives here, never in the code.
+#
+# There is no pricing skill that rescues a tender she should not have entered.
+# THE FILTERS ARE THE BUSINESS.
+
+rule_1_lote_unico:
+  enabled: true
+  # Per-item lines clear at 97-100% of estimate; lote unico at 36-63%.
+  # Costs ~15% of the funnel and saves ~100% of the losses.
+  patterns: ['^\s*LOTE\b', '\bLOTE\s+[UÚ]NICO\b', '\bITEM\s+[UÚ]NICO\b']
+  reject_if_single_item_covers_whole_object: true
+
+rule_2_atestado:
+  enabled: true
+  # A QUALITATIVE atestado is satisfied by ONE prior sale of any size, public
+  # or private. Rejecting every atestado clause would discard most of the
+  # market: measured on 5 live editais, 1 quantitative, 2 qualitative, 2 none.
+  clause_headings: ['QUALIFICA[CÇ][AÃ]O\s+T[EÉ]CNICA', 'CAPACIDADE\s+T[EÉ]CNICA']
+  # Only these make it QUANTITATIVE and therefore a rejection.
+  quantitative_markers:
+    - '\d{1,3}\s*%'
+    - '\bno\s+m[ií]nimo\s+\d'
+    - '\bpelo\s+menos\s+\d'
+    - '\bquantidade\s+m[ií]nima\b'
+    - '\b\d{2,}\s*(?:unidades|kits|pe[cç]as)\b'
+    - '\b50\s*%\b'
+
+rule_3_modelo_do_orgao:
+  enabled: true
+  # Custom spec, unsourceable from any catalogue.
+  patterns: ['CONFORME\s+MODELO\s+D[OA]\s+[OÓ]RG[AÃ]O', 'MODELO\s+PADR[AÃ]O\s+D[OA]\s+[OÓ]RG[AÃ]O',
+             'CONFORME\s+AMOSTRA\s+FORNECIDA\s+PEL[OA]']
+
+rule_4_kit_size:
+  enabled: true
+  # Too many sourcing points. The one priced 18-item kit came in at -3,1%.
+  max_items: 18
+  warn_above: 15
+
+rule_5_prazo_entrega:
+  enabled: true
+  # Median notice is 10 working days, but 31,2% are <=5 and one live edital
+  # demanded 3. Feasibility is per-region: see config/ufs.yaml.
+  min_days_absolute: 7
+  patterns: ['PRAZO\s+D[EO]\s+ENTREGA', 'ENTREGA\s+EM\s+AT[EÉ]', 'PRAZO\s+M[AÁ]XIMO\s+PARA\s+ENTREGA']
+
+rule_6_buyer_payment:
+  enabled: true
+  # SICONFI. The risk is DELAY, not DEFAULT - but delay is what kills a
+  # business with 34 days of gap money.
+  max_saldo_over_inscritos: 0.30
+  max_cancelados_ratio: 0.02
+  unscreenable_is_a_pass: false   # never default an unscreenable buyer to PASS
+
+rule_7_me_epp_reserve:
+  enabled: true
+  # LC 123 art. 48 I reserves these lines EXCLUSIVELY to ME/EPP - PER ITEM,
+  # not per tender. One live ARP had 9 of 38 lines under the threshold and all
+  # 38 flagged 'Sem beneficio'. That is an impugnacao ground: free, written,
+  # statutory.
+  threshold_brl: 80000.00
+  flag_only: true                 # this is an opportunity flag, not a rejection
+
+rule_8_spec_control:
+  enabled: true
+  # Filter 4. A 17,2 L vs 24 L bathtub is a 36-point margin difference.
+  require_all_lines_classified: true
+  max_unclassified_ratio: 0.20
+
+rule_9_payment_deadline:
+  enabled: true
+  # THERE IS NO NATIONAL FIGURE. IN SEGES/ME 77/2022 is federal only (art. 1),
+  # reaching a municipio only for transferencias voluntarias (art. 2).
+  # The real deadline is in the buyer's own municipal decree, inside the edital.
+  patterns: ['DECRETO\s+MUNICIPAL\s+N?[º°]?\s*[\d./-]+', 'PRAZO\s+D[EO]\s+PAGAMENTO']
+  max_days_acceptable: 45
+
+rule_10_pagamento_antecipado:
+  enabled: true
+  # art. 145 permits it only where expressly in the edital. Rare - but where
+  # it appears the working-capital problem is zero.
+  patterns: ['PAGAMENTO\s+ANTECIPADO', 'ANTECIPA[CÇ][AÃ]O\s+D[EO]\s+PAGAMENTO']
+  flag_only: true
+
+rule_11_log_the_bid:
+  enabled: true
+  always: true
