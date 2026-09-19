@@ -1,0 +1,54 @@
+# Working capital as a DIAL, not an assumption.
+#
+# The handoff carried R$15.600 as a fixed figure. It is not fixed: it is an
+# input the founder sets, and the system's job is to say what it permits and
+# which constraint is actually binding. The arithmetic:
+#
+#     lots_per_year = (capital / cogs_per_lot) * (365 / float_days)
+#
+# float_days is the lever, not capital. Without supplier terms she pays around
+# day 11 and is paid around day 45 (float ~34 days). With 28-day terms she pays
+# around day 39 and is paid day 45 (float ~6 days). That is not a 2,8x
+# improvement -- it is a ~5x collapse in how long each real cycles, after
+# which capital largely stops binding and win count / her time / physical
+# fulfilment bind instead.
+
+capital:
+  available_brl: null        # SET BY THE FOUNDER. null = unknown, and the
+                             # system must say so rather than assume a number.
+  currency: BRL
+
+cycle:
+  # Day counts from homologacao. UNVERIFIED pending docs/ORDER_TO_CASH.md,
+  # which is being built from the seven real editais' own payment clauses.
+  pay_supplier_day: 11       # handoff assumption
+  paid_by_buyer_day: 45      # handoff assumption; editais mostly say 30 dias
+                             # apos liquidacao, and liquidacao itself takes time
+  float_days_no_terms: 34
+  float_days_with_terms: 6   # if a supplier grants 28 days
+
+# The self-pack ceiling, DERIVED from her own constraint rather than guessed:
+# C9 allows <=8 hours per won order. Packing a 17-item kit against a list is
+# not faster than ~1 minute a kit, and realistically 2-3. So:
+fulfilment:
+  hours_per_won_order_max: 8            # C9
+  minutes_per_kit_self_pack: 2.0        # conservative; 1.0 would be generous
+  self_pack_max_kits: 240               # = 8h * 60 / 2.0. Above this a
+                                        # co-packer is REQUIRED, not optional.
+  copacker_lead_days: null              # UNVERIFIED. Fills from data/copacking.md.
+                                        # Feeds rule 5: a packing leg on a
+                                        # 5-day tender can make it undeliverable.
+  copacker_cost_per_kit_brl: null       # UNVERIFIED. No quote exists. The BOM
+                                        # carries this as a flagged gap, never
+                                        # as zero.
+
+# Lot-size ceilings. A win she cannot fund or cannot pack is WORSE than not
+# bidding: it is a default, a penalty, and possibly a bidding suspension.
+lot_limits:
+  # max COGS one lot may tie up. Derived at runtime from capital.available_brl
+  # and float, unless overridden here.
+  max_lot_cogs_brl: null
+  # hard ceiling on kits per order regardless of money, until a co-packer
+  # with a stated capacity is on file.
+  max_kits_per_order: 240               # = self_pack_max_kits until a
+                                        # co-packer quote raises it

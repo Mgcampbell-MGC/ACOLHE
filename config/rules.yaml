@@ -85,3 +85,14 @@ rule_10_pagamento_antecipado:
 rule_11_log_the_bid:
   enabled: true
   always: true
+
+rule_12_can_she_carry_it:
+  enabled: true
+  # A win she cannot fund or cannot pack is WORSE than not bidding: it is a
+  # default, a penalty, and possibly a bidding suspension. Ceilings live in
+  # config/capital.yaml; this rule only reads them.
+  # A lot whose COGS exceeds this share of available capital is refused.
+  max_capital_share_per_lot: 1.0
+  # When capital.available_brl is null the rule cannot verify funding and
+  # says so. It never assumes a number.
+  unknown_capital_is_a_pass: false

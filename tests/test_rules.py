@@ -215,13 +215,19 @@ def _good_tender():
         "line_values": [50_000, 120_000],
         "payment_days": 28,
         "logged": True,
+        # rule 12 inputs: a fundable, packable lot
+        "quantity": 120,
+        "cogs_per_kit": 176.32,
+        "capital": {"capital": {"available_brl": 40_000.0},
+                    "lot_limits": {"max_kits_per_order": 240},
+                    "fulfilment": {"self_pack_max_kits": 240}},
     }
 
 
 def test_run_all_admits_a_good_tender():
     admit, results = run_all(_good_tender())
     assert admit, [r.reason for r in results if not r.passed]
-    assert len(results) == 11
+    assert len(results) == 12
 
 
 def test_run_all_rejects_on_any_hard_rule():

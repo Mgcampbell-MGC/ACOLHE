@@ -36,13 +36,41 @@ class BOM:
         """Speculative -- the ~45% account discount has never been quoted."""
         return round(sum(line.account_tier_cost() for line in self.lines), 2)
 
-    def total_with_freight(self, tier="published"):
+    # -- assembly ----------------------------------------------------------
+    #
+    # Nobody costed assembly. The inherited plan says "she assembles" and the
+    # BOM had seventeen goods lines and no labour line. Her own time budget
+    # (C9: <=8h per won order) caps self-packing at a few hundred kits; above
+    # that a co-packer is REQUIRED, and its price is UNQUOTED until a quote
+    # lands. Below the ceiling assembly costs cash of zero and hours of hers.
+
+    self_pack_max_kits = 240            # config/capital.yaml overrides
+    copacker_cost_per_kit = None        # None = UNQUOTED, never zero
+
+    def assembly_cost(self, quantity):
+        """(cost_per_kit, basis). None means UNQUOTED and blocks a bid."""
+        if quantity is None:
+            return None, "quantity unknown"
+        if quantity <= self.self_pack_max_kits:
+            return 0.0, f"self-pack ({quantity} <= {self.self_pack_max_kits} kits)"
+        if self.copacker_cost_per_kit is None:
+            return None, (f"{quantity} kits exceeds the self-pack ceiling of "
+                          f"{self.self_pack_max_kits} and NO co-packer quote "
+                          f"is on file -- assembly cost unknown")
+        return float(self.copacker_cost_per_kit), "co-packer (quoted)"
+
+    def total_with_freight(self, tier="published", quantity=None):
         base = (
             self.published_tier_cost()
             if tier == "published"
             else self.account_tier_cost()
         )
-        return round(base + self.freight_per_kit, 2)
+        assembly = 0.0
+        if quantity is not None:
+            per_kit, _ = self.assembly_cost(quantity)
+            assembly = per_kit or 0.0    # an UNQUOTED co-packer shows as a
+                                         # blocking reason, not as R$0 here
+        return round(base + self.freight_per_kit + assembly, 2)
 
     # -- confidence --------------------------------------------------------
 

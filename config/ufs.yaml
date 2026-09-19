@@ -1,0 +1,58 @@
+# Where to bid, and how many days it takes to get a kit there.
+#
+# The geography is a COMPETITION gradient, not a cost one: the same kit sells
+# for more where fewer firms bother to bid. Sao Paulo has the most kit tenders
+# in the country and the worst prices.
+#
+# Supply is SP-only and that is arithmetic, not preference: LC 123 art. 13
+# par. 1 XIII (h) charges a Simples optante the internal-minus-interstate ICMS
+# difference, ~6 points, so an out-of-state supplier must beat an SP one by
+# more than 6% to be cheaper.
+#
+# transit_days is UNVERIFIED for every UF until data/freight.md lands with
+# Correios' own published delivery days per destination. The values below are
+# deliberately null so rule 5 cannot silently wave a tender through on a
+# number nobody measured. A null transit day makes rule 5 return VERIFICAR,
+# not PASS.
+
+home_uf: SP
+
+# days needed = buy + assemble + transit. buy_and_assemble_days is the
+# founder's own floor for small lots; a co-packer leg (config/capital.yaml)
+# is ADDED on top for lots above self_pack_max_kits.
+buy_and_assemble_days: 3
+
+target:
+  MG: {priority: 1, transit_days: null}
+  MA: {priority: 1, transit_days: null}
+  BA: {priority: 1, transit_days: null}
+  CE: {priority: 1, transit_days: null}
+  PE: {priority: 1, transit_days: null}
+  SE: {priority: 1, transit_days: null}
+  PA: {priority: 1, transit_days: null}
+  RN: {priority: 1, transit_days: null}
+
+secondary:
+  PB: {priority: 2, transit_days: null}
+  AL: {priority: 2, transit_days: null}
+  PI: {priority: 2, transit_days: null}
+  GO: {priority: 2, transit_days: null}
+  TO: {priority: 2, transit_days: null}
+  RJ: {priority: 2, transit_days: null}
+  PR: {priority: 2, transit_days: null}
+  SC: {priority: 2, transit_days: null}
+  RS: {priority: 2, transit_days: null}
+  AM: {priority: 2, transit_days: null}   # Coari/AM was 34,8% of the clearing
+                                          # pool: huge, and a concentration risk
+  AC: {priority: 3, transit_days: null}
+  RO: {priority: 3, transit_days: null}
+  RR: {priority: 3, transit_days: null}
+  AP: {priority: 3, transit_days: null}
+  DF: {priority: 3, transit_days: null}
+
+# De-prioritised: most competition, worst prices.
+deprioritised:
+  SP: {priority: 4, transit_days: 1}
+  ES: {priority: 4, transit_days: null}
+  MT: {priority: 4, transit_days: null}
+  MS: {priority: 4, transit_days: null}

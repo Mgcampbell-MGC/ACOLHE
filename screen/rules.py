@@ -128,6 +128,43 @@ def rule_4_kit_size(item_count, config=None):
                   {"item_count": item_count})
 
 
+_UFS_PATH = os.path.join(os.path.dirname(_CONFIG_PATH), "ufs.yaml")
+_CAPITAL_PATH = os.path.join(os.path.dirname(_CONFIG_PATH), "capital.yaml")
+
+
+def _capital_cfg():
+    with open(_CAPITAL_PATH) as fh:
+        return yaml.safe_load(fh)
+
+
+def feasibility_from_config(quantity=None):
+    """Days needed to deliver to each UF, or None where transit is UNMEASURED.
+
+    needed = buy_and_assemble + transit (+ co-packer lead when the lot is
+    above the self-pack ceiling). A None anywhere in that sum stays None:
+    an unmeasured leg must never be silently rounded to zero.
+    """
+    with open(_UFS_PATH) as fh:
+        ufs = yaml.safe_load(fh)
+    cap = _capital_cfg()
+    base = ufs.get("buy_and_assemble_days") or 0
+    fulfil = cap.get("fulfilment", {})
+
+    copack_leg = 0
+    if quantity is not None and quantity > (fulfil.get("self_pack_max_kits") or 0):
+        copack_leg = fulfil.get("copacker_lead_days")    # may be None
+
+    out = {}
+    for group in ("target", "secondary", "deprioritised"):
+        for uf, spec in (ufs.get(group) or {}).items():
+            transit = (spec or {}).get("transit_days")
+            if transit is None or copack_leg is None:
+                out[uf] = None
+            else:
+                out[uf] = base + transit + copack_leg
+    return out
+
+
 def rule_5_prazo_entrega(prazo_days, uf=None, uf_feasibility=None, config=None):
     """31,2% of these are <=5 days and one live edital demanded 3."""
     cfg = _cfg(config)["rule_5_prazo_entrega"]
@@ -137,7 +174,16 @@ def rule_5_prazo_entrega(prazo_days, uf=None, uf_feasibility=None, config=None):
         return Result("5", False, "prazo de entrega not found in the edital -- "
                       "cannot confirm it is achievable", {"prazo_days": None})
 
-    needed = (uf_feasibility or {}).get(uf, cfg["min_days_absolute"])
+    table = uf_feasibility if uf_feasibility is not None else feasibility_from_config()
+    needed = table.get(uf, cfg["min_days_absolute"]) if uf else cfg["min_days_absolute"]
+    if needed is None:
+        # Transit days for this UF have never been measured. That is not a
+        # pass: nobody has shown the kit can get there in time.
+        return Result("5", False, f"transit days to {uf} are UNMEASURED, so "
+                      f"{prazo_days} days cannot be confirmed achievable -- "
+                      f"VERIFICAR, not a rejection",
+                      {"prazo_days": prazo_days, "needed": None, "uf": uf,
+                       "outcome": "UNVERIFIABLE"})
     if prazo_days < needed:
         return Result("5", False, f"{prazo_days} days to deliver to {uf}, but "
                       f"{needed} are needed to buy, assemble and ship there",
@@ -276,6 +322,59 @@ def rule_11_log_the_bid(logged, config=None):
     return Result("11", True, "bid logged")
 
 
+def rule_12_can_she_carry_it(quantity, cogs_per_kit, config=None, capital=None):
+    """A win she cannot fund or cannot pack is WORSE than not bidding.
+
+    It is a default, a penalty, and possibly a bidding suspension. Two
+    ceilings, both from config/capital.yaml:
+      - kits per order: the self-pack ceiling until a co-packer with a stated
+        capacity is on file
+      - lot COGS vs available capital, over the float window
+    Unknown capital is NOT a pass. The rule says it cannot verify.
+    """
+    cfg = _cfg(config)["rule_12_can_she_carry_it"]
+    if not cfg.get("enabled", True):
+        return Result("12", True, "rule disabled")
+    cap = capital if capital is not None else _capital_cfg()
+
+    if quantity is None or cogs_per_kit is None:
+        return Result("12", False, "quantity or unit cost unknown -- cannot "
+                      "tell whether she could carry this lot if she won it",
+                      {"quantity": quantity, "cogs_per_kit": cogs_per_kit,
+                       "outcome": "UNVERIFIABLE"})
+
+    max_kits = (cap.get("lot_limits") or {}).get("max_kits_per_order")
+    if max_kits is not None and quantity > max_kits:
+        return Result("12", False, f"{quantity:,} kits exceeds the {max_kits:,}-kit "
+                      f"ceiling she can physically fulfil. Winning this would "
+                      f"be a default, not a sale.",
+                      {"quantity": quantity, "max_kits": max_kits,
+                       "outcome": "FULFILMENT"})
+
+    lot_cogs = quantity * cogs_per_kit
+    available = (cap.get("capital") or {}).get("available_brl")
+    if available is None:
+        passed = bool(cfg.get("unknown_capital_is_a_pass", False))
+        return Result("12", passed, f"lot needs R$ {lot_cogs:,.2f} of goods and "
+                      f"available capital is NOT SET in config/capital.yaml -- "
+                      f"cannot confirm she could fund it",
+                      {"lot_cogs": round(lot_cogs, 2), "available": None,
+                       "outcome": "UNVERIFIABLE"})
+
+    ceiling = available * float(cfg.get("max_capital_share_per_lot", 1.0))
+    if lot_cogs > ceiling:
+        return Result("12", False, f"lot needs R$ {lot_cogs:,.2f} of goods "
+                      f"against R$ {ceiling:,.2f} she can commit. She could "
+                      f"not pay the wholesaler.",
+                      {"lot_cogs": round(lot_cogs, 2), "ceiling": round(ceiling, 2),
+                       "outcome": "CAPITAL"})
+    return Result("12", True, f"lot needs R$ {lot_cogs:,.2f}; within the "
+                  f"R$ {ceiling:,.2f} she can commit and the {max_kits}-kit "
+                  f"fulfilment ceiling",
+                  {"lot_cogs": round(lot_cogs, 2), "ceiling": round(ceiling, 2),
+                   "max_kits": max_kits})
+
+
 def run_all(tender, config=None):
     """Run every rule over one tender dict. Returns (admit, results).
 
@@ -297,6 +396,8 @@ def run_all(tender, config=None):
                                 tender.get("payment_days"), cfg),
         rule_10_pagamento_antecipado(tender.get("edital_text"), cfg),
         rule_11_log_the_bid(tender.get("logged", False), cfg),
+        rule_12_can_she_carry_it(tender.get("quantity"), tender.get("cogs_per_kit"),
+                                 cfg, tender.get("capital")),
     ]
     admit = all(r.passed for r in results if not r.is_flag)
     return admit, results
