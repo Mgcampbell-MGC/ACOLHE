@@ -454,6 +454,50 @@ def rule_12_can_she_carry_it(quantity, cogs_per_kit, config=None, capital=None):
                    "max_kits": max_kits})
 
 
+def rule_13_srp_calloff(srp, calloff_days, stock_buffer_days=None, config=None):
+    """An SRP call-off she cannot serve turns a WIN into a sanction.
+
+    Registro de precos binds her for 12 months at a fixed price and the buyer
+    to nothing. Refusing the empenho is descumprimento total, cancels her
+    registration and draws a 20% fine. Where the call-off term is a few days,
+    'buy after the empenho' is impossible and only stock -- which the
+    business model forbids -- or a co-packer buffer covers it.
+    """
+    cfg = _cfg(config)["rule_13_srp_calloff"]
+    if not cfg.get("enabled", True):
+        return Result("13", True, "rule disabled")
+    if not srp:
+        return Result("13", True, "not a registro de precos -- one-shot purchase",
+                      {"srp": False})
+
+    limit = int(cfg["max_calloff_days_without_stock"])
+    if calloff_days is None:
+        passed = bool(cfg.get("unknown_calloff_is_a_pass", False))
+        return Result("13", passed, "REGISTRO DE PRECOS and the call-off delivery "
+                      "term is UNKNOWN -- an ARP binds her for 12 months; do not "
+                      "admit it on a guess. VERIFICAR the prazo de entrega por "
+                      "ordem de fornecimento.",
+                      {"srp": True, "calloff_days": None, "outcome": "UNVERIFIABLE"})
+
+    if calloff_days <= limit and not stock_buffer_days:
+        return Result("13", False, f"REGISTRO DE PRECOS with a {calloff_days}-day "
+                      f"call-off and no stock buffer on file. Buying after the "
+                      f"empenho cannot make that; refusing it is descumprimento "
+                      f"total (art. 90 par. 5), registration cancelled, 20% fine. "
+                      f"A win here is a sanction.",
+                      {"srp": True, "calloff_days": calloff_days, "limit": limit,
+                       "outcome": "CALLOFF"})
+    if calloff_days <= limit:
+        return Result("13", True, f"REGISTRO DE PRECOS with a {calloff_days}-day "
+                      f"call-off, covered by a {stock_buffer_days}-day stock "
+                      f"buffer on file -- watch it",
+                      {"srp": True, "calloff_days": calloff_days,
+                       "stock_buffer_days": stock_buffer_days}, is_flag=True)
+    return Result("13", True, f"REGISTRO DE PRECOS, {calloff_days}-day call-off "
+                  f"is workable by buying after the empenho",
+                  {"srp": True, "calloff_days": calloff_days, "limit": limit})
+
+
 def run_all(tender, config=None):
     """Run every rule over one tender dict. Returns (admit, results).
 
@@ -477,6 +521,8 @@ def run_all(tender, config=None):
         rule_11_log_the_bid(tender.get("logged", False), cfg),
         rule_12_can_she_carry_it(tender.get("quantity"), tender.get("cogs_per_kit"),
                                  cfg, tender.get("capital")),
+        rule_13_srp_calloff(tender.get("srp"), tender.get("calloff_days"),
+                            tender.get("stock_buffer_days"), cfg),
     ]
     admit = all(r.passed for r in results if not r.is_flag)
     return admit, results

@@ -233,7 +233,7 @@ def _good_tender():
 def test_run_all_admits_a_good_tender():
     admit, results = run_all(_good_tender())
     assert admit, [r.reason for r in results if not r.passed]
-    assert len(results) == 12
+    assert len(results) == 13
 
 
 def test_run_all_rejects_on_any_hard_rule():

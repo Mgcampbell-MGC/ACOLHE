@@ -96,3 +96,17 @@ rule_12_can_she_carry_it:
   # When capital.available_brl is null the rule cannot verify funding and
   # says so. It never assumes a number.
   unknown_capital_is_a_pass: false
+
+rule_13_srp_calloff:
+  enabled: true
+  # From docs/ORDER_TO_CASH.md: an ARP binds HER for 12 months at a fixed
+  # price and the buyer to nothing (Lei 14.133 art. 83). Refusing an empenho
+  # is descumprimento total (art. 90 par. 5); Decreto 11.462 art. 28 II
+  # cancels her registration; editais fine 20% of total value. Belterra
+  # ('imediato'), Bom Sucesso (5 d.u.) and Irece (5 dias) make buy-after-
+  # empenho impossible: she must hold stock -- the inventory veto -- or eat
+  # late fines (5% on day 1; 2%/day). A call-off she cannot serve turns a WIN
+  # into a sanction, which is worse than not bidding.
+  max_calloff_days_without_stock: 5
+  # An SRP whose call-off term is unknown cannot be admitted on a guess.
+  unknown_calloff_is_a_pass: false
