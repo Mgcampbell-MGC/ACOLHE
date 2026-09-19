@@ -56,9 +56,39 @@ desta empresa. **A varredura tem de rodar todo dia, de manhã, sobre a publicaç
 véspera.** Isto é o risco #12 do registro ("o cron morre em silêncio") aparecendo com
 outra roupa.
 
-**A fazer na segunda:** ver o resultado homologado de Rio Branco do Sul no PNCP. Um
-preço real de fechamento de um kit natalidade de ~46 unidades é exatamente o
-parâmetro que falta para calibrar o modelo — melhor do que qualquer estimativa.
+**Era uma DISPENSA, não um pregão.** `modalidadeNome: Dispensa`, `numeroCompra: PDE 31`
+(processo de dispensa eletrônica), processo 143/2026, `srp: false`. Isso explica a janela
+de 3 dias — e faz dela mais do que uma licitação perdida. Pelo art. 75 II da Lei 14.133 o
+teto de dispensa em 2026 é **R$ 65.492,11** (Decreto 12.807/2025), e R$16.520 está bem
+dentro. As dispensas costumam não exigir atestado de capacidade técnica: é exatamente o
+caminho de PRIMEIRA VENDA identificado em `docs/HABILITACAO.md` §4. Ou seja, escapou não
+só um contrato, mas uma porta de entrada.
+
+### Os links
+
+    Órgão      MUNICIPIO DE RIO BRANCO DO SUL — CNPJ 76.105.576/0001-85
+    Unidade    FUNDO DE ASSISTÊNCIA SOCIAL — Rio Branco do Sul/PR (IBGE 4122206)
+    Compra     2026 / sequencial 163 — numeroControlePNCP 76105576000185-1-000163/2026
+
+| O quê | URL | Estado |
+|---|---|---|
+| Registro da compra (Família A) | `https://pncp.gov.br/api/consulta/v1/orgaos/76105576000185/compras/2026/163` | **VERIFICADO** — HTTP 200, devolve o registro |
+| Página pública | `https://pncp.gov.br/app/editais/76105576000185/2026/163` | formato NÃO VERIFICADO — o app do PNCP é JavaScript e devolve a mesma casca de 59.879 bytes para qualquer rota, então não dá para confirmar por fetch. Abrir no navegador para confirmar |
+| Itens (Família B) | `https://pncp.gov.br/api/pncp/v1/orgaos/76105576000185/compras/2026/163/itens` | fora do ar em 19/09 |
+| Resultados por item | `https://pncp.gov.br/api/pncp/v1/orgaos/76105576000185/compras/2026/163/itens/{n}/resultados` | idem — é aqui que sai quem venceu e por quanto |
+| Arquivos (o edital em PDF) | `https://pncp.gov.br/api/pncp/v1/orgaos/76105576000185/compras/2026/163/arquivos` | idem |
+
+**A fazer na segunda:** `valorTotalHomologado` ainda estava **null** na consulta de
+19/09 — fechou dia 18 e o resultado não tinha sido publicado. Reler o registro da
+Família A e, se ela voltar, os resultados por item. Um preço real de fechamento de um
+kit natalidade de ~46 unidades é exatamente o parâmetro que falta para calibrar o
+modelo — melhor do que qualquer estimativa.
+
+**Aviso sobre os links da planilha:** `report/digest.py` monta o link trocando os
+separadores do numeroControlePNCP, o que dá `/app/editais/76105576000185/1/000163/2026`.
+Pode estar errado — a rota documentada é `{cnpj}/{ano}/{sequencial}`. Não foi possível
+distinguir por fetch (as duas devolvem a mesma casca). Confirmar no navegador na segunda
+e corrigir o gerador se for o caso.
 
 ### E o teto de recall
 
