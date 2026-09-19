@@ -1,8 +1,8 @@
 """One regression test per trap. Each of these produced a confidently wrong
 number in this project's history. None of them is hypothetical.
 
-Traps 3, 4, 6, 9, 10, 11 depend on modules not yet built (spec.py, cost.py) and
-are marked xfail-by-absence rather than silently omitted -- see TODO markers.
+Traps 3, 10 and 11 depend on modules not yet built and are listed as explicit
+TODOs at the foot of this file rather than being silently omitted.
 """
 
 import os
@@ -12,6 +12,7 @@ import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from parse.spec import classify  # noqa: E402
 from parse.normalise import (  # noqa: E402
     capacity_of,
     is_bundle,
@@ -150,12 +151,145 @@ def test_trap8_kit_composto_por():
 
 
 # --------------------------------------------------------------------------
-# TODO - these need modules that do not exist yet. Listed so the gap is
+# TRAP 4 - cross-spec comparison inside one catalogue heading.
+# A 17,2 L bathtub priced against a market whose live band is 20-25 L is a
+# 36-percentage-point margin error. Of 259 banheira lines, 131 state a
+# capacity and the 20-25 L band alone is 115 lines / R$1.038.317.
+# --------------------------------------------------------------------------
+
+def test_trap4_bathtub_capacity_bands_do_not_share_a_median():
+    sku_small, ok_small, why_small = classify("BANHEIRA SENSITIVE FEMININO 17,2 L")
+    sku_big, ok_big, _ = classify("BANHEIRA INFANTIL 24 L MONTE LIBANO")
+
+    assert sku_small == "BANHEIRA" and sku_big == "BANHEIRA"
+    # Same family, but only one of them conforms - so they never share a median.
+    assert ok_big is True
+    assert ok_small is False
+    assert "17.2 L" in why_small or "17,2" in why_small or "outside" in why_small
+
+
+def test_trap4_unstated_capacity_is_not_conforming():
+    """An unstated spec must never be silently treated as conforming."""
+    sku, ok, why = classify("BANHEIRA BABY ROSA PLASTIBRASIL")
+    assert sku == "BANHEIRA"
+    assert ok is False
+    assert "capacity" in why.lower()
+
+
+def test_trap4_shampoo_volume_band():
+    """A 400ml retail bottle is not the 200ml a kit spec asks for."""
+    _, ok_retail, _ = classify("SHAMPOO 400ML #16555 BUBA")
+    _, ok_kit, _ = classify("SHAMPOO INFANTIL 200ML")
+    assert ok_retail is False
+    assert ok_kit is True
+
+
+def test_trap4_hooded_towel_is_a_different_product():
+    _, ok, why = classify("TOALHA DE BANHO COM CAPUZ 70X100")
+    assert ok is False
+    assert "capuz" in why.lower() or "hooded" in why.lower()
+
+
+def test_trap4_sacola_is_not_a_mochila():
+    """The R$27,34 sacola must not be priced as the R$52,27 mochila."""
+    _, ok_sacola, why = classify("BOLSA COURINO VINICRON MAVE BABY")
+    _, ok_mochila, _ = classify("MOCHILA BABY PRINTS #802 ESPERA FELIZ")
+    assert ok_sacola is False
+    assert ok_mochila is True
+    assert "mochila" in why.lower()
+
+
+def test_trap4_meias_pair_ambiguity():
+    """'12 UNIDADES' of socks may be 12 socks or 12 pairs. Only trust PARES."""
+    _, ok_vague, _ = classify("KIT MEIA BEBE - 12 UNIDADES")
+    _, ok_clear, _ = classify("MEIA BEBE PIPOQUINHA - 4 PARES")
+    assert ok_vague is False
+    assert ok_clear is True
+
+
+# --------------------------------------------------------------------------
+# TRAP 6 - an adjacent market swept in by keyword.
+# 4.052 rows carrying R$155,7M of a Mato Grosso SCHOOL-UNIFORM programme
+# landed in a kit harvest. A '\bMEIA' regex pulled school socks in as baby
+# socks at R$9,3M. Uncaught, the market was sized 3,7x too large.
+# --------------------------------------------------------------------------
+
+@pytest.mark.parametrize(
+    "descricao",
+    [
+        "TENIS ESCOLAR MASCULINO TAMANHO 34",
+        "CAMISETA ESCOLAR MANGA CURTA MALHA PV",
+        "BERMUDA ESCOLAR TACTEL AZUL MARINHO",
+        "MEIA ESCOLAR BRANCA KIT UNIFORME",
+        "MOCHILA ESCOLAR COSTAS REFORCADA",
+        "AGASALHO ESCOLAR CONJUNTO MOLETOM",
+    ],
+)
+def test_trap6_school_uniform_programme_excluded(descricao):
+    sku, ok, why = classify(descricao)
+    assert sku is None
+    assert ok is False
+    assert "programme" in why.lower() or "bundle" in why.lower()
+
+
+def test_trap6_a_real_baby_sock_still_classifies():
+    """The exclusion must not also kill the genuine article."""
+    sku, ok, _ = classify("MEIA BEBE ZERINHO - 4 PARES - TAMANHO RN")
+    assert sku == "MEIAS"
+    assert ok is True
+
+
+# --------------------------------------------------------------------------
+# TRAP 9 - CATMAT is null at municipal level, and the kit market is 97%
+# municipal. A classifier that needs catalogoCodigoItem classifies nothing
+# where the money is.
+# --------------------------------------------------------------------------
+
+def test_trap9_classifier_never_requires_catmat():
+    """No executable reference to a catalogue code anywhere in the classifier.
+
+    Checked against the parsed AST rather than the raw text, so the module may
+    still explain in prose why it refuses to use CATMAT.
+    """
+    import ast
+    import inspect
+
+    from parse import spec as spec_module
+
+    tree = ast.parse(inspect.getsource(spec_module))
+    names = {
+        node.id for node in ast.walk(tree) if isinstance(node, ast.Name)
+    } | {
+        node.attr for node in ast.walk(tree) if isinstance(node, ast.Attribute)
+    } | {
+        node.value for node in ast.walk(tree)
+        if isinstance(node, ast.Constant) and isinstance(node.value, str)
+        and len(node.value) < 200          # skip docstrings
+    }
+    for forbidden in ("catalogoCodigoItem", "codigoCatmat", "catmat_code", "catmat"):
+        assert forbidden not in names, (
+            f"{forbidden} is referenced in code in spec.py - CATMAT is null "
+            f"on municipal tenders and the kit market is 97% municipal"
+        )
+
+    # And it classifies happily from the description alone.
+    sku, ok, _ = classify("BODY MANGA LONGA 100% ALGODAO TAMANHO RN")
+    assert sku == "BODY" and ok is True
+
+
+def test_trap9_inmetro_certified_skus_are_refused():
+    """Mamadeiras and chupetas carry Portaria Inmetro 490/2014 certification."""
+    for descricao in ("MAMADEIRA ANTICOLICA 260ML", "CHUPETA SILICONE ORTODONTICA"):
+        sku, ok, why = classify(descricao)
+        assert sku is None
+        assert ok is False
+        assert "490/2014" in why or "excluded" in why.lower()
+
+
+# --------------------------------------------------------------------------
+# TODO - still need modules that do not exist yet. Listed so the gap stays
 # visible rather than silently missing from the suite.
-#   TRAP 3  recency filter          -> needs the price-history puller
-#   TRAP 4  spec control by capacity-> needs parse/spec.py + config/skus.yaml
-#   TRAP 6  adjacent programme      -> needs parse/spec.py anti-patterns
-#   TRAP 9  CATMAT null municipally -> needs parse/spec.py
-#   TRAP 10 retail vs wholesale     -> needs price/cost.py schema
-#   TRAP 11 interstate +6 points    -> needs price/cost.py
+#   TRAP 3  recency filter      -> needs the price-history puller
+#   TRAP 10 retail vs wholesale -> needs price/cost.py schema
+#   TRAP 11 interstate +6 points-> needs price/cost.py
 # --------------------------------------------------------------------------

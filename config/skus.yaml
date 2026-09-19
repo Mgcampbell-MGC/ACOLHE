@@ -1,0 +1,262 @@
+# The SKU set for newborn layette kits.
+#
+# Every entry carries what Filter 4 (spec control) needs:
+#   match        - patterns that put a row in this family
+#   anti         - patterns that take it straight back out, whatever else matched
+#   window       - plausible R$ per PIECE. Filter 3 drops anything outside it.
+#   spec         - the dimensions that must agree before two rows share a median
+#
+# A PDM / catalogue heading holds materially different objects at 2-10x
+# different prices. A margin computed across them is manufactured out of
+# nothing. Do not widen a window to make a row fit.
+#
+# Costs are observed catalogue prices, measured 2026-09-19 unless marked.
+# See data/cost_table.csv for provenance on each.
+
+defaults:
+  # Rows naming two or more distinct garments have a two-garment cost basis.
+  # This is the '\bBODY' regex that turned R$77k into an apparent R$1,08M.
+  global_anti:
+    - 'CONJUNTO'
+    - 'CONTENDO'
+    - 'COMPOSTO\s+(?:DE|POR)'
+    - '\bLOTE\b'
+
+  # Adjacent programmes swept in by keyword. A Mato Grosso school-uniform
+  # programme put 4.052 rows and R$155,7M into one kit harvest; a '\bMEIA'
+  # regex pulled school socks in as baby socks at R$9,3M.
+  programme_anti:
+    - 'ESCOLAR'
+    - 'UNIFORME'
+    - 'T[EÊ]NIS'
+    - 'BERMUDA\s+ESCOLAR'
+    - 'CAMISETA\s+ESCOLAR'
+    - 'AGASALHO'
+    - 'MOCHILA\s+ESCOLAR'
+
+skus:
+
+  BODY:
+    label: Body manga longa
+    match: ['\bBODY\b', '\bBODIES\b']
+    anti: ['\+', '\bCULOTE\b', '\bBERMUDA\b', '\bCAL[CÇ]A\b', '\bSARUEL\b', 'EXTENSOR']
+    window: [4.00, 45.00]
+    spec:
+      manga: [longa, curta]
+      material: ['algod[ãa]o', 'suedine', 'canelado', 'ribana']
+      size_graded_warning: true   # 'RN AO G' packs may be one of each size
+    cost_observed: 7.56
+    cost_basis: per_piece_of_3
+    cost_spec_risk: SIZE_GRADED
+
+  MACACAO:
+    label: Macacão / pagão
+    match: ['\bMACAC[ÃA]O\b', '\bPAG[ÃA]O\b']
+    anti: ['\bBODY\b.*\+', 'ESCOLAR']
+    window: [8.00, 60.00]
+    spec:
+      material: ['soft', 'algod[ãa]o', 'suedine', 'plush']
+    cost_observed: 15.34
+    cost_basis: unit_set   # a pagão IS conventionally a 3-piece set
+    note: >
+      Do NOT build a strategy on this family. BRINK MOBIL (capital social
+      R$32.018.254) takes R$5,66M of the R$11,1M body+macacão band and only
+      18,5% of that band goes to ME/EPP. A manufacturer bids it direct.
+
+  BANHEIRA:
+    label: Banheira infantil
+    match: ['\bBANHEIRA\b', '\bBANHEIRINHA\b']
+    anti: ['INFL[ÁA]VEL', 'OFUR[ÔO]', 'BALDE', 'SUPORTE', 'REDUTOR']
+    window: [12.00, 120.00]
+    spec:
+      capacity_litres: [20, 25]     # THE band. 115 lines / R$1.038.317
+      rigid: true
+      # 17,2 L conforms to exactly ONE tender line in the country. Pricing a
+      # 17 L tub against a 24 L market is 36 margin points of fiction.
+      capacity_required: true
+    cost_observed: 29.71
+    cost_basis: unit
+    note: >
+      CONFIRMED AT SOURCE 2026-09-19: BANHEIRA INFANTIL 24 LITROS #BM2123
+      Monte Libano, R$29,71, at emilio.com.br. 40 conforming 20-25 L tubs in
+      the catalogue; cheapest R$29,71, median R$40,42. The 17,2 L at R$22,90
+      is correctly refused by spec control.
+      Inmetro: rigid baths are uncertified (Portaria 563/2016 covers
+      inflatable only).
+
+  COBERTOR:
+    label: Cobertor / manta
+    match: ['\bCOBERTOR\b', '\bMANTA\b']
+    anti: ['\bCUEIRO\b', 'MICROFIBRA']   # microfibra is a different product
+    window: [6.00, 60.00]
+    spec:
+      size_cm: ['80X110', '90X110', '90X70']
+    cost_observed: 12.15
+    cost_basis: unit
+
+  CUEIRO:
+    label: Cueiro
+    match: ['\bCUEIRO\b', '\bSWADDLE\b']
+    anti: ['PANO DE BOCA', '\bFRALDA\b', '\bMANTA\b']
+    window: [2.00, 35.00]
+    spec:
+      size_cm: ['50X80', '80X50']
+      material: ['flanelado', 'algod[ãa]o', 'soft']
+    cost_observed: 3.94
+    cost_basis: per_piece_of_3
+    note: >
+      The supplier's CUEIROS category is contaminated - its six cheapest rows
+      are PANO DE BOCA. Category membership is not classification.
+
+  PANO_BOCA:
+    label: Pano de boca
+    match: ['PANO DE BOCA', '\bBABETE\b', 'PANO DE OMBRO']
+    anti: ['\bCUEIRO\b', 'TOALHA']
+    window: [0.80, 20.00]
+    spec:
+      material: ['plush', 'algod[ãa]o', 'fralda']
+    cost_observed: 1.85
+    cost_basis: per_piece_of_3
+
+  TOALHA_BANHO:
+    label: Toalha de banho infantil
+    match: ['TOALHA.*(BANHO|FRALDA)', 'TOALHA FRALDA']
+    anti: ['CAPUZ', 'MESA', 'PISO', 'COPA']
+    window: [2.00, 60.00]
+    spec:
+      size_cm: ['65X110', '70X100', '80X100']
+      hooded: false        # toalha COM CAPUZ is a different, dearer product
+    cost_observed: 3.42
+    cost_basis: per_piece_of_3
+
+  MEIAS:
+    label: Par de meias
+    match: ['\bMEIA\b', '\bMEIAS\b']
+    anti: ['MEIA[- ]CAL[CÇ]A', 'ESCOLAR', 'SOQUETE ADULTO']
+    window: [0.80, 15.00]
+    spec:
+      unit_is_pair: true   # only trust listings that say PARES explicitly
+      size: ['RN', '0-2', '13-16']
+    cost_observed: 2.01
+    cost_basis: per_pair_of_4
+
+  MOCHILA:
+    label: Mochila / bolsa maternidade
+    match: ['\bMOCHILA\b', '\bBOLSA\b', '\bFRASQUEIRA\b']
+    anti: ['ESCOLAR', 'T[EÉ]RMICA', 'ORGANIZADORA PARA CARRO', '\bSACOLA\b']
+    window: [15.00, 150.00]
+    spec:
+      # A sacola (tote) is not a mochila (backpack). The R$27,34 sacola does
+      # not conform to a tender that says mochila.
+      form: [mochila]
+    cost_observed: 52.27
+    cost_basis: unit
+    note: >
+      The dearest line in the kit and 41% of the measured subtotal. Target
+      price was R$25,00; cheapest conforming is R$52,27, missed by 2,1x.
+
+  KIT_HIGIENE:
+    label: Kit higiene do bebê
+    match: ['KIT.*(HIGIENE|ESCOVA|PENTE)', 'HIGIENE.*KIT']
+    anti: ['MAMADEIRA', 'ESCOLAR']
+    window: [3.00, 70.00]
+    spec:
+      pieces_min: 2        # escova + pente is the floor
+    cost_observed: 5.20
+    cost_basis: unit_kit   # a kit line buys ONE kit - never divide by pieces
+
+  SABONETEIRA:
+    label: Saboneteira
+    match: ['\bSABONETEIRA\b']
+    anti: ['\bKIT\b']      # a kit-bundled saboneteira belongs to KIT_HIGIENE
+    window: [1.00, 15.00]
+    cost_observed: 3.01
+    cost_basis: unit
+
+  FRALDA_PANO:
+    label: Fralda de pano
+    match: ['FRALDA.*(PANO|BAINHA|BORDADA|LUXO)', 'FRALDA DE PANO']
+    anti: ['DESCART[ÁA]VEL', 'TOALHA']
+    window: [1.00, 25.00]
+    cost_observed: null
+
+  # ---- lines our verified supplier does not stock at all ----
+
+  FRALDA_DESC:
+    label: Fralda descartável RN
+    match: ['FRALDA.*DESCART[ÁA]VEL', 'FRALDA\s+RN']
+    anti: ['PANO', 'BAINHA']
+    window: [0.30, 5.00]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+    note: >
+      UNPRICED. CONFIRMED ABSENT 2026-09-19: the supplier's 'fraldas
+      descartáveis' category holds 13 rows and every one is a cloth textile;
+      free-text search returns zero.
+
+  UMEDECIDAS:
+    label: Toalhas umedecidas
+    match: ['UMEDECID', 'LEN[CÇ]O.*UMEDEC']
+    anti: []
+    window: [1.00, 20.00]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+    note: >
+      UNPRICED. CONFIRMED ABSENT 2026-09-19: zero rows at emilio.com.br on both
+      category sweep and free-text search.
+
+  SABONETE:
+    label: Sabonete líquido
+    match: ['SABONETE(?!IRA)']
+    anti: ['SABONETEIRA', 'PORTA\s*(ALGOD|SABONETE)', '\bCESTA\b']
+    window: [1.50, 25.00]
+    cost_observed: 17.01
+    cost_basis: unit
+    cost_spec_risk: HIGH
+    note: >
+      SABONETE LIQUIDO 250ML #16558 BUBA at emilio.com.br, the ONLY genuine
+      soap in the catalogue. Retail-sized and dear for a kit line. Treat as a
+      ceiling until a perfumaria atacadista is found.
+
+  SHAMPOO:
+    label: Shampoo infantil
+    match: ['SHAMPOO', 'XAMPU']
+    anti: ['CONDICIONADOR']
+    window: [2.00, 25.00]
+    spec:
+      volume_ml: [100, 250]   # a kit shampoo is ~200ml, not a 400ml retail bottle
+    cost_observed: 21.39
+    cost_spec_risk: HIGH
+    note: Only one SKU in the catalogue and it is 400ml retail. A ceiling, not a cost.
+
+  OLEO:
+    label: Óleo infantil
+    match: ['\b[ÓO]LEO\b']
+    anti: ['PETR[ÓO]LEO', 'ESSENCIAL', 'COZINHA', 'MACAQUINHO']
+    window: [2.00, 25.00]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+    note: >
+      UNPRICED. CONFIRMED ABSENT 2026-09-19: zero rows at emilio.com.br on both
+      category sweep and free-text search.
+
+  KIT_ENXOVAL:
+    label: Kit enxoval
+    match: ['KIT.*ENXOVAL', 'ENXOVAL']
+    anti: []
+    window: [5.00, 120.00]
+    cost_observed: null
+    cost_spec_risk: BLOCKING
+    note: >
+      UNPRICED AND UNSPECIFIED. A kit inside a kit. Cannot be priced until the
+      real tender item text is read.
+
+# Excluded from every bid, deliberately.
+excluded:
+  MAMADEIRA:
+    reason: Certified under Portaria Inmetro 490/2014. Certification cost and
+            liability make it unbiddable at our scale.
+    match: ['\bMAMADEIRA\b', '\bBICO\b']
+  CHUPETA:
+    reason: Certified under Portaria Inmetro 490/2014.
+    match: ['\bCHUPETA\b']
