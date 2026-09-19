@@ -266,3 +266,44 @@ So the unavailable spec is not a documentation gap — it is load-bearing for at
 line and two priced lines that can move materially. **Until
 `api/pncp/v1/…/2025/447/itens` or `pncp-api/v1/…/2025/447/arquivos/1` returns 200, the per-kit BOM
 total should be treated as provisional**, and no bid should be submitted against it.
+
+---
+
+## 7. Daily-loop cost: the handoff's ~5.560 calls/day is wrong by ~60x
+
+Measured 2026-09-19 against Family A for 2026-09-15:
+
+| modalidade | tenders |
+|---|---|
+| 6 Pregão Eletrônico | 1.719 |
+| 7 Pregão Presencial | 50 |
+| 8 Dispensa | 2.826 |
+| **total** | **4.595** |
+
+At `tamanhoPagina=50` that is **~93 listing calls for a full national day**, not
+5.560. The remaining ~5.400 in the original estimate were Family B per-tender
+`/itens` calls — and those cannot be made at all while Family B is 503.
+
+`tamanhoPagina` on PNCP is bounded **10..50** (below 10 and above 50 both 400).
+
+### The real constraint is a rate limit nobody had measured
+
+**~30 requests in a burst returns HTTP 429 "Limite de Requisições Excedido",
+clearing in ~30s, with NO `Retry-After` header.** It is keyed on source IP and
+shared across both API families, so anything else egressing the same host
+spends the same budget. A full national-day attempt collected 62 of them.
+
+So the daily loop is governed by the 429 budget, not by bandwidth, and 93
+calls is comfortably inside it. The per-tender descent is what would not be.
+
+### A fallback that silently loses rows, found live and fixed
+
+In one run `publicacao` page 4 took five 429s, the client fell back to
+`atualizacao`, and that page returned **16 tenders already seen**. The two
+routes are differently ordered, so "page 4" is a different set: 16 real
+tenders were never fetched while the row count still read 200/200.
+
+The client now records the route per page, flags `ROUTE_MIXED`, refuses to
+call such a harvest complete, and reports `distinct` separately from `served`.
+Counting repeats as coverage is precisely how a short harvest passes for a
+full one.
