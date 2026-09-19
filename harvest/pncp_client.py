@@ -129,8 +129,24 @@ class Failure(object):
         self.attempt = attempt
         self.when = time.time()
 
+    def kind(self):
+        """A label for grouping failures in the report.
+
+        "the endpoint was down" (503) and "the endpoint answered with
+        something we could not read" (a 200 with an unparseable body) have
+        different remedies: the first is an outage to wait out, the second is
+        a schema change or a truncated proxy response that somebody has to go
+        look at. Grouping both under their HTTP status would file the second
+        one as a 200 and hide it completely.
+        """
+        if self.status == 200 and self.error:
+            return f"200/{self.error}"
+        if self.status is None:
+            return self.error or "ConnectionError"
+        return self.status
+
     def short(self):
-        return f"{self.family} {self.status or self.error}"
+        return f"{self.family} {self.kind()}"
 
     def as_dict(self):
         return {
@@ -139,6 +155,7 @@ class Failure(object):
             "status": self.status,
             "error": self.error,
             "attempt": self.attempt,
+            "kind": self.kind(),
             "when": self.when,
         }
 
@@ -373,9 +390,13 @@ class HarvestReport(object):
         return bool(self.failures) or self.missing > 0
 
     def failures_by_status(self):
+        """Failure counts grouped by kind, not strictly by status code.
+
+        See Failure.kind: an unparseable 200 must not be filed as a success.
+        """
         c = collections.Counter()
         for f in self.failures:
-            c[f.status or f.error] += 1
+            c[f.kind()] += 1
         return dict(c)
 
     def summary(self):
@@ -564,7 +585,7 @@ class PNCPClient(object):
             with self._counter_lock:
                 self.failures.append(failure)
             self.log("fetch_fail", url=url, family=family, status=status,
-                     error=error, attempt=attempt)
+                     error=error, kind=failure.kind(), attempt=attempt)
 
             # A connection-level error (status None) and a 200 carrying an
             # unparseable body are both transient: a truncated response

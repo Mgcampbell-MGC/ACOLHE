@@ -672,3 +672,58 @@ def test_cache_directory_comes_from_the_env_var(tmp_path, monkeypatch):
     cache = DiskCache()
     assert cache.directory == str(tmp_path / "from-env")
     assert os.path.isdir(cache.directory)
+
+
+# --------------------------------------------------------------------------
+# 7. AN UNREADABLE ANSWER IS NOT THE SAME EVENT AS AN OUTAGE
+# --------------------------------------------------------------------------
+
+def test_unparseable_200_is_a_distinct_failure_kind_from_a_503(tmp_path):
+    """'the endpoint is down' and 'the endpoint said something we cannot read'
+    have different remedies. Filing the second under its HTTP status would
+    record it as a 200 and hide a schema change behind a green number."""
+    def handler(url, n):
+        if "pagina=2" in url:
+            return Response(200, "<html>sorry</html>")   # 200, unreadable
+        if "pagina=3" in url:
+            return Response(503, "no server is available")
+        return page_of(url, 200, 50, prefix="M6")
+
+    client, _ = make_client(tmp_path, handler, max_attempts=1)
+    report = client.harvest_day("20260915", (6,), page_size=50,
+                                sink=lambda r: None)
+
+    kinds = report.failures_by_status()
+    assert kinds == {"200/InvalidJSON": 2, 503: 2}, kinds
+    assert 200 not in kinds, "an unreadable answer must never count as success"
+    assert report.suspected_outage is True
+
+
+def test_unparseable_200_is_retried_and_never_poisons_the_cache(tmp_path):
+    """A poisoned cache entry is worse than an outage: a re-run cannot heal
+    it, so the harvest silently stays short forever."""
+    calls = {"n": 0}
+
+    def handler(url, n):
+        calls["n"] += 1
+        if calls["n"] <= 2:
+            return Response(200, '{"data": [{"truncat')   # cut off mid-flight
+        return ok({"data": [], "totalRegistros": 0})
+
+    client, transport = make_client(tmp_path, handler, max_attempts=4)
+    url = "https://pncp.gov.br/api/consulta/v1/trunc"
+    assert client.fetch_json(url, FAMILY_A) == {"data": [], "totalRegistros": 0}
+    assert transport.count == 3, "the unreadable 200s were retried, not fatal"
+
+    cached = DiskCache(str(tmp_path / "cache")).get(url)
+    assert cached["body"] == {"data": [], "totalRegistros": 0}
+    assert "truncat" not in json.dumps(cached), "garbage must never reach disk"
+
+
+def test_a_connection_error_is_its_own_kind_too(tmp_path):
+    """HTTP 000. Distinguishable from both an outage and a bad body."""
+    client, _ = make_client(tmp_path, lambda u, n: OSError("reset"),
+                            max_attempts=2)
+    with pytest.raises(Unavailable) as exc:
+        client.fetch_json("https://pncp.gov.br/api/pncp/v1/i", FAMILY_B)
+    assert {f.kind() for f in exc.value.failures} == {"OSError"}
