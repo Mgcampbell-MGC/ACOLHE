@@ -97,11 +97,12 @@ r += 1
 s.cell(row=r, column=1, value="A ordem que eu faria").font = BB
 r += 1
 order = [
-    ("1º", "Coronel Xavier Chaves / MG", "É o contato mais completo que existe na pasta: e-mail, telefone COM RAMAL e WhatsApp, todos impressos no próprio edital. Município pequeno, o programa é do CRAS, e o edital é recente e bem escrito. Maior chance de alguém atender e conversar."),
-    ("2º", "São Pedro do Iguaçu / PR", "O único edital que publica o e-mail do DEPARTAMENTO DE ASSISTÊNCIA SOCIAL direto, não o da licitação. É a conversa A sem intermediário."),
-    ("3º", "Belterra / PA", "O termo de referência inteiro é da SEMTDES e traz o e-mail dela em cada página. Município do Pará, kit entregue via CRAS — perfil exato do seu cliente-alvo, e longe de São Paulo."),
-    ("4º", "Bocaiúva do Sul / PR", "Setor de compras com telefone direto. Bom para a conversa B."),
-    ("5º", "Irecê / BA", "Pregão de até 400 kits, agente de contratação nomeado no edital. Maior volume da pasta — bom para entender um comprador maior."),
+    ("1º", "Maracás / BA", "O objeto publicado é o mais completo de todos: diz o público (gestantes em vulnerabilidade, sede E zona rural), o canal (CRAS), a secretaria (Desenvolvimento Social) e o amparo legal (Benefício Eventual–Natalidade). Setor de licitações verificado em edital no domínio do município, com telefone da Equipe de Pregão. Foi uma DISPENSA de R$60.910 — o tipo de compra que você pode disputar primeiro."),
+    ("2º", "Coronel Xavier Chaves / MG", "O contato mais completo da pasta: e-mail, telefone COM RAMAL e WhatsApp, impressos no próprio edital, com o horário de expediente do setor ao lado. Município pequeno, programa do CRAS. Maior chance de alguém simplesmente atender."),
+    ("3º", "São Pedro do Iguaçu / PR", "O único edital que publica o e-mail do DEPARTAMENTO DE ASSISTÊNCIA SOCIAL direto, não o da licitação. É a conversa A sem intermediário."),
+    ("4º", "Belterra / PA", "O termo de referência inteiro é da SEMTDES e traz o e-mail dela em cada página. Município do Pará, kit entregue via CRAS — perfil exato do seu cliente-alvo, e longe de São Paulo."),
+    ("5º", "Bocaiúva do Sul / PR", "Setor de compras com telefone direto. Bom para a conversa B."),
+    ("6º", "Irecê / BA", "Pregão de até 400 kits, agente de contratação nomeado no edital. Maior volume da pasta — bom para entender um comprador maior."),
 ]
 for a, b_, c_ in order:
     s.cell(row=r, column=1, value=a).font = BB
@@ -163,6 +164,21 @@ contacts = [
     ("São João do Paraíso", "MA", "RP kit enxoval de bebê para gestantes e puérperas — Sec. Mun. de Assistência Social",
      "CPL — Comissão Permanente de Licitação", "cplsjparaiso@gmail.com", "(99) 99105-3540",
      "Quadro «Pedidos de esclarecimentos e impugnações»"),
+    ("Maracás", "BA", "DISPENSA — Kit Enxoval de Bebê p/ gestantes em vulnerabilidade, sede e zona rural, via CRAS, no âmbito do Benefício Eventual–Natalidade (R$60.910)",
+     "Setor de Licitações · Equipe de Pregão", "licitacoesmaracas@gmail.com · prefeitura@maracas.ba.gov.br", "(73) 3533-2121 · Equipe de Pregão (73) 99823-6264 · WhatsApp (73) 99151-7240",
+     "Edital PDF no domínio municipal; Praça Ruy Barbosa 705. Pop. 27.620"),
+    ("Vitória", "ES", "PREGÃO — RP Kit Bebê, R$944.586 (15x o segundo maior). Comprado pela prefeitura, não por fundo",
+     "SEMAS (Assistência Social) · SEGES/CPL (pregão)", "rspuppim@vitoria.es.gov.br (Equipe de Pregão)", "SEMAS (27) 3382-6172 · Pregão (27) 3382-6074 / 6037 · CPL (27) 3382-6253",
+     "Portal de compras do município e páginas da SEMAS. Pop. 322.869"),
+    ("Alvorada de Minas", "MG", "PREGÃO — RP «enxovais» para UNIDADES DE SAÚDE e casa de apoio (R$41.665). ⚠ comprado pela Sec. de SAÚDE, não pela Assistência Social",
+     "Divisão de Compras e Licitações · Sec. de Saúde", "licitacao@alvoradademinas.mg.gov.br · saude@alvoradademinas.mg.gov.br", "(31) 3520-0000 / 3520-0001 · Assist. Social (31) 3862-1209",
+     "Site municipal, sub-rota /licitacoes/pregao-eletronico. Pop. 4.159"),
+    ("Junco do Maranhão", "MA", "DISPENSA — itens para kits enxoval de recém-nascidos (R$11.621, o menor do dia). Compra pelo FMAS",
+     "Gabinete (único canal encontrado)", "gabinete@juncodomaranhao.ma.gov.br", "(98) 3271-1017",
+     "Portal da transparência. ⚠ O site institucional publica dados de EXEMPLO (contato@prefeitura.gov.br, (00) 0000-0000) — não use. Pop. 5.146"),
+    ("Rio Branco do Sul", "PR", "DISPENSA PDE 31 — kit natalidade, entrega parcelada por 12 MESES (R$16.520). A que fechou antes de vermos. Compra pelo FMAS",
+     "Ouvidoria (único canal encontrado)", "ouvidoria@riobrancodosul.pr.gov.br", "(41) 98743-2024",
+     "Rodapé do diário oficial. O portal atende.net é só JavaScript: nenhum telefone de licitações ou do CRAS é legível. Pop. 37.558"),
     ("Itaquaquecetuba", "SP", "Kit maternidade, 17 itens, SRP (PE 90088/2025) — o kit que o BOM inteiro copia",
      "não publicado no que foi lido", "—", "—",
      "Registro do PNCP; o edital em PDF não pôde ser baixado (Família B fora do ar)"),
@@ -172,9 +188,9 @@ for row in contacts:
     put(c, r, list(row) + [None, None, None], blue_from=8, height=56)
     r += 1
 c.cell(row=r + 1, column=1, value=(
-    "Faltam aqui os cinco municípios da varredura de 15/09 — Alvorada de Minas/MG, Maracás/BA, Vitória/ES, "
-    "Junco do Maranhão/MA e Rio Branco do Sul/PR. Os contatos deles estão sendo levantados e entram nesta aba "
-    "quando estiverem confirmados na fonte.")).font = NOTE
+    "Contatos completos e linha a linha em data/municipios_contatos.csv (60 registros) e "
+    "data/municipios_contatos.md. Nada aqui foi inventado: cada valor foi lido numa página oficial do "
+    "município, no diário oficial ou no edital publicado. Onde não deu para ler, está escrito que não deu.")).font = NOTE
 c.merge_cells(start_row=r + 1, start_column=1, end_row=r + 1, end_column=7)
 c.freeze_panes = "A5"
 
@@ -250,6 +266,10 @@ facts = [
     ("Atestado", "6 dos 7 editais lidos exigem atestado de capacidade técnica; 1 (Agrolândia) não exige nada. Nenhum exige que seja de órgão público."),
     ("Entrega", "8 de 9 são parceladas ou com endereço definido a cada ordem de fornecimento. Só um entrega o lote inteiro num endereço só."),
     ("Tamanho", "De R$11.621 (Junco do Maranhão) a R$944.586 (Vitória). O que cabe no capital de R$15.600 é a faixa de baixo."),
+    ("O amparo legal", "Quase nunca é um «programa» com nome. É BENEFÍCIO EVENTUAL do SUAS, criado por RESOLUÇÃO DO CMAS, não por lei municipal. Pergunte «qual resolução do CMAS ampara?» — essa pergunta abre porta; «vocês têm um programa mãe?» não."),
+    ("Estado x município", "Há programas estaduais por cima: Maranhão Acolhe (lançado dez/2025, kit de 45 ITENS com bolsa personalizada) e Nascer Bem no Paraná. As compras municipais parecem COMPLEMENTAR a entrega estadual, não substituí-la. Em MA, o kit de 45 itens é a referência de conteúdo."),
+    ("Atenção a Vitória", "O «Benefício por Natalidade» de Vitória é pago EM DINHEIRO, parcela única (Resolução 016/2017 do COMASV). Então o Kit Bebê de R$944k é outro programa, e não foi possível achar o instrumento que o autoriza. É uma ótima pergunta para levar."),
+    ("Atenção a Alvorada de Minas", "Comprada pela Secretaria de SAÚDE, destino «unidades de saúde e casa de apoio». «Enxoval» ali pode ser roupa de cama hospitalar, não enxoval de bebê. É a única das cinco que não passa pela assistência social — confirmar antes de tratar como comparável."),
 ]
 r = 4
 for a, b_ in facts:
