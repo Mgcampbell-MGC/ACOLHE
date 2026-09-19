@@ -13,6 +13,7 @@ The four properties under test are the four the business depends on:
 """
 
 import json
+import time
 import os
 import sys
 
@@ -827,3 +828,46 @@ def test_rows_served_and_distinct_rows_are_reported_separately(tmp_path):
     assert d["rows_served"] == 137 and d["rows_total"] == 137
     assert "distinct=137/137" in report.summary()
     assert "served=137" in report.summary()
+
+
+# --------------------------------------------------------------------------
+# 9. A 429 IS A STATEMENT ABOUT THE WHOLE CLIENT, NOT ONE REQUEST
+# --------------------------------------------------------------------------
+
+def test_a_429_holds_back_every_worker_not_just_the_one_that_got_it(tmp_path):
+    """The limiter is per source IP and shared across both families.
+
+    If each thread backs off privately, the others keep spending the budget
+    the first one is waiting for and the sweep sits at the limit. Observed
+    live on 2026-09-19: a national sweep collected 27 of these and stopped
+    making progress.
+    """
+    client, _ = make_client(tmp_path, lambda u, n: Response(429, "Limite"),
+                            max_attempts=3, min_interval=0)
+    assert client.limiter.penalties == 0
+
+    with pytest.raises(Unavailable):
+        client.fetch_json("https://pncp.gov.br/api/consulta/v1/x", FAMILY_A)
+
+    assert client.limiter.penalties == 3, "every 429 pushes the shared gate"
+    assert client.limiter.next_at > time.time(), "the gate is held in the future"
+
+
+def test_other_statuses_do_not_penalise_the_shared_gate(tmp_path):
+    """A 503 is the server being broken, not us being greedy. Holding every
+    worker back for it would just make an outage take longer to ride out."""
+    client, _ = make_client(tmp_path, lambda u, n: Response(503, "down"),
+                            max_attempts=3, min_interval=0)
+    with pytest.raises(Unavailable):
+        client.fetch_json("https://pncp.gov.br/api/pncp/v1/i", FAMILY_B)
+    assert client.limiter.penalties == 0
+
+
+def test_the_penalty_is_a_shared_gate_not_a_per_thread_sleep():
+    """Unit-level: penalize moves the gate for whoever asks next."""
+    from harvest.pncp_client import RateLimiter
+    waits = []
+    limiter = RateLimiter(min_interval=0, sleeper=waits.append)
+    limiter.penalize(5.0)
+    limiter.acquire()
+    assert waits and waits[0] > 4.0, "the next caller waits out the penalty"

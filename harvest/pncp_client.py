@@ -521,22 +521,37 @@ class RateLimiter(object):
     throughput -- a blocked client harvests nothing.
     """
 
-    def __init__(self, min_interval=DEFAULT_MIN_INTERVAL):
+    def __init__(self, min_interval=DEFAULT_MIN_INTERVAL, sleeper=None):
         self.min_interval = min_interval
         self.lock = threading.Lock()
         self.next_at = 0.0
+        self.penalties = 0
+        self.sleeper = sleeper if sleeper is not None else time.sleep
 
     def acquire(self):
-        if self.min_interval <= 0:
-            return
         with self.lock:
             now = time.time()
-            wait = self.next_at - now
-            if wait < 0:
-                wait = 0.0
+            wait = max(0.0, self.next_at - now)
             self.next_at = max(now, self.next_at) + self.min_interval
         if wait > 0:
-            time.sleep(wait)
+            self.sleeper(wait)
+
+    def penalize(self, seconds):
+        """Hold EVERY worker back after a 429, not just the one that got it.
+
+        The limiter is per source IP and shared across both families, so a 429
+        is a statement about the whole client, not about one request. Letting
+        each thread back off privately means the others keep spending the
+        budget the first one is waiting for, and the sweep can sit at the
+        limit indefinitely -- observed live on 2026-09-19, where a national
+        sweep collected 27 of these and stopped making progress.
+
+        Pushing the shared gate forward is what converts a stampede into a
+        queue.
+        """
+        with self.lock:
+            self.penalties += 1
+            self.next_at = max(self.next_at, time.time() + seconds)
 
 
 class PNCPClient(object):
@@ -580,9 +595,10 @@ class PNCPClient(object):
         self.backoff_cap = backoff_cap
         self.concurrency = max(1, concurrency)
         self.timeout = timeout
-        self.limiter = RateLimiter(min_interval)
         # Injectable so tests can assert on backoff without actually waiting.
+        # The limiter shares it, so a penalty never really sleeps in a test.
         self.sleeper = sleeper if sleeper is not None else time.sleep
+        self.limiter = RateLimiter(min_interval, sleeper=self.sleeper)
 
         self.events_path = os.path.join(self.state_dir, "events.jsonl")
         self.events = []            # in-memory mirror, handy in tests
@@ -677,8 +693,14 @@ class PNCPClient(object):
                          or error is not None)
             if not retryable:
                 break
+            delay = self.backoff_delay(attempt)
+            if status == 429:
+                # Measured: the 429 clears in ~30s and carries no Retry-After,
+                # so we have to pick the number ourselves. Hold the shared
+                # gate, not just this thread.
+                self.limiter.penalize(delay)
             if attempt + 1 < self.max_attempts:
-                self.sleeper(self.backoff_delay(attempt))
+                self.sleeper(delay)
 
         raise Unavailable(url, failures)
 
