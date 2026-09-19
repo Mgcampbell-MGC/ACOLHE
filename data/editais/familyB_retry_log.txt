@@ -16,3 +16,16 @@
 2026-09-19T16:39:49Z attempt=8 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/arquivos
 2026-09-19T16:44:49Z attempt=9 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/itens?pagina=1&tamanhoPagina=50
 2026-09-19T16:44:50Z attempt=9 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/arquivos
+2026-09-19T16:49:51Z attempt=10 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/itens?pagina=1&tamanhoPagina=50
+2026-09-19T16:49:51Z attempt=10 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/arquivos
+2026-09-19T16:52:27Z attempt=11 502 (13.9s) itens  <- DIFFERENT failure mode, investigated
+2026-09-19T16:52:27Z attempt=11 503 (3.9s)  api/search
+# The 502 above was a ONE-OFF, not a recovery. A 502 after 13,9s would mean
+# HAProxy had reached a backend that then failed, whereas the 503 after ~0,7s
+# means the pool is empty. Three immediate follow-up probes all returned
+# 503 with the same "No server is available to handle this request" body in
+# 0,5-0,7s. So the backend pool is still empty and nothing has recovered.
+# Recorded because it was checked, not because it meant anything.
+2026-09-19T16:52:27Z attempt=12 503 (0.75s) itens
+2026-09-19T16:52:27Z attempt=12 503 (0.55s) itens
+2026-09-19T16:52:27Z attempt=12 503 (0.51s) itens
