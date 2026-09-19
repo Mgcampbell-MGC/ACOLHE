@@ -88,9 +88,54 @@ def buyer_of(row):
     }
 
 
-def scan(rows):
-    """Split a day's national harvest into candidates, excluded and the rest."""
-    candidates, excluded = [], []
+def in_window(row, day=None, now=None):
+    """(ok, reason) -- is this tender actually live and actually from this day?
+
+    MEASURED, 2026-09-19. The publicacao and atualizacao routes are NOT two
+    views of the same thing. For 2026-09-15 publicacao held 4.595 records and
+    atualizacao held 8.323 -- but the extra ones are not tenders publicacao
+    missed. They are OLDER tenders touched in that window.
+
+    Worked example: Nova Roma/GO 14901848000104-1-000008/2026, a genuine kit
+    enxoval tender, appeared via atualizacao in a harvest for the 15th. It was
+    published on the 4th and its proposal window CLOSED ON THE 10TH. A
+    fallback had injected an eleven-day-old dead tender into a live scan.
+
+    So a route fallback does not merely reorder pages -- it silently widens
+    the date window. This guard is the backstop: date-stamp every candidate
+    against the day we asked for, and against the clock.
+    """
+    import datetime
+
+    def parse(value):
+        if not value:
+            return None
+        try:
+            return datetime.datetime.fromisoformat(str(value)[:19])
+        except ValueError:
+            return None
+
+    published = parse(row.get("dataPublicacaoPncp")) or parse(row.get("dataInclusao"))
+    closes = parse(row.get("dataEncerramentoProposta"))
+    now = now or datetime.datetime.now()
+
+    if day and published:
+        asked = datetime.datetime.strptime(str(day), "%Y%m%d").date()
+        if published.date() != asked:
+            return False, (f"published {published.date()}, not {asked} -- a route "
+                           f"fallback widened the window")
+    if closes and closes < now:
+        return False, f"proposal window closed {closes.date()}"
+    return True, "live"
+
+
+def scan(rows, day=None, now=None):
+    """Split a day's national harvest into candidates, excluded and the rest.
+
+    Pass `day` (YYYYMMDD) to enforce the window guard above. Without it the
+    scan still works, but a fallback-injected stale tender would pass through.
+    """
+    candidates, excluded, stale = [], [], []
     for row in rows:
         objeto = row.get("objetoCompra") or ""
         is_kit, hit, excl = kit_signal(objeto)
@@ -107,11 +152,19 @@ def scan(rows):
             "excluded_by": excl,
             **buyer,
         }
-        (candidates if is_kit else excluded).append(record)
-    return candidates, [r for r in excluded if r["matched"]]
+        if is_kit:
+            ok, why = in_window(row, day=day, now=now)
+            if ok:
+                candidates.append(record)
+            else:
+                record["stale_reason"] = why
+                stale.append(record)
+        else:
+            excluded.append(record)
+    return candidates, [r for r in excluded if r["matched"]], stale
 
 
-def summarise(candidates, near_misses, report=None):
+def summarise(candidates, near_misses, stale=(), report=None):
     """The lines a human reads. Every aggregate prints its underlying rows."""
     out = []
     by_uf = collections.Counter(c["uf"] for c in candidates if c["uf"])
@@ -132,6 +185,13 @@ def summarise(candidates, near_misses, report=None):
         out.append(f"    {money}  {c['municipio'] or '?'}/{c['uf'] or '?':2s}  "
                    f"{c['objeto'][:74]}")
 
+    if stale:
+        out.append(f"  !! {len(stale)} kit tender(s) DROPPED as out-of-window -- "
+                   f"a route fallback injected them:")
+        for c in stale[:4]:
+            out.append(f"    [{c['stale_reason']}] {c['municipio']}/{c['uf']} "
+                       f"{c['objeto'][:56]}")
+
     if near_misses:
         out.append(f"  {len(near_misses)} matched a kit word but were EXCLUDED "
                    f"as an adjacent programme:")
@@ -139,14 +199,26 @@ def summarise(candidates, near_misses, report=None):
             out.append(f"    [{c['excluded_by']}] {c['objeto'][:84]}")
 
     if report is not None:
-        complete = getattr(report, "is_complete", lambda: None)()
+        # Read the report's real attributes. NEVER getattr-with-a-default here:
+        # a renamed field would then report the integrity check as None, which
+        # reads like "fine" and is actually "not checked". That happened.
         out.append("")
         out.append(f"HARVEST INTEGRITY: distinct={report.rows_total} "
-                   f"served={report.rows_served} pages={report.pages_fetched} "
-                   f"complete={complete}")
-        if getattr(report, "failures", None):
-            out.append(f"  !! {len(report.failures)} route(s) failed -- this scan "
-                       f"is SHORT, not a quiet market")
+                   f"served={report.rows_served} expected={report.total_expected} "
+                   f"pages={report.pages_fetched} complete={report.complete}")
+        if report.rows_duplicate:
+            out.append(f"  {report.rows_duplicate} duplicate row(s) suppressed "
+                       f"-- served minus distinct, not lost tenders")
+        if report.missing:
+            out.append(f"  !! {report.missing} tender(s) PNCP said it held were "
+                       f"never fetched -- this scan is SHORT, not a quiet market")
+        if report.route_mixed:
+            out.append("  !! ROUTE_MIXED: a fallback served part of this day, and "
+                       "the routes are ordered differently, so coverage is unknown")
+        if report.failures:
+            out.append(f"  !! {len(report.failures)} route(s) failed outright")
+        if report.suspected_outage:
+            out.append("  >> SUSPECTED OUTAGE. Do not treat this count as the market.")
     out.append("")
     out.append("RECALL: object-text match only. Tenders whose object text is "
                "generic are reachable only via PNCP Family B /itens, which is "
