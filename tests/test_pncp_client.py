@@ -594,16 +594,34 @@ def test_a_browser_user_agent_is_always_sent():
 
 
 def test_tls_verification_can_not_be_turned_off():
-    """There must be no code path that reaches verify=False. HTTPS here goes
-    through a proxy with a CA bundle; a connection error means backoff."""
-    source = open(
-        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                     "harvest", "pncp_client.py"), encoding="utf-8").read()
-    code = "\n".join(l for l in source.splitlines()
-                     if not l.strip().startswith("#"))
-    assert "verify=False" not in code
-    assert "verify = False" not in code
-    assert "CERT_NONE" not in code
+    """There must be no code path that reaches verify=False.
+
+    Checked with the AST rather than a text search, so that prose in a
+    docstring explaining WHY we never do it cannot trip the test, and so that
+    a real `verify = False` cannot hide behind unusual spacing.
+    """
+    import ast
+
+    path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "harvest", "pncp_client.py")
+    tree = ast.parse(open(path, encoding="utf-8").read())
+
+    for node in ast.walk(tree):
+        # requests.get(..., verify=False)
+        if isinstance(node, ast.Call):
+            for kw in node.keywords:
+                if kw.arg == "verify":
+                    raise AssertionError("TLS verification must never be set")
+        # session.verify = False  /  verify = False
+        if isinstance(node, (ast.Assign, ast.AnnAssign)):
+            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+            for t in targets:
+                name = t.attr if isinstance(t, ast.Attribute) else getattr(t, "id", "")
+                assert name != "verify", "TLS verification must never be assigned"
+        # ssl.CERT_NONE
+        if isinstance(node, ast.Attribute) and node.attr == "CERT_NONE":
+            raise AssertionError("CERT_NONE must never appear")
 
 
 @pytest.mark.parametrize("bad", [0, 1, 9, 51, 100, 500])

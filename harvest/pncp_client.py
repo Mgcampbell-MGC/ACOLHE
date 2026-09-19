@@ -566,9 +566,13 @@ class PNCPClient(object):
             self.log("fetch_fail", url=url, family=family, status=status,
                      error=error, attempt=attempt)
 
-            retryable = (status in RETRY_STATUS) or (status is None)
+            # A connection-level error (status None) and a 200 carrying an
+            # unparseable body are both transient: a truncated response
+            # through the proxy looks exactly like the latter. A clean 4xx is
+            # not -- retrying it cannot help and spends the shared budget.
+            retryable = (status is None or status in RETRY_STATUS
+                         or error is not None)
             if not retryable:
-                # 400/404: retrying cannot help and spends the shared budget.
                 break
             if attempt + 1 < self.max_attempts:
                 self.sleeper(self.backoff_delay(attempt))
