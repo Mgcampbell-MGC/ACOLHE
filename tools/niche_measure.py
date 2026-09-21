@@ -28,6 +28,12 @@ NICHES = {
 def run(name, queries, keep, max_pages=20, descend=90):
     out = os.path.join(ROOT, "data", "market", f"niche_{name}")
     os.makedirs(out, exist_ok=True)
+    tpath = os.path.join(out, "tenders.json")
+    if os.path.exists(tpath):
+        kept_prev = json.load(open(tpath, encoding="utf-8"))
+        if len(kept_prev) > 200:
+            print(f"  {name}: reusing {len(kept_prev)} tenders already on disk")
+            return _descend(name, kept_prev, out, descend)
     found = {}
     for q in queries:
         for p in range(1, max_pages + 1):
@@ -47,13 +53,22 @@ def run(name, queries, keep, max_pages=20, descend=90):
     pat = re.compile(keep, re.I)
     kept = [t for t in found.values()
             if pat.search((t.get("title") or "") + " " + (t.get("description") or ""))]
-    json.dump(kept, open(os.path.join(out, "tenders.json"), "w"), ensure_ascii=False)
+    json.dump(kept, open(tpath, "w"), ensure_ascii=False)
     print(f"  {name}: {len(found)} hits, {len(kept)} survive the keyword filter")
+    return _descend(name, kept, out, descend)
 
-    todo = [t for t in kept if t.get("tem_resultado")]
+
+def _descend(name, kept, out, descend):
+
+    # Resume: a run killed mid-descent must not pay for the same calls twice.
+    rpath = os.path.join(out, "results.json")
+    recs = json.load(open(rpath, encoding="utf-8")) if os.path.exists(rpath) else []
+    done = {r["key"] for r in recs}
+    if done:
+        print(f"  resuming {name} with {len(done)} already descended")
+    todo = [t for t in kept if t.get("tem_resultado") and t["numero_controle_pncp"] not in done]
     todo.sort(key=lambda t: t.get("data_publicacao_pncp") or "", reverse=True)
-    todo = todo[:descend]
-    recs = []
+    todo = todo[:max(0, descend - len(recs))]
     for i, t in enumerate(todo, 1):
         its, note = itens(t["orgao_cnpj"], t["ano"], t["numero_sequencial"])
         rec = {"key": t["numero_controle_pncp"], "uf": t.get("uf"),
@@ -71,10 +86,10 @@ def run(name, queries, keep, max_pages=20, descend=90):
                                                      "quantidadeHomologada")} for r in (res or [])]
             rec["itens"].append(row)
         recs.append(rec)
-        if i % 15 == 0:
-            print(f"    {name} {i}/{len(todo)}")
-            json.dump(recs, open(os.path.join(out, "results.json"), "w"), ensure_ascii=False)
-    json.dump(recs, open(os.path.join(out, "results.json"), "w"), ensure_ascii=False)
+        if i % 5 == 0:
+            print(f"    {name} {i}/{len(todo)}", flush=True)
+            json.dump(recs, open(rpath, "w"), ensure_ascii=False)
+    json.dump(recs, open(rpath, "w"), ensure_ascii=False)
     return kept, recs
 
 
