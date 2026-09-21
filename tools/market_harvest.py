@@ -24,7 +24,14 @@ os.makedirs(OUT, exist_ok=True)
 
 QUERIES = ["kit natalidade", "kit enxoval", "enxoval bebe", "kit maternidade",
            "enxoval recem nascido", "kit gestante", "enxoval para bebe"]
-MAX_PAGES = 12          # 50 per page
+# VERIFIED 2026-09-21: there is NO server-side row cap. An earlier reading of
+# this file's own log concluded PNCP capped every query at 600 rows -- it does
+# not; 600 was THIS CONSTANT (12 x 50). Page 40 of "kit natalidade" returns a
+# full 50 rows against a reported total of 2.777. What IS true: the ordering is
+# by relevance, not by date (pages 1 and 40 both span 2024-2026), so a truncated
+# pull is a relevance-ranked SAMPLE and its year distribution is an artefact
+# that must never be read as a trend.
+MAX_PAGES = 60          # 50 per page; the largest query reports ~2.777 rows
 TAM = 50
 
 
@@ -41,7 +48,11 @@ def pass1():
             log.append({"q": q, "pagina": page, "note": note,
                         "total": (d or {}).get("total"), "n": len(((d or {}).get("items") or []))})
             print(f"  [{q}] p{page}: {note} total={(d or {}).get('total')} n={len(((d or {}).get('items') or []))}")
-            if not d or not d.get("items"):
+            if d is None:
+                # A transient failure used to end the whole query here, silently
+                # truncating it. Skip the page, record it, and keep going.
+                continue
+            if not d.get("items"):
                 break
             for it in d["items"]:
                 key = it.get("numero_controle_pncp")
