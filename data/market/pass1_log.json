@@ -1,0 +1,492 @@
+[
+ {
+  "q": "kit natalidade",
+  "pagina": 1,
+  "note": "200 on attempt 1",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 2,
+  "note": "200 on attempt 1",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 3,
+  "note": "200 on attempt 1",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 4,
+  "note": "200 on attempt 4",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 5,
+  "note": "200 on attempt 2",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 6,
+  "note": "200 on attempt 5",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 7,
+  "note": "200 on attempt 3",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 8,
+  "note": "200 on attempt 4",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 9,
+  "note": "200 on attempt 3",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 10,
+  "note": "200 on attempt 2",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 11,
+  "note": "200 on attempt 2",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit natalidade",
+  "pagina": 12,
+  "note": "200 on attempt 1",
+  "total": 2776,
+  "n": 50
+ },
+ {
+  "q": "kit enxoval",
+  "pagina": 1,
+  "note": "200 on attempt 2",
+  "total": 1320,
+  "n": 50
+ },
+ {
+  "q": "kit enxoval",
+  "pagina": 2,
+  "note": "200 on attempt 2",
+  "total": 1320,
+  "n": 50
+ },
+ {
+  "q": "kit enxoval",
+  "pagina": 3,
+  "note": "200 on attempt 1",
+  "total": 1320,
+  "n": 50
+ },
+ {
+  "q": "kit enxoval",
+  "pagina": 4,
+  "note": "200 on attempt 1",
+  "total": 1320,
+  "n": 50
+ },
+ {
+  "q": "kit enxoval",
+  "pagina": 5,
+  "note": "200 on attempt 1",
+  "total": 1320,
+  "n": 50
+ },
+ {
+  "q": "kit enxoval",
+  "pagina": 6,
+  "note": "FAILED after 5: RemoteDisconnected: Remote end closed connection without response",
+  "total": null,
+  "n": 0
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 1,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 2,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 3,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 4,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 5,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 6,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 7,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 8,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 9,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 10,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 11,
+  "note": "200 on attempt 3",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval bebe",
+  "pagina": 12,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "kit maternidade",
+  "pagina": 1,
+  "note": "200 on attempt 1",
+  "total": 1605,
+  "n": 50
+ },
+ {
+  "q": "kit maternidade",
+  "pagina": 2,
+  "note": "200 on attempt 1",
+  "total": 1605,
+  "n": 50
+ },
+ {
+  "q": "kit maternidade",
+  "pagina": 3,
+  "note": "200 on attempt 2",
+  "total": 1605,
+  "n": 50
+ },
+ {
+  "q": "kit maternidade",
+  "pagina": 4,
+  "note": "FAILED after 5: RemoteDisconnected: Remote end closed connection without response",
+  "total": null,
+  "n": 0
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 1,
+  "note": "200 on attempt 3",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 2,
+  "note": "200 on attempt 1",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 3,
+  "note": "200 on attempt 2",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 4,
+  "note": "200 on attempt 2",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 5,
+  "note": "200 on attempt 2",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 6,
+  "note": "200 on attempt 1",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 7,
+  "note": "200 on attempt 1",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 8,
+  "note": "200 on attempt 1",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 9,
+  "note": "200 on attempt 1",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 10,
+  "note": "200 on attempt 2",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 11,
+  "note": "200 on attempt 3",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "enxoval recem nascido",
+  "pagina": 12,
+  "note": "200 on attempt 2",
+  "total": 775,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 1,
+  "note": "200 on attempt 1",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 2,
+  "note": "200 on attempt 1",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 3,
+  "note": "200 on attempt 1",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 4,
+  "note": "200 on attempt 2",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 5,
+  "note": "200 on attempt 1",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 6,
+  "note": "200 on attempt 2",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 7,
+  "note": "200 on attempt 1",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 8,
+  "note": "200 on attempt 3",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 9,
+  "note": "200 on attempt 1",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 10,
+  "note": "200 on attempt 2",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 11,
+  "note": "200 on attempt 1",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "kit gestante",
+  "pagina": 12,
+  "note": "200 on attempt 4",
+  "total": 1468,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 1,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 2,
+  "note": "200 on attempt 4",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 3,
+  "note": "200 on attempt 3",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 4,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 5,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 6,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 7,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 8,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 9,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 10,
+  "note": "200 on attempt 3",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 11,
+  "note": "200 on attempt 1",
+  "total": 1229,
+  "n": 50
+ },
+ {
+  "q": "enxoval para bebe",
+  "pagina": 12,
+  "note": "200 on attempt 2",
+  "total": 1229,
+  "n": 50
+ }
+]
