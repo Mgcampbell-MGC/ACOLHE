@@ -183,6 +183,27 @@ contacts = [
      "não publicado no que foi lido", "—", "—",
      "Registro do PNCP; o edital em PDF não pôde ser baixado (Família B fora do ar)"),
 ]
+# The 19 read automatically out of published editais (tools/buyer_contacts.py).
+# All are DISPENSAS from the last 12 months -- the mechanism that clears at ~99%.
+import csv as _csv
+_SUSPECT = {"(41) 3097-4600", "(14) 1331-2021"}   # platform numbers, not municipal
+_auto = []
+_path = os.path.join(ROOT, "data", "buyer_contacts.csv")
+if os.path.exists(_path):
+    for _r in _csv.DictReader(open(_path, encoding="utf-8")):
+        if not (_r["emails"] or _r["telefones"]):
+            continue
+        _tel = " · ".join(t for t in (_r["telefones"] or "").split(" · ")
+                          if t and t not in _SUSPECT)
+        _nota = ("Lido automaticamente do edital publicado. " +
+                 ("ATENÇÃO: um telefone foi descartado por ser da plataforma de licitação, não do município. "
+                  if any(t in _SUSPECT for t in (_r["telefones"] or "").split(" · ")) else "") +
+                 f"Publicado {_r['publicado']}.")
+        _auto.append((_r["municipio"], _r["uf"],
+                      f"{_r['modalidade'].upper()} — {(_r['objeto'] or '')[:150]}",
+                      _r["orgao"][:60], _r["emails"], _tel, _nota))
+contacts += sorted(_auto, key=lambda x: x[1])
+
 r = 5
 for row in contacts:
     put(c, r, list(row) + [None, None, None], blue_from=8, height=56)
