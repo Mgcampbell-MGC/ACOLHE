@@ -1,0 +1,93 @@
+{
+ "fonte": "https://pncp.gov.br/pncp-api/v1/orgaos/46316600000164/compras/2025/447/arquivos/7",
+ "documento": "p.e._90088_25_edital_retificado2.pdf",
+ "orgao": "MUNICIPIO DE ITAQUAQUECETUBA/SP, CNPJ 46.316.600/0001-64",
+ "compra": "2025/447 - Pregao Eletronico 90088/2025 - SRP",
+ "programa": "Programa Mae Itaqua",
+ "lido_em": "2026-09-21",
+ "estimado_por_kit_brl": 476.05,
+ "homologado_por_kit_brl": 359.05,
+ "vencedor": {
+  "razao_social": "CONDAFE COMERCIO DE ROUPAS LTDA EPP",
+  "cnpj": "10430444000110",
+  "porte": "EPP"
+ },
+ "quantidades": {
+  "item_1_ampla": 3750,
+  "item_2_cota_me_epp": 1250,
+  "total": 5000
+ },
+ "data_resultado": "2026-03-24",
+ "prazo_entrega_dias": 20,
+ "local_entrega": "Almoxarifado Central, Rua Caiabu 240, Cidade Kemel, Itaquaquecetuba/SP (endereco unico)",
+ "itens": [
+  {
+   "item": "01.1",
+   "descricao": "01.1 Mochila confeccionada em filme composto de Policloreto de Vinila (PVC) reforçado com não tecido de poliéster, com efeito búfalo, impermeável, em tons similares às referências de cores indicadas: RGB 193, 188, 182 (HEX #c1bcb6), medidas mínimas de 42 cm de altura por 34 cm de largura por 18 cm de profundidade, fechamento com zíper de nylon. Parte frontal com bolso simples, reto, com medidas de 25 cm de altura por 30 cm de largura com logo do projeto em silk screen (nas medidas de 20 x 7,5 cm), fechamento com zíper de nylon duplo. Bolsos laterais com elástico, nas medidas de 20 cm de altura por 20 cm de largura, com logo em silk screen do Governo do Estado de São Paulo no bolso esquerdo (nas medidas de 5 x 7 cm), e no bolso direito, em silk screen a logo da Prefeitura Municipal de Itaquaquecetuba (nas medidas de 5 x 7 cm). Bolso traseiro, com medidas de 20 cm de altura por 15 cm de la"
+  },
+  {
+   "item": "01.2",
+   "descricao": "01.2 Banheira Lisa de 22 Litros, produzida em plástico polipropileno, com linhas arredondadas e espaço que permitem mais liberdade na hora do banho, ideal para garantir a segurança e o conforto do bebê. Características: Material: Plástico Polipropileno. Capacidade: 22lts. Medidas Aproximadas: Altura: 26cm; Largura: 43cm; Comprimento: 67cm. Cor transparente, com detalhes na cor Amarelo ou Verde. Personalizada com adesivos já aplicados nas laterais esquerda, direita e cabeceira. Os adesivos deverão ser confeccionados em vinil adesivo transparente, com impressão digital em alta resolução em cores vivas e resistentes à água, deixando visíveis apenas as logomarcas em policromia (CMYK). O material deve apresentar as seguintes características mínimas: • Resistência à água e à umidade, sem descolamento durante a higienização da banheira. • Adesão firme em superfície plástica (polipropileno), sem"
+  },
+  {
+   "item": "01.3",
+   "descricao": "01.3 Cobertor Infantil confeccionado em tecido 100% poliéster, estampados com desenhos infantis com pelo alto. Hipoalergênico, material com maciez e conforto. Tamanho: Único. Cor Amarelo ou Verde. Composição: 100% Poliéster. Dimensões mínimas: 90cm x 1,10m. Cor Amarelo ou Verde. Unidade 1"
+  },
+  {
+   "item": "01.4",
+   "descricao": "01.4 Cueiro contendo 03 peças com medidas mínimas de 50 cm x 80 cm, na cor Amarelo ou Verde. Confeccionado em tecido 100% algodão. Kit 1"
+  },
+  {
+   "item": "01.5",
+   "descricao": "01.5 Pagão composto por 03 peças: 01 colete, 01 blusa manga longa e 01 calça com pé. Tamanho: P, na cor Amarelo ou Verde. Confeccionados em tecido 100% algodão. Kit 1"
+  },
+  {
+   "item": "01.6",
+   "descricao": "01.6 Fralda Descartável Infantil tamanho (RN). Pacote contendo no mínimo 32 unidades. A fralda deverá possuir corte anatômico e barreira antivazamento. Pacote 1 Dermatologicamente testada, hipoalergênica Embalagem com a identificação do fabricante, data de fabricação e validade, composição, quantidade. Conforme normas da Anvisa."
+  },
+  {
+   "item": "01.7",
+   "descricao": "01.7 Body Manga Longa Composição: 100% Algodão. Tamanho: P, cor Amarelo ou Verde. Unidade 1"
+  },
+  {
+   "item": "01.8",
+   "descricao": "01.8 Kit Enxoval contendo 01 Touca, 01 Par de Luvas e 01 Par de Sapatinhos de malha (ou pantufa). Composição: 100% algodão. Cor Amarelo ou Verde Kit 1"
+  },
+  {
+   "item": "01.9",
+   "descricao": "01.9 Pano de boca para limpeza do bebê na medida mínima de 30x40cm. Pacote contendo 03 unidades. Composição: 100% algodão. Cor Amarelo ou Verde. Pacote 1"
+  },
+  {
+   "item": "01.10",
+   "descricao": "01.10 Par de Meias infantis atoalhada confeccionada em algodão, poliamida e elastano. Tamanho P, na cor Amarelo ou Verde. Par 1"
+  },
+  {
+   "item": "01.11",
+   "descricao": "01.11 Toalha de banho infantil com capuz, confeccionada em tecido atoalhado 100% algodão, medindo no mínimo 68cm x 100cm. Na cor verde ou amarela. Unidade 1"
+  },
+  {
+   "item": "01.12",
+   "descricao": "01.12 Toalhas umedecidas descartáveis especialmente desenvolvidas para higiene e cuidados com a pele sensível de bebês e crianças, podendo também ser utilizadas por adultos. Apresentam textura macia, são resistentes e impregnadas com solução umectante suave, com propriedades hidratantes. Composição mínima: Tecido não tecido (TNT) macio e resistente. Loção à base de água, livre de álcool etílico. Produto dermatologicamente testado. Embalagem com 100 (cem) unidades. Sistema de fechamento que assegure a conservação após aberto. Embalagem lacrada, com rótulo contendo: nome do fabricante, composição, data de fabricação, validade, número do lote e instruções de uso. Características mínimas exigidas: Dimensão mínima por toalha: 18 cm x 14 cm. Livre de álcool etílico e parabenos. Uso seguro em recém-nascidos. Validade mínima na entrega: 12 (doze) meses. Pacote 1"
+  },
+  {
+   "item": "01.13",
+   "descricao": "01.13 Sabonete Líquido mínimo de 240ml, infantil (da cabeça aos pés) suave neutro, sem sal e sem corantes. Deve possuir formulação neutra. Produto hipoalergênico oftalmologicamente testado (sem lágrimas) e dermatologicamente testado. Validade mínima na entrega: 12 (doze) meses. Frasco 1"
+  },
+  {
+   "item": "01.14",
+   "descricao": "01.14 Shampoo Infantil suave, neutro, com no mínimo 240 ml, sem sal e sem corantes, formulação neutra enriquecida com extratos vegetais suaves (como algodão, camomila ou similar). Produto hipoalergênico, oftalmologicamente testado (sem lágrimas) e dermatologicamente testado. V alidade mínima na entrega: 12 (doze) meses. Frasco 1"
+  },
+  {
+   "item": "01.15",
+   "descricao": "01.15 Óleo infantil com no mínimo 100 ml, preparado com óleo mineral de grau farmacêutico ou óleos de origem vegetal, hipoalergênico e com perfume suave. Validade mínima na entrega: 12 (doze) meses. Frasco 1"
+  },
+  {
+   "item": "01.16",
+   "descricao": "01.16 Kit Higiene do bebê composto por 02 peças, sendo 01 pente com pontas arredondadas e 01 escova com cerdas macias, na Kit 1 cor Amarelo ou Verde confeccionados especialmente para uso em bebês."
+  },
+  {
+   "item": "01.17",
+   "descricao": "01.17 Saboneteira, em PP (Polipropileno), com formato compatível com sabonete comum, na cor Amarelo ou Verde, produto atóxico e de primeira qualidade, sem rebarbas e resistente a quebra e torção, além de oferecer encaixe perfeito em seu fechamento, de modo a impedir vazame ntos. Dimensões compatíveis para acondicionar um sabonete em barra de tamanho padrão (aproximadamente 80g a 100g). Unidade 1 ITEM 02 Cota reservada para ME/EPP. ESPECIFICAÇÃO: 1.250 Kits Maternidade Contendo: UNIDADE DE MEDIDA QUANTIDADE 02.1 Cota reservada para ME/EPP. Mochila confeccionada em filme composto de Policloreto de Vinila (PVC) reforçado com não tecido de poliéster, com efeito búfalo, impermeável, em tons similares às referências de cores indicadas: RGB 193, 188, 182 (HEX #c1bcb6), medidas mínimas de 42 cm de altura por 34 cm de largura por 18 cm de profundidade, fechamento com zíper de nylon. Parte frontal"
+  }
+ ]
+}

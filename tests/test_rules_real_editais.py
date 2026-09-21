@@ -32,6 +32,14 @@ EXPECTED = {
     "coronelxavierchaves_mg_pl72_2026_EDITAL_RETIFICADO": "QUALITATIVE",
     "irece_ba_dom2777": "QUALITATIVE",
     "saojoaodoparaiso_ma_23388": "QUALITATIVE",
+    # Read from the real PNCP file on 2026-09-21, once Family B came back:
+    # "ATESTADO(S) DE DESEMPENHO DE ATIVIDADE PERTINENTE E COMPATIVEL ...
+    #  FORNECIDOS POR PESSOA JURIDICA DE DIREITO PUBLICO OU PRIVADO, INDICANDO
+    #  QUANTIDADES, PRAZOS E OUTROS DADOS CARACTERISTICOS" (cl. 10.1.4.1).
+    # It names no minimum quantity and no percentage, and it accepts a PRIVATE
+    # issuer explicitly -- the first-sale route in docs/HABILITACAO.md, in the
+    # words of the biggest buyer in the corpus.
+    "itaqua_arq_7": "QUALITATIVE",
 }
 
 
@@ -85,6 +93,11 @@ def test_every_real_edital_file_is_covered():
     so the real-file suite grows with the corpus instead of silently shrinking."""
     present = {os.path.basename(p)[:-4] for p in glob.glob(os.path.join(EDITAIS, "*.txt"))}
     ignored = {"familyB_retry_log", "bomsucessodosul_pr_pe34_2026_TR",
-               "saopedrodoiguacu_pr_TR_kit", "crato_ce_dom5941"}
+               "saopedrodoiguacu_pr_TR_kit", "crato_ce_dom5941",
+               # Itaquaquecetuba's TR is a scanned PDF whose OCR is unusable
+               # ("Secretaria" comes out as "ecretêriâ"). The retificado-2
+               # EDITAL carries the same 17-item table in clean text, so the
+               # rules are exercised against that instead.
+               "itaqua_arq_8"}
     uncovered = present - set(EXPECTED) - ignored
     assert not uncovered, f"add expectations for: {sorted(uncovered)}"

@@ -1,3 +1,4 @@
+2026-09-21 11:01Z  RECUPERADA. /itens 200 (0,61s) · /arquivos 200 (0,72s) · /v3/api-docs 200 · tres rondas seguidas 200. Familia A (api/consulta/v1) agora e' que falha: 000 apos 45s, 000 apos 40s, 503. Papeis invertidos.
 2026-09-19T16:20:04Z attempt=1 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/itens?pagina=1&tamanhoPagina=50
 2026-09-19T16:20:05Z attempt=1 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/arquivos
 2026-09-19T16:20:21Z attempt=2 503 https://pncp.gov.br/api/pncp/v1/orgaos/46316600000164/compras/2025/447/itens?pagina=1&tamanhoPagina=50
