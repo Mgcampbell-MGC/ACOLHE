@@ -150,7 +150,6 @@ def main():
         print(f"    price per kit homologado (R$):          {band(kits, '{:,.2f}')}")
         if qtys:
             print(f"    kits per contract:                      {band(qtys, '{:,.0f}')}")
-        portes = Counter(r.get("porteFornecedorNome") for _, _, _, _ in [] )
         portes = Counter()
         wins = Counter()
         for rec, _, _, _ in priced:
@@ -161,10 +160,22 @@ def main():
                     if r.get("niFornecedor"):
                         wins.update([(r["niFornecedor"], r.get("nomeRazaoSocialFornecedor"))])
         print(f"    porte do vencedor: {dict(portes.most_common())}")
-        top = wins.most_common(6)
         print(f"    distinct winners: {len(wins)}; most frequent:")
-        for (cnpj, nome), n in top:
-            print(f"        {n[:46]:48} {cnpj}  x{n if False else ''}{wins[(cnpj,nome)]}")
+        for (cnpj, nome), count in wins.most_common(5):
+            print(f"        {(nome or '?')[:44]:46} {cnpj}  x{count}")
+
+        # Does LOT SIZE move the clearing ratio? The three big published
+        # contracts cleared at 74-77%; these are far smaller. Report it, with n.
+        sized = [(q, h / e) for _, e, h, q in priced if q]
+        if len(sized) >= 6:
+            sized.sort()
+            half = len(sized) // 2
+            lo, hi = sized[:half], sized[half:]
+            print(f"    lot-size split (n={len(sized)}):")
+            print(f"        smaller half (<= {lo[-1][0]:,.0f} kits, n={len(lo)}): median ratio "
+                  f"{st.median([r for _, r in lo]):.0%}")
+            print(f"        larger half  (>= {hi[0][0]:,.0f} kits, n={len(hi)}): median ratio "
+                  f"{st.median([r for _, r in hi]):.0%}")
 
     print("\n--- WHAT COULD NOT BE PRICED")
     for kind, rows in sorted(by.items()):
