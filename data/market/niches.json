@@ -1,0 +1,311 @@
+[
+ {
+  "nicho": "cartucho toner impressora",
+  "total_fulltext": 8394,
+  "amostra_n": 50,
+  "dispensa_pct": 0.1,
+  "modalidades": {
+   "Dispensa": 5,
+   "Pregão - Eletrônico": 45
+  },
+  "densidade": "ALTA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "consumo recorrente, todo orgao usa",
+  "http": "200 on attempt 2"
+ },
+ {
+  "nicho": "medalhas trofeus",
+  "total_fulltext": 5578,
+  "amostra_n": 50,
+  "dispensa_pct": 0.7,
+  "modalidades": {
+   "Dispensa": 35,
+   "Pregão - Eletrônico": 15
+  },
+  "densidade": "ALTA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "eventos escolares e esportivos",
+  "http": "200 on attempt 2"
+ },
+ {
+  "nicho": "material de expediente papelaria",
+  "total_fulltext": 16229,
+  "amostra_n": 50,
+  "dispensa_pct": 0.78,
+  "modalidades": {
+   "Dispensa": 39,
+   "Pregão - Eletrônico": 10,
+   "Pregão - Presencial": 1
+  },
+  "densidade": "MEDIA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "o item mais comprado do Brasil",
+  "http": "200 on attempt 5"
+ },
+ {
+  "nicho": "kit escolar material",
+  "total_fulltext": 12518,
+  "amostra_n": 50,
+  "dispensa_pct": 0.06,
+  "modalidades": {
+   "Credenciamento": 3,
+   "Pregão - Eletrônico": 41,
+   "Dispensa": 3,
+   "Inexigibilidade": 3
+  },
+  "densidade": "MEDIA",
+  "montagem": "ALTA",
+  "licenca": "nao",
+  "nota": "mesmo modelo do enxoval, muito maior",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "uniforme escolar",
+  "total_fulltext": 19765,
+  "amostra_n": 50,
+  "dispensa_pct": 0.2,
+  "modalidades": {
+   "Pregão - Eletrônico": 35,
+   "Dispensa": 10,
+   "Inexigibilidade": 2,
+   "Pregão - Presencial": 2,
+   "Credenciamento": 1
+  },
+  "densidade": "MEDIA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "confeccao, spec pesada",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "camisetas personalizadas evento",
+  "total_fulltext": 2400,
+  "amostra_n": 50,
+  "dispensa_pct": 0.94,
+  "modalidades": {
+   "Dispensa": 47,
+   "Pregão - Eletrônico": 3
+  },
+  "densidade": "MEDIA",
+  "montagem": "impressao",
+  "licenca": "nao",
+  "nota": "silk, mesma cadeia do brinde",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "equipamento de informatica notebook",
+  "total_fulltext": 8461,
+  "amostra_n": 50,
+  "dispensa_pct": 0.7,
+  "modalidades": {
+   "Dispensa": 35,
+   "Pregão - Eletrônico": 15
+  },
+  "densidade": "ALTA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "spec pesada, concorrido",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "material esportivo bolas",
+  "total_fulltext": 8988,
+  "amostra_n": 50,
+  "dispensa_pct": 0.76,
+  "modalidades": {
+   "Pregão - Eletrônico": 12,
+   "Dispensa": 38
+  },
+  "densidade": "BAIXA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "volumoso",
+  "http": "200 on attempt 2"
+ },
+ {
+  "nicho": "EPI equipamento protecao individual",
+  "total_fulltext": 5207,
+  "amostra_n": 50,
+  "dispensa_pct": 0.68,
+  "modalidades": {
+   "Dispensa": 34,
+   "Pregão - Eletrônico": 16
+  },
+  "densidade": "MEDIA",
+  "montagem": "nenhuma",
+  "licenca": "CA",
+  "nota": "exige Certificado de Aprovacao",
+  "http": "200 on attempt 4"
+ },
+ {
+  "nicho": "kit higiene pessoal",
+  "total_fulltext": 2107,
+  "amostra_n": 50,
+  "dispensa_pct": 0.48,
+  "modalidades": {
+   "Pregão - Eletrônico": 25,
+   "Credenciamento": 1,
+   "Dispensa": 24
+  },
+  "densidade": "MEDIA",
+  "montagem": "ALTA",
+  "licenca": "nao",
+  "nota": "vizinho direto do enxoval",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "cesta basica alimentos",
+  "total_fulltext": 5465,
+  "amostra_n": 50,
+  "dispensa_pct": 0.3,
+  "modalidades": {
+   "Pregão - Eletrônico": 34,
+   "Credenciamento": 1,
+   "Dispensa": 15
+  },
+  "densidade": "BAIXA",
+  "montagem": "ALTA",
+  "licenca": "sim",
+  "nota": "pesado, perecivel, vigilancia",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "material de limpeza",
+  "total_fulltext": 72877,
+  "amostra_n": 50,
+  "dispensa_pct": 0.24,
+  "modalidades": {
+   "Pregão - Eletrônico": 34,
+   "Dispensa": 12,
+   "Inexigibilidade": 3,
+   "Pregão - Presencial": 1
+  },
+  "densidade": "BAIXA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "pesado, margem fina",
+  "http": "200 on attempt 2"
+ },
+ {
+  "nicho": "livros didaticos paradidaticos",
+  "total_fulltext": 452,
+  "amostra_n": 50,
+  "dispensa_pct": 0.02,
+  "modalidades": {
+   "Inexigibilidade": 12,
+   "Pregão - Eletrônico": 35,
+   "Dispensa": 1,
+   "Manifestação de Interesse": 1,
+   "Credenciamento": 1
+  },
+  "densidade": "ALTA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "denso, sem spec ambigua",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "brinquedos pedagogicos",
+  "total_fulltext": 5508,
+  "amostra_n": 50,
+  "dispensa_pct": 0.24,
+  "modalidades": {
+   "Dispensa": 12,
+   "Pregão - Eletrônico": 38
+  },
+  "densidade": "BAIXA",
+  "montagem": "nenhuma",
+  "licenca": "INMETRO",
+  "nota": "certificacao compulsoria",
+  "http": "200 on attempt 3"
+ },
+ {
+  "nicho": "colchoes camas abrigo",
+  "total_fulltext": 45,
+  "amostra_n": 45,
+  "dispensa_pct": 0.24444444444444444,
+  "modalidades": {
+   "Dispensa": 11,
+   "Pregão - Eletrônico": 33,
+   "Pregão - Presencial": 1
+  },
+  "densidade": "BAIXA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "volume puro, frete proibitivo",
+  "http": "200 on attempt 2"
+ },
+ {
+  "nicho": "kit dormitorio enxoval cama mesa banho",
+  "total_fulltext": 0,
+  "amostra_n": 0,
+  "dispensa_pct": null,
+  "modalidades": {},
+  "densidade": "MEDIA",
+  "montagem": "ALTA",
+  "licenca": "nao",
+  "nota": "abrigos e casas de acolhimento",
+  "http": "200 on attempt 5"
+ },
+ {
+  "nicho": "material odontologico escova dental",
+  "total_fulltext": 5197,
+  "amostra_n": 50,
+  "dispensa_pct": 0.26,
+  "modalidades": {
+   "Pregão - Eletrônico": 37,
+   "Dispensa": 13
+  },
+  "densidade": "MEDIA",
+  "montagem": "ALTA",
+  "licenca": "ANVISA",
+  "nota": "saude bucal escolar",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "fardamento guarda municipal",
+  "total_fulltext": null,
+  "amostra_n": 0,
+  "dispensa_pct": null,
+  "modalidades": {},
+  "densidade": "MEDIA",
+  "montagem": "nenhuma",
+  "licenca": "nao",
+  "nota": "nicho pequeno e fiel",
+  "http": "FAILED after 5: RemoteDisconnected: Remote end closed connection without response"
+ },
+ {
+  "nicho": "bandeiras faixas placas",
+  "total_fulltext": 2096,
+  "amostra_n": 50,
+  "dispensa_pct": 0.26,
+  "modalidades": {
+   "Dispensa": 13,
+   "Pregão - Eletrônico": 36,
+   "Pregão - Presencial": 1
+  },
+  "densidade": "MEDIA",
+  "montagem": "impressao",
+  "licenca": "nao",
+  "nota": "pequeno, recorrente",
+  "http": "200 on attempt 1"
+ },
+ {
+  "nicho": "kit maternidade gestante",
+  "total_fulltext": 439,
+  "amostra_n": 50,
+  "dispensa_pct": 0.58,
+  "modalidades": {
+   "Dispensa": 29,
+   "Pregão - Eletrônico": 21
+  },
+  "densidade": "MEDIA",
+  "montagem": "ALTA",
+  "licenca": "nao",
+  "nota": "o negocio atual, para comparar",
+  "http": "200 on attempt 2"
+ }
+]
