@@ -158,7 +158,7 @@ function convert(md) {
     const h = l.match(/^(#{1,3}) (.*)$/);
     if (h) {
       flushPara();
-      if (h[1].length === 1 && !firstH1 && !(kids.length && kids[kids.length - 1]._pb)) {
+      if (h[1].length === 1 && !firstH1 && kids.length && !kids[kids.length - 1]._pb) {
         const pb = new Paragraph({children: [new PageBreak()]}); pb._pb = true; kids.push(pb);
       }
       if (h[1].length === 1) firstH1 = false;
