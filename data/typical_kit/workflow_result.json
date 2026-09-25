@@ -6486,7 +6486,57 @@
      "notes": "This is the only product read that meets every element of the article spec: plush, 'fechamento em zíper', unissex, neutral off/caramelo, size M in stock. SECOND SOURCE: Emilio (50191584000106, SP) MACACÃO LONGO SOFT URSO #26300 PRESENTE DE ANJO, R$52,04. It is soft (fleece-type), 'fechamento frontal em zíper', BEGE, but printed ursinhos, and only 1 size M in stock. Cheaper plush that FAILS zip and/or neutral colour: Yanai Macacão Pequenos Passos Plush Básico R$24,48 (RN-G incl. M, azul/rosa, closure not stated); Paulimar Petutinha #2340 unissex estampas R$25,35; Tutti Kids 01 R$26,80; Vistue/Bloomys 105 R$22,88 (85% algodão 15% poliéster, printed); Emilio Petutinha #2623 R$35,52 (snaps). Emilio Bum Calabum #20513 plush zíper R$39,09 is PINK only. These cheaper ones are adequate only for T21-6 ('plush tamanho M'), not for T32-12 (zíper, unissex) or T05 (sem estampa, cores neutras). T06-1 (atoalhado 100% algodão): no terry romper found at any verified supplier. Buyer homologated range R$20,00-56,09."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "MIJAO_CALCA_UN",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 5.64,
+     "correct_url": "https://yanaiatacado.com.br/products/mijao-pe-reversivel-com-10-liso",
+     "evidence": "Re-read 2026-09-25 from the Shopify product JSON (/products/mijao-pe-reversivel-com-10-liso.js): price 5637 for each of variants P, M and G, all available. Description: 'Pacote contém 10 mijões', 'Suedine, 100% algodão', 'Pé reversível', cores sortidas, elastic waist. R$56.37 / 10 = R$5.637. It conforms: 100% cotton suedine, and the reversible foot covers both footed and footless lines. The pack has no RN size, which is correct for a P-G spec. I found nothing clearly cheaper that conforms. Yanai's 'Mijão Agalu Canelado C/Pé' 6-pack costs R$27.27 (R$4.55 each) but states no composition. The Agalu S/Pé canelado 6-pack is 100% cotton at R$32.15 (R$5.36 each), but it is footless only."
+    },
+    {
+     "sku_id": "CONJUNTO_BODY_CALCA_2PC",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 23.13,
+     "correct_url": "https://www.emilio.com.br/conjunto-body---culote-e--bandana---tamanho-rn-ao-g---302004---mafessoni/p",
+     "evidence": "Re-read 2026-09-25 from the Emilio VTEX catalogue API: Price 23.13 (ListPrice 23.13). Stock: FEMININO P 100, M 10, G 10, RN 10. Description: '1 body manga longa, 1 culote e 1 babador bandana… Suedine 100% algodão'. The product image shows a long-sleeve body, cuffed full-length trousers and a bandana. It conforms to 'body + mijão/trousers, 100% cotton or suedine', with the bandana as an extra piece. Caveat: the only colourway is FEMININO (printed); there is no neutral or masculine variant. The cheaper sets I checked all fail. Baby Dufy 2000/500 (R$15.75) is '91% Poliéster 9% Elastano'. Yanai's Agalu Mijão + Body (R$12.49) is '70% Algodão 30 Poliester'. Baby Dufy 2800/592 (R$21.75) states no composition, and only the white M variant (10 units) is in stock. The Pop Cute and Mafessoni body + shorts sets have shorts, not trousers."
+    },
+    {
+     "sku_id": "PAGAO_3PC",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 18.91,
+     "correct_url": "https://www.emilio.com.br/conjunto-pagao---3-pecas---01-0192---radani/p",
+     "evidence": "Re-read 2026-09-25 from the Emilio VTEX API: Price 18.91, SORTIDO UNICO, 100 in stock. Description: 'Conjunto Pagão 3 Peças em Meia Malha com Bordado Inglês. Tecido 100% algodão.' The image shows a long-sleeve wrap jacket with trim and footed trousers; the third piece is not described. It conforms only for GENERIC 3-piece lines. It is the only Radani pagão whose page states 100% cotton. 01.0164 (R$17.89), 01.0301 (R$17.64) and 01.0158 (R$15.34, 'meia malha e tecido estampado') state no composition, so they are not clearly conforming cheaper options. It does NOT cover the lines that name a body (T11-17, T24-9, T36-13). For those, Emilio's CONJUNTO BODY - 3 PEÇAS #01.0430/#01.0431 RADANI ('body com casaco e mijão… suedine') is R$20.90, with 10 in stock each: https://www.emilio.com.br/conjunto-body---3-pecas---01-0431---radani/p. Paulimar's Radani pagão sets at R$14.20 (#526154, #526179) have only 2 pieces, so they fail."
+    },
+    {
+     "sku_id": "PAGAO_5PC",
+     "verdict": "UNREACHABLE",
+     "correct_unit_cost": null,
+     "correct_url": "",
+     "evidence": "No 5-piece pagão set with a public price was found at any CNPJ-verified SP supplier, so there is no price to confirm. Searches on 2026-09-25: Emilio VTEX 'pagao' returns 13 products, all 3-piece Radani/Estilinho sets. Emilio '5 pecas' returns only Minasrey KIT MATERNIDADE 5 PEÇAS #402901/#402905 (R$16.02), which is 1 cap + 1 pair of mittens + 1 pair of socks, not a pagão. Paulimar's /bebe/femininomasculino/pagao category has only Radani 2-piece sets (R$14.20) and Castelo 2-piece 100% acrylic (R$46.26). Yanai search 'pagao' returns no pagão sets. A 5-piece set could be built from separate pieces (body + mijão + mittens + vest + headband), but that is not measured here."
+    },
+    {
+     "sku_id": "MACACAO_LONGO_UN",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 14.5,
+     "correct_url": "https://www.paulimar.com.br/macacao-p-ao-g-suedine-canelado-com-pe-reversivel-my-little-one--my031.290819.html",
+     "evidence": "The listed price is right: re-read 2026-09-25, Paulimar #1996 Mafessoni NEUTRO shows R$ 19,44 / PC for RN, P, M and G. Its page states no composition. The same supplier's own macacão-suedine-longo category lists clearly cheaper suedine long rompers. My Little One MY031 is 'Macacão P ao G Suedine Canelado com Pé Reversível' at R$ 14,50 / PC, with P 23, M 36 and G 39 in stock. Its image shows long sleeves, long legs, snaps and an appliqué. Its composition % is also unstated, the same evidence level as the #1996 row. Other options: MY010 suedine RN-M at R$12.98 (low stock: RN 8, P 5, M 18). MY006 is R$18.20 and explicitly '100% Algodão com Bordado e Zíper', which suits T41-2 embroidered and T37-6 zip, but stock is only M 3, G 6. MY031 is pink/blue rather than neutral; the spec does not require neutral colours. For a strict zip + RN-G + neutral reading, #1996 at R$19.44 remains the right article."
+    },
+    {
+     "sku_id": "MACACAO_CURTO_UN",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 18.41,
+     "correct_url": "https://www.emilio.com.br/banho-de-sol-com-bandana---tamanho-p-ao-g---202007---mafessoni/p",
+     "evidence": "Re-read 2026-09-25 from the Emilio VTEX API: Price 18.41 for P, M and G (SORTIDO), 10 in stock each. Description: suedine, 'Composição: 100% Algodão', diagonal zip, leg cuffs, bandana included. Correction to the row's flag: the product image shows SHORT SLEEVES, not a sleeveless garment. It therefore conforms as a short-sleeve, short-leg romper. It is printed rather than embroidered, so for T41-1 (embroidered) consider Emilio's MACACÃO CURTO #2478 BABYNHA at R$17.90 ('meia malha bordado unissex'; image shows short sleeves, snaps, embroidered appliqué). That one states no composition and its P size is out of stock (M 10, G 100): https://www.emilio.com.br/macacao-curto---tamanho-p-ao-g---2478---babynha/p. Neither product has an RN size, which matters for T20-11's RN pyjama. Paulimar's short-romper category had nothing cheaper."
+    },
+    {
+     "sku_id": "MACACAO_PLUSH_UN",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 60.65,
+     "correct_url": "https://www.paulimar.com.br/macacao-rn-ao-g-com-ziper-carnerinho-unissex-baby-bee--bb1027.289080.html",
+     "evidence": "Re-read 2026-09-25: R$ 60,65 / PC for all CARAMELO and OFF variants. Size M stock caps: CARAMELO 4, OFF 6; CARAMELO G is 0. Description: 'confeccionado em plush macio… fechamento em zíper', unisex. It conforms: plush, zip, size M, neutral colours. It is at the upper-middle of the buyer band (R$43.75-75.12). I tried to refute it with cheaper plush rompers, but none has confirmed zip, neutral colour and size M. Paulimar Vistue 105 (R$22.88, 85% cotton/15% polyester, FEM/MASC only, closure not stated). Paulimar Petutinha 2340 (R$25.35), Mafessoni 2112 (R$34.98) and Tutti Kids (R$26.80-29.98): no zip stated. Yanai Pequenos Passos plush (R$24.48-32.18): the images show snap closures and pink/blue gendered colours. Emilio Bum Calabum #20513 (R$39.09): has a zip, but only PINK M is in stock. Emilio Petutinha #2362/#2644: snaps or no zip, and no stock in size M. Low stock is a real risk for volume orders. If a buyer accepts snaps, Paulimar Petutinha 2340 at R$25.35 would be far cheaper."
+    }
+   ]
   },
   {
    "prices": [
@@ -6610,7 +6660,57 @@
      "notes": "Read 2026-09-23: 'LUVAS: 60% ALGODAO 39% POLIAMIDA 01% ELASTANO', 3 pares, 0 a 3 meses, stock 100. T01-13's sister line T01-17 says only 'KIT LUVA C/3 PARES', so it conforms. Second source: L 4 COMERCIAL (01.619.612/0001-20, SP), 'Luva Duck bebe neutro algodao (c/3)', same 60/39/1 composition, 0 a 3 meses, R$12,15. Cheaper but not used: Emilio Passinho KIT LUVA CANELADA LISA '3 UNIDADES' #0042 R$6,02. The text says '03 luvas', meaning 3 mittens, while the photo shows 3 pairs; composition is not published. This is the unit/pair pack trap, so it needs a physical check before use. T01-17: buyer estimated R$14,19 and paid R$8,00, so the line loses about R$3,96."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "SAIDA_MATERNIDADE_KIT",
+     "verdict": "NONCONFORMING",
+     "correct_unit_cost": 78,
+     "correct_url": "https://www.l4.com.br/produto/saida-maternidade/326418",
+     "evidence": "I re-read the page on 2026-09-25. It shows 'Preço: R$ 61,20' and 'Detalhes: 100%Algodão -- 1Macacão longo -- 1manta (70cmx90cm)', Ref 4069, size RN, with a 'Compra mínima: R$ 300,00' banner. The price and the 2-piece basis are correct. It fails 3 of the 5 SAÍDA lines. (1) T16-9 says 'A MANTA DEVERÁ POSSUIR DIMENSÕES MÍNIMAS DE 0,75 M X 0,75 M', and 70 cm is below that. Every Bloomys set on L4 (Refs 4066/4069/4070/4072/3978/3980/4022, R$61,20-74,30) states a 70x90 manta, so I found no L4 set that passes T16-9. (2) T09-11 asks for macacão + LUVAS + manta bordada in a box, and this set has no mittens. (3) T34-5 asks for macacão + boné + luvas + manta bordada 70x70, and this set has no cap or mittens. It conforms only for the generic T26-8 'KIT MATERNIDADE DE SAIDA' and the T15-1 wrapper. Nearest conforming option for T09-11, read today at the same supplier: L4 'Saída-maternidade Bebelezinha bebe feminino suedine 3pç' Ref 316, R$ 78,00, '100%Algodão -- 1Macacão longo + 1manta + 1par luvas -- embalagem em caixa'. Masculino Refs 320/321 (/326416, /326417) are also R$78,00. Caveats: only size P is offered, and the manta's size and embroidery are not stated. For T16-9 and T34-5 I found nothing conforming. Emilio lists 50 saída sets, all R$113-195 except Karana #14904 (R$59,90, pieces not stated, stock 1) and Feroz 3 peças #5548 (R$77,30, size P), and none states its pieces or manta size. Those lines stay UNVERIFIED above R$78."
+    },
+    {
+     "sku_id": "CASAQUINHO_TRICO_CONJ",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 31.78,
+     "correct_url": "https://www.emilio.com.br/kit-casaco-la---4-unidades----130---castelo/p",
+     "evidence": "I re-read the page today. Price, ListPrice, spotPrice and low/highPrice are all 31.78. The product is 'KIT CASACO LÃ - 4 UNIDADES # 130 - CASTELO', and the description reads 'CASAQUINHO DE LÃ PONTO CONCHA CASTELO 4 PEÇAS Contém: 1 casaco com botões, 1 Gorro, 1 Par de luvinhas, 1 Par de sapatinhos'. It comes in RN in AZUL/BRANCO/PINK/ROSA/VERMELHO; one variant is out of stock and the others show 10 or 100. It conforms to T26-3 'CONJUNTO DE CASAQUINHO TRICÔ': a knitted cardigan with matching pieces. Composition is not on the page. The sibling Castelo #135 casaco page says 100% acrílico, so this set is very likely acrylic, which a knit spec allows. I found no cheaper conforming SET. Emilio searches for casaco/trico/kit casaco turn up only a single Castelo #135 cardigan at R$23,52, a Michele #910 single cardigan at R$29,40 with stock 1, and kits of cap, mittens and booties with no cardigan (Fio de Amor #10032 R$25,58, Papi Mami R$26,74). Note that R$31,78 is above T26-3's homologated R$20,51."
+    },
+    {
+     "sku_id": "MEIA_PAR",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 4.86,
+     "correct_url": "https://www.emilio.com.br/kit-meia-bebe-cano-medio---3-pares---kt-49008-bb---rikam/p",
+     "evidence": "I re-read the page today. Price is 14.58 for 'KIT MEIA BEBÊ CANO MEDIO - 3 PARES # KT.49008.BB - RIKAM' (BRANCO RN and PP, stock 100 each), and 14.58/3 = R$4.86 per pair, which is correct. The page gives the composition as 73% algodão, 24% poliamida, 2% elastano, 1% elastodieno, which passes the at-least-60%-cotton rule. Despite the name, the page says '*soquete micro ... *altura chega no tornozelo', so these are ankle socks. That fits T16-5 (cano curto ou médio) and T39-5 (curtas), but not the 'cano alto' lines T20-7, T08-4, T38-11 and T42-5. It also fails T11-2 (100% algodão). For the cano-alto lines, read today: Pimpolho 'KIT MEIA LISA CANO ALTO - 3 PARES - TAMANHO RN # 0008794' at R$14,22 (R$4,74 per pair), https://www.emilio.com.br/kit-meia-lisa-cano-alto---3-pares---tamanho-rn---0008794---pimpolho/p, plain, but with no composition on the page. A cheaper option read today is Delos 'KIT MEIA ZERO - 6 PARES - TAMANHO RN # 1324' at R$20,56 (R$3,43 per pair), 63% algodão, https://www.emilio.com.br/kit-meia-zero---6-pares---1324---delos--you-/p. But it is 'Colors, cores sortidas', so it is not verified as plain. It could serve lines that do not require 'lisa' (T03-4, T36-7 'cores diversas', T14-6, T30-5), but I did not count it as a refutation of this plain-sock basis."
+    },
+    {
+     "sku_id": "MEIA_KIT3",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 9.31,
+     "correct_url": "https://www.emilio.com.br/kit-meia---3-pares---tamanho-rn----011---vivant/p",
+     "evidence": "The listed row checks out: R$14,58 for 3 pairs, RN, 73% cotton, plain white. A cheaper 3-pair RN kit is on the same São Paulo wholesaler, read today: 'KIT MEIA - 3 PARES - TAMANHO RN # 011 - VIVANT' at Price 9.31, variant SORTIDO RN, stock 99999, description 'Kit meia Vivantex com 03 unidades sortidas'. It conforms to the generic lines T06-14 'RN C/3 UN', T10-12 'PCT C/3 PARES' and T09-12 '3 PARES AZUL/BRANCO/ROSA'. Its assorted pattern suits T22 (estampadas) better than the plain Rikam. Caveat: the page states no composition, the same unverified status the original agent accepted for the Pimpolho semaninha. Neither kit meets T32-1 (100% algodão), which remains UNVERIFIED. A cotton-verified alternative is Delos #1324: 6 pairs RN at R$20,56, 63% algodão, which works out to R$10,28 per 3 pairs, but only as a 6-pack."
+    },
+    {
+     "sku_id": "MEIA_KIT7_SEMANINHA",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 30.56,
+     "correct_url": "https://www.emilio.com.br/kit-meia-semaninha---masculino---7-pares-tamanho-rn---0301071---pimpolho/p",
+     "evidence": "I re-read the page today. Price, ListPrice and spotPrice are 30.56 for 'KIT MEIA SEMANINHA - MASCULINO - 7 PARES-TAMANHO RN # 0301071 - PIMPOLHO', size RN, stock 100. The description says '7 pares de meias um para cada dia da semana'. The API also shows the feminino #0301070 at R$30,56 with stock 100. This conforms to T01-13 'KIT MEIA SEMANINHA'. Composition is not on the page. In an Emilio search of about 100 sock products it is the cheapest 7-pair semaninha; the 00-15 and 16-20 versions cost R$32,90-33,99. The cost sits above T01-13's homologated R$16,00."
+    },
+    {
+     "sku_id": "LUVA_PAR",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 2.43,
+     "correct_url": "https://www.emilio.com.br/kit-luva-feita-em-malha---3-unidades---116---castelo/p",
+     "evidence": "The listed page, re-read today, shows Price 4.63 for 'LUVINHA MALHA # 49 - LENE', described as 'malha suedine 100% algodão'. The BRANCO variant has stock 10, and the page does not mention an elastic cuff. A cheaper option that conforms better is on the same supplier, read today: 'KIT LUVA FEITA EM MALHA - 3 PARES # 116 - CASTELO' at Price 7.29 (variants MASCULINO/FEMININO/NEUTRO, stock 99999/100/99999), with 'Composição: Meia malha 100% Algodão. Acabamento 96% Algodão e 4% Elastano', i.e. a cotton knit with an elasticated cuff. 7.29/3 = R$2,43 per pair. That meets T11-8 ('100% algodão, com elástico nas pontas') better than the Lene, whose cuff is not stated. Caveats: (a) it means delivering one pair split from a 3-pair kit; (b) no white variant is named, so T33-6 ('cor branco') still needs the Lene BRANCO at R$4,63 or confirmation of the NEUTRO colour; (c) T38-7 (wool) needs e.g. Castelo 'LUVA DE LÃ - COM 3 UNIDADES # 112' at R$8,78 (acrylic), which I read only through the catalogue API. If single-pair packaging is required, the next option is the Lene at R$4,63 (elastic not stated) or Fio de Amor 'LUVINHA DE MALHA DELICATO # 300' at R$6,10, 100% algodão with a 'punho em ribana' cuff (read through the API)."
+    },
+    {
+     "sku_id": "LUVA_KIT3",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 7.29,
+     "correct_url": "https://www.emilio.com.br/kit-luva-feita-em-malha---3-unidades---116---castelo/p",
+     "evidence": "The listed page, re-read today, shows Price 11.96 for 'KIT DE LUVAS 3 PARES - TAMANHO RN # 0750405405 - CONDE DUCK'. Only the FEMININO RN variant is listed, with stock 10, and the page says 'LUVAS: 60% ALGODÃO 39% POLIAMIDA 01% ELASTANO'. The price is right, but a clearly cheaper conforming kit is on the same supplier, read today: 'KIT LUVA FEITA EM MALHA - 3 PARES # 116 - CASTELO' at Price/ListPrice 7.29. It comes in MASCULINO/FEMININO/NEUTRO, size ÚNICO (newborn), stock 99999/100/99999, and is 'Meia malha 100% Algodão. Acabamento 96% Algodão e 4% Elastano'. It meets T01-17 'KIT LUVA C/3 PARES' and has more cotton than the Duck kit. That is 39% cheaper, and it is also below T01-17's homologated R$8,00."
+    }
+   ]
   },
   {
    "prices": [
@@ -6734,7 +6834,57 @@
      "notes": "Same article as the cost_table.csv row, re-read today at the same price. The Yanai R$17.89 row (cost_banheira.csv) is SOLD OUT today: 0 of 4 variants available in products.json. Cajovil's own page for Ref 0362 states only '20L, com saboneteira'. Two third-party retailer pages (not suppliers) describe the 0362 as having a valve: sdykids.com.br ('Material polipropileno/pvc, 74x41x24, Com valvula: sim') and sapatinhoseroupinhas.com.br ('Com valvula para saida da agua', 71x38x25 cm). This fits the valve lines (T09-9, T11-1, T12-1, T16-4, T41-10) on third-party evidence only. T33-10 asks for at least 400 mm wide and 700 mm long; the published widths are 38-41 cm, so it is borderline. T39-12 asks for 73x39.5x25 cm, which is close. Brascol (18.483.322/0001-02) has the same tub at R$18.05 in the page data, in branco, verde, rosa and azul, all flagged available, with dimensions 71x40x21. Brascol shows prices only to logged-in customers (show_price=logged, 'Cadastre-se para Comprar'), so R$18.05 is corroboration only. For the neutral line T24-1: Emilio BANHEIRA BABY 20 L #0361 BRANCO, R$24.10, in stock. For T10-2 'transparente': Emilio BANHEIRA TRANSLUCIDA 20 L #0858, R$24.08, tinted azul/rosa, not clear; the clear tub is 22 L #0714, R$44.20. Separately, Emilio today lists PLASTIBRASIL 22 L tubs #7910, #7946 and #8946 at R$22.26 (rosa/azul, stock 10-100). That is well below the R$34.67 that cost_table_v2 records as the cheapest 22 L tub. Colour and dimensions for those tubs are not stated. Buyer estimates R$24.40-98.27."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "TOUCA_UN",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 2.52,
+     "correct_url": "https://www.paulimar.com.br/kit-touca-malha-3-pecas--rn--castelo---117.254379.html",
+     "evidence": "Re-read 2026-09-25: the page shows 'Kit Touca malha 3 pecas RN Castelo | 117', SORTIDO / UNICO, 'R$ 7,56 / PC', em estoque. 7.56/3 = 2.52 is correct. Knit newborn cap, one size. Caveats: (1) the page states no composition at all, so the cotton requirement (100% / 97-3 / 80-20) is not proven; sister Castelo 'malha' items (#115, #101) state 100% cotton knit, so it is likely but unverified. (2) Colour is only 'SORTIDO' (assorted), so neutral colours cannot be chosen. (3) The price is a split from a 3-pack. Only close alternative: Emilio KIT TOUCA CANELADA LISA 3 un #0044 Passinho at R$7.28 (R$2.43 each, https://www.emilio.com.br/kit-touca-canelada-lisa---3-unidades---tamanho-unico---0044---passinho--agalu-/p). That is not clearly cheaper and also has no stated composition, so it is not TOO_DEAR."
+    },
+    {
+     "sku_id": "TOUCA_KIT3",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 7.56,
+     "correct_url": "https://www.paulimar.com.br/kit-touca-malha-3-pecas--rn--castelo---117.254379.html",
+     "evidence": "Re-read 2026-09-25: 'R$ 7,56 / PC' for the 3-cap kit, SORTIDO, UNICO, em estoque. Price and pack are as listed. Conforms to 'kit touca bebê' / 'touca pacote'. The 3-count is assumed for T35-17, and the composition is unstated on the page (same caveat as TOUCA_UN). The buyer estimate is R$23.50-23.75, so there is no risk of under-costing. Emilio Passinho #0044 3 ribbed caps at R$7.28 is only 0.28 cheaper and also has no composition; that is not clearly cheaper."
+    },
+    {
+     "sku_id": "SAPATINHO_PAR",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 2.38,
+     "correct_url": "https://www.paulimar.com.br/kit-sapatinho-malha-com-3-pecas-rn-castelo--115.213847.html",
+     "evidence": "Re-read 2026-09-25: 'Kit Sapatinho Malha com 3 Peças RN Castelo | 115', 'R$ 7,15 / PC', em estoque, SORTIDO/UNICO. Description: '3 pares de sapatinho. Composição: Meia Malha: 100% Algodão; Acabamento: 96% algodão 4% Elastano'. 7.15/3 = 2.383, which rounds to R$2.38. The main fabric is 100% cotton, so it conforms to T30-10 and T33-5 (the elastane is trim only) and to the vague 'sapatinho' lines. It does NOT conform to the wool lines (T05, T38-14). For those, use Emilio KIT SAPATINHO DE LÃ 3 pares #114 at R$9.34, i.e. R$3.11 per pair (https://www.emilio.com.br/kit-sapatinho-de-la---3-unidades---114---castelo/p). Paulimar sells the same #114 at R$10.05, which is dearer. The price is a split from a 3-pair kit, and the colour is assorted only."
+    },
+    {
+     "sku_id": "SAPATINHO_KIT3",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 9.34,
+     "correct_url": "https://www.emilio.com.br/kit-sapatinho-de-la---3-unidades---114---castelo/p",
+     "evidence": "Re-read 2026-09-25 (schema.org offers and VTEX catalogue API): KIT SAPATINHO DE LÃ - 3 UNIDADES #114 CASTELO, price 9.34 for all three SKUs. FEMININO stock 10 (InStock), MASCULINO 100 (InStock), NEUTRO 0 (OutOfStock). Description: 'SAPATINHO DE LÃ COM FITA DE CETIM / Contém: 3 pares'. Pack (3 pairs) and price match. Caveat: Paulimar lists the same Castelo #114 as 'Kit Sapatinho Acrilico com 3 Peças' (R$10.05), which confirms the yarn is acrylic, not animal wool. That is acceptable under trade usage of 'lã', but it fails if the edital strictly demands wool. It is one size, not labelled 0-5 m. The neutral variant is out of stock, so only boy/girl colours are available. The cost is R$0.85 above the buyer estimate of R$8.49. No cheaper wool 3-pair kit was found at Emilio or Paulimar."
+    },
+    {
+     "sku_id": "SAPATINHO_PANTUFA_KIT3",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 38.7,
+     "correct_url": "https://www.lojaeraumavez.com.br/par-de-pantufa-bichinhos-para-bebes.html",
+     "evidence": "Re-read 2026-09-25: 'Par de Pantufa de Bichinhos Para Bebês Até 12 Meses', sku 61107, price box 'R$12,90' (PIX 'R$12,26', 5% off), schema InStock, 'Disponibilidade: Em estoque' (the sold-out block is hidden). Material 100% polyester, non-slip sole, 9 cm insole, size U 0-12 m, animal themes (Cãozinho, Leão, Dino…). 3 x 12.90 = 38.70 is correct (36.78 via PIX). It is a themed slipper, so it conforms on article; 0-12 m size, 9 cm long, fits 0-5 m. RETAIL price and more than twice the R$17.50 buyer estimate. Searched for a cheaper conforming alternative: Emilio (pantufa, pelúcia, meia bichinho) and Paulimar (pantufa, pelúcia, sapatinho). Only found socks/'meia bichinho' (Pimpolho single pair R$16.35), 'meia sapatinho' 6-pack socks, or wrong size (Selene pelúcia 21-24). None is a conforming slipper kit cheaper in SP, so not TOO_DEAR on evidence. A Magalu Empresas 'Kit 3 Meias Pantufa Duck' listing exists but its price did not render (JS page), so it is unverified."
+    },
+    {
+     "sku_id": "KIT_TOUCA_LUVA_SAPATO",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 7.29,
+     "correct_url": "https://www.emilio.com.br/kit-com-3-pecas---touca-luva-e-sapato-em-malha---101---castelo/p",
+     "evidence": "Re-read 2026-09-25: price 7.29 on all 6 colour SKUs. Description: 'indicado para bebê recém nascido. Material 100% algodão. Pompom 100% acrílico. Acabamento 96% algodão e 4% elastano'. Conforms to the cotton-knit lines (T06-6, T21-5, T29-13, T39-6). Stock has changed since 2026-09-23: page schema shows AZUL and ROSA OutOfStock, and BRANCO, VERMELHO, AMARELO and VERDE InStock. So neutral colours (branco/amarelo/verde) ARE now available, which improves on the row's note. The variant failures stand: T31-8 wool needs Castelo #104 lã kit at R$11.76 (https://www.emilio.com.br/kit-touca--luva--sapatinho-la---104---castelo/p); T26-11 socks and T09-13 do not match this SKU. Searched Emilio for all cap+mittens+bootie kits: #101 is the cheapest (next is Fofinho #080 R$10.90)."
+    },
+    {
+     "sku_id": "BANHEIRA_20L",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 18.9,
+     "correct_url": "https://www.emilio.com.br/banheira-adoleta---20-litros---0362---cajovil/p",
+     "evidence": "Re-read 2026-09-25: BANHEIRA ADOLETA - 20 LITROS #0362 CAJOVIL, price 18.9 for AZUL (sku 2802) and ROSA (2803), both InStock (qty 99999). Description: 'formato compacto… Resistente… Com saboneteira. Marca: Cajovil.' 20 L, so it conforms to the plain 20 L / at-least-20 L lines. The page does NOT mention a drain valve or dimensions, so it fails or is unverified for lines requiring a valve, T33-10 / T39-12 dimensions, T10-2 transparent, T24-1 neutral and T02-10 amarela (only azul/rosa offered). The previously banked Yanai R$17.89 for the same article (cost_banheira.csv) is only R$1.01 cheaper and was not re-read today, so it is not TOO_DEAR."
+    }
+   ]
   },
   {
    "prices": [
@@ -6858,7 +7008,57 @@
      "notes": "Re-read today: the v2 row still holds at R$5,20. The page states 'escova de cerdas macias e suaves' and 'o pente contem pontas arredondadas', 01 of each, and a white variant exists (T24-8 neutral). Second source: Yanai sells the same RCA ref 1001 at R$5,29 (Rosa/Azul/Branco). Gaps: the page does not say atoxico, which T16-1 requires explicitly. Cheapest kit that states it: Cefisa #110 R$6,08 at Emilio (PP, nylon, 'pigmentos atoxicos', rounded 'bolinha' tips; assorted colours; includes a free spoon). T39-3 (BPA-free, brush PP/TPE/nylon, comb PP/TPE) matches the Emilio description of Buba ESCOVA E PENTE BABY #5236 word for word ('Produto 100% Livre de bpa; Escova: polipropileno, tpe e cerdas de nylon; Pente: polipropileno e tpe'): R$18,18 at https://www.emilio.com.br/escova-e-pente-baby---5236---buba/p. Buyer estimates R$9,98-45,00, so this line has a large margin at any of the three prices."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "BANHEIRA_22L",
+     "verdict": "NONCONFORMING",
+     "correct_unit_cost": null,
+     "correct_url": "",
+     "evidence": "Price is right: the Emilio VTEX catalogue read 2026-09-25 shows BANHEIRA - 22 LITROS #7946 PLASTIBRASIL at Price=ListPrice=22.26, 1 UN. The variant is AZUL with 10 in stock, and #8946 AZUL is also R$22,26 with 100 in stock. The row's claim of a '#7910 rosa' variant is wrong: at Emilio, #7910 is a Petita bath kit (KIT BANHO DUKE #7910-AZR, R$10,24), not a tub. Every tub variant on sale is blue, which weakens T22's 'UNISSEX'. Conformity fails on dimensions: the same Plastibrasil 22 L (Lar & Cia page read today, https://www.lareciautilidades.com.br/utilidades-domesticas/banheira-infantil/banheira-bebe-22l-verde-perolado-plastibrasil) measures 68 cm long x 42 cm wide x 18 cm deep. T22 requires 77 cm long, 40 cm wide and 20 cm high, so this tub is 9 cm shorter and 2 cm lower. 'Anatômica' and PP (T36-15) are not stated on the Emilio page either. I found no conforming 22 L tub of about 77 cm. None of Emilio's 22 L tubs (Cajovil 0822/0810/0973/0852/0946/0714) states dimensions, and cajovil.com.br gives only capacity. The Plasutil 21 L #13356/13391 (73.8-76.3 cm, R$51,51) is under 22 L. So R$22,26 is valid only for 22 L lines with no dimensions; for T22 it is not a conforming cost."
+    },
+    {
+     "sku_id": "BANHEIRA_25L",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 39.1,
+     "correct_url": "https://www.emilio.com.br/banheira-plastico-com-valvula---28-litros---0555---cajovil/p",
+     "evidence": "The Emilio VTEX catalogue read 2026-09-25 shows BANHEIRA PLÁSTICO COM VÁLVULA - 28 LITROS #0555 CAJOVIL, BRANCO variant (item 53786), at Price=ListPrice=39.10, 1 PC, AvailableQuantity 99999. Azul, rosa and verde are the same price. Conformity: 28 L meets 'at least 25 L', the product name states the valve, and the Cajovil page (cajovil.com.br/adoleta-bebe/produtos/120/banheira-28-litros/, 'Ref 0555 ... Litragem: 28L ... ampla saboneteira') confirms the soap rest. White exists for T04. Anatomical shape, PP and the 20-25 kg rating are still not stated anywhere I read. Nothing clearly cheaper and conforming: Yanai sells the same 28 L Adoleta at R$39,09 (a R$0,01 difference; https://yanaiatacado.com.br/products/banheira-28-litros-adoleta-bebe-1). The Monte Libano 24 L at R$29,71 is under 25 L. The Carinho 25 L costs R$51,95 at Emilio and R$60,78 at Yanai."
+    },
+    {
+     "sku_id": "BANHEIRA_C_SUPORTE",
+     "verdict": "UNREACHABLE",
+     "correct_unit_cost": null,
+     "correct_url": "",
+     "evidence": "The stand URL https://www.emilio.com.br/suporte-para-banheira---2806b---lenox/p returned HTTP 404 on 2026-09-25. The catalogue API for that slug returns an empty array, and Emilio full-text searches for 'suporte', 'lenox', '2806', 'banheira suporte' and 'suporte para banheira' find no tub stand (only a Buba head support and bath thermometers). The R$79,88 stand price could not be re-read, so the R$102,14 set total is unverified. The tub part (#7946, R$22,26) is confirmed, but that tub is 68x42x18 cm and fit to the Lenox stand was never shown. A folding stand and a fixed backrest were also never verified. The only folding item Emilio lists is BANHEIRA DOBRAVEL CONFORTO #3998 GALA at R$147,83: a folding tub, not a tub on a folding stand, and 1 in stock."
+    },
+    {
+     "sku_id": "BANHEIRA_TAMPA_TROCADOR",
+     "verdict": "UNREACHABLE",
+     "correct_unit_cost": null,
+     "correct_url": "",
+     "evidence": "The Brascol page loads (HTTP 200, 'Banheira Trocador Luxo Spa Prime Baby Antiderrapante', code 1900 1903 1204-L), but the price display reads 'Cadastre-se para ver o preço' (register to see the price), so no price is publicly visible. The page's embedded front-end state carries 499.9, which is not a displayed price and is recorded here as UNVERIFIED. It would be about 9x the R$54,70 estimate. The product also does not fully meet the T20-3 spec: its stated load is 'Capacidade máxima do suporte: 20 kg (bebê até 10 kg + 10 litros de água)' against 'até 25 kg'. It is a stand-and-changer unit, not a rigid tub with a changing-table lid. Emilio and Yanai list no tub with a changing lid. The article remains unpriced."
+    },
+    {
+     "sku_id": "BALDE_BEBE",
+     "verdict": "NONCONFORMING",
+     "correct_unit_cost": null,
+     "correct_url": "",
+     "evidence": "Price is right: the Emilio VTEX catalogue read 2026-09-25 shows BALDE INFANTIL - 13 LITROS #0709 CAJOVIL, BRANCO (item 19290), at Price=ListPrice=21.96, 1 PC, AvailableQuantity 100. Branco is the only variant. It conforms for T15-2 (unspecified), and arguably T24-11 (7.5 L, neutral), where 13 L over-conforms. It FAILS T31-4, which requires a 15 L bucket: 13 L is smaller than specified. I found no 15 L baby bucket at Emilio (buckets are 7 L Monte Libano, 8 L Plasutil and 13 L Cajovil 0709/0802/0664/0727) or at Yanai (none listed). Cajovil's range tops out at 13 L for buckets; its 15 L item is a bacia. So the T31-4 line has no conforming priced article. Use R$21,96 only for T15-2 and T24-11."
+    },
+    {
+     "sku_id": "BACIA_BEBE",
+     "verdict": "NONCONFORMING",
+     "correct_unit_cost": null,
+     "correct_url": "",
+     "evidence": "Price is right: the Emilio VTEX catalogue read 2026-09-25 shows BACIA INFANTIL - 15 LITROS #0803 CAJOVIL, BRANCO (item 49630), at Price=ListPrice=32.25, 1 PC, AvailableQuantity 10. Azul and verde have 100 in stock; rosa has 1. The spec (T24-12, T15-4) is a baby basin of about 5,5 L in a neutral colour. A 15 L basin is nearly 3x that and does not match the stated capacity, so a fiscal enforcing 5,5 L could reject it. It is an upper-bound stand-in, not a conforming cost. The cheaper 15 L alternative (Encanto #0665, R$29,03) comes only in rosa or azul (azul out of stock), so it is not neutral. Emilio and Yanai list no 5-6 L baby basin, and Cajovil's 6 L ref 0745 has no seller price I could read. No conforming cost was established."
+    },
+    {
+     "sku_id": "KIT_ESCOVA_PENTE",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 5.2,
+     "correct_url": "https://www.emilio.com.br/kit-escova-e-pente---mf---1001---rca/p",
+     "evidence": "The Emilio VTEX catalogue read 2026-09-25 shows KIT ESCOVA E PENTE - MF #1001 RCA, items 683-686 (BRANCO/ROSA/AZUL/VERDE), at Price=ListPrice=5.20 each, unit KT, AvailableQuantity 99999. The description says 'Contém: 01 Escova com cerdas macias. 01 Pente com as pontas arredondadas', which covers the 2-piece kit, soft bristles and rounded tips. White is available for the neutral-colour lines (T24-8). 'Atóxico' (T16-1) and BPA-free PP/TPE (T39-3) are not stated. Nothing cheaper found at Yanai: Kit Escova e Pente RCA R$5,29, Kit Pente Escova Murano R$5,78, kit Escova e Pente R$6,82."
+    }
+   ]
   },
   {
    "prices": [
@@ -6982,7 +7182,57 @@
      "notes": "Read 2026-09-23. This is the cheapest bulb aspirator whose silicone tip is confirmed. The Emilio page says 'Ponta macia e segura, produzida 100% silicone', and the manufacturer page https://www.cajovil.com.br/adoleta-bebe/produtos/63/aspirador-nasal/ says the same. The product image shows a squeeze bulb. PARTLY for two reasons. First, T40-7 says 'SANFONADO' (accordion) and none of the 24 aspirators read is described or pictured as accordion-type. Second, '0 meses' is not stated for this product. Cheaper bulbs were rejected on tip material. FLY #5220 R$ 5,54 has a polypropylene tip ('Bico Polipropileno'). LILLO #654120 R$ 10,80 has a polypropylene tip per the manufacturer page lillo.com.br ('Bico: Polipropileno'); the maker retails it at R$ 24,90, exactly the T40-7 estimate. LOLLY 2 em 1 #7170 R$ 12,37 is TPE/PVC per lolly.com.br. PRINCE #1200 R$ 6,67 ('0 a 6 meses', ANVISA 8187401004) and NEW BABY #1153 R$ 8,57 do not publish tip material, so they are UNVERIFIED on silicone. GALA 'Aspirador Nasal Perfect' #8967 (Yanai R$ 12,19, Emilio R$ 12,22; +0 meses and INMETRO on paisefilhos.ind.br) is NOT a bulb. The pack image on Yanai shows a mouth-suction tube type, which contradicts Emilio's text, so it was rejected. No second SP CNPJ was found with a conforming bulb: Brascol's category page is login-gated. Estimate and homologated price both 24,90 (T40-7, 2 un)."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "KIT_ESCOVA_PENTE_SABONETEIRA",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 9.66,
+     "correct_url": "https://yanaiatacado.com.br/products/kit-4-pecas-pente-escova-prendedor-de-chupeta-e-saboneteira-murano",
+     "evidence": "Read today (2026-09-25): og:price:amount 9,66 and variant price 966 cents for all 5 variants: Rosa MUR.113P-C- RS, Azul -AZ, Branco -BR, Verde -VE, and Lilás (which reuses the Rosa SKU). All show available=true, and quantity_rule is min 1, increment 1, so there is no multi-unit pack. The page names 4 pieces: pente, escova, prendedor de chupeta, saboneteira. So it conforms to the 3-piece spec, meets T09-10's pacifier clip, and has white/green variants. Bristle softness and material are not stated. Cheaper option: Emilio New Baby #1148 'KIT BANHO PENTE, ESCOVA E SABONETEIRA' costs R$8.06 (https://www.emilio.com.br/kit-banho-pente--escova-e-saboneteira---1148---new-baby/p), but it comes only in AZUL (stock 100) and ROSA (stock 10) and has no clip. It fits only lines that state no colour. It fails the white/yellow/green lines and T09-10, so it is not a clear TOO_DEAR. Emilio backup: RCA #1030 escova+pente+prendedor+saboneteira at R$9.88, with BRANCO/VERDE stock 99999."
+    },
+    {
+     "sku_id": "SABONETEIRA_UN",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 3.01,
+     "correct_url": "https://www.emilio.com.br/saboneteira-baby---8966---plastibrasil/p",
+     "evidence": "The listed row checks out. The Lully #9801 page reads Price/ListPrice 4.93, per unit (measurementUnit PC, multiplier 1). BRANCO and VERDE have stock 100; AZUL and ROSA have 0. The description says the materials are atóxicos (PS/PP/PE), 1 saboneteira. However, the same supplier (Emilio, CNPJ 50191584000106) lists SABONETEIRA BABY #8966 PLASTIBRASIL in BRANCO at R$3.01 per UN, stock 99999, read today via the VTEX catalogue for that product link. That is the same article as the already-banked v2 row, in white, 39% cheaper. Caveat: the #8966 page has an empty description, so 'atóxico' is not stated there. If T33-12's non-toxic claim must be documented on the page, keep Lully #9801 at R$4.93. Other white options: Pepeta #1011 at R$3.57, but it is 'sortido', so the colour is not guaranteed."
+    },
+    {
+     "sku_id": "KIT_CUIDADOS_BEBE",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 36.03,
+     "correct_url": "https://www.emilio.com.br/kit-higiene-infantil---5--pecas----000925kt---pimpolho/p",
+     "evidence": "Read today: Price/ListPrice 36.03, measurementUnit UN. AZUL has stock 100; ROSA and CINZA have 0, so only one colour can be bought. The description reads 'Contém 5 acessórios: Tesoura, Cortador, Lixa de unha, Pente e Escova', which matches the multi-piece spec exactly. I looked for cheaper conforming 5-piece kits and found none. Petita #1111 at R$18.45 is only a brush and comb. Neopan #7332 5-piece at R$22.89 is scissors, cover, clipper, clipper holder and file, with no brush or comb. Gala #7161 at R$33.43 has 4 pieces and no file. Baby Dufy DF108 at R$14.90 has no brush or comb. The Buba kit named in T17-3 is 'KIT MANICURE COM ESTOJO' #18093/18094 at R$34.83, but only 1 unit is in stock per colour, and its page contradicts itself: the description lists pente and escova, while 'Conteúdo' lists only tesoura, lixa, cortador and estojo. Buba is cheaper by R$1.20 but cannot supply quantity, so this is not TOO_DEAR."
+    },
+    {
+     "sku_id": "KIT_MANICURE_3PC",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 12.07,
+     "correct_url": "https://yanaiatacado.com.br/products/kit-higiene-3-pecas",
+     "evidence": "Read today: og:price:amount 12,07 and variant price 1207 cents for Rosa 9265, Azul 9266-1 and Branco 9267, all available, quantity_rule min 1. The description reads 'tesoura de pontas arredondadas, lixa e cortador de unhas', so it conforms on pieces and round tips. The T06-15 dimensions (tesoura 10x5.5 cm and so on) are not published and remain UNVERIFIED. Cheaper option: Emilio Petita #1110AZR/#1120R 3-piece at R$10.21 (tesoura, cortador, lixa; stock 100), https://www.emilio.com.br/kit-manicure-infantil---3-pecas---1110r---petita/p. It is not proven conforming because its page does not state rounded tips. Rounded-tip alternatives cost more: Lully #2066 R$12.53, Gala #7788 R$13.64, Ricca #1088 R$15.90."
+    },
+    {
+     "sku_id": "CORTADOR_TESOURA_UN",
+     "verdict": "WRONG_PRICE",
+     "correct_unit_cost": 9.69,
+     "correct_url": "https://www.emilio.com.br/tesoura-pequena-de-aco---df115---baby-dufy/p",
+     "evidence": "The page today shows Price, ListPrice and PriceWithoutDiscount all at 9.69, not R$11.30. Stock is 99999, it is sold per PC, there are no teasers or discounts, and PriceValidUntil is 2027-09-24. The description reads 'pontas arredondadas... Contém: 1 tesoura', stainless steel and ABS/TPE, which conforms to T35-16 newborn scissors. For T40-4, which asks for a clipper, split the line: CORTADOR DE UNHAS METAL #7844 Gala Pais & Filhos (ROSA) is confirmed at R$4.30, stock 99999, stainless steel (https://www.emilio.com.br/cortador-de-unhas-metal---7844---gala-pais---filhos/p). #7845 is the AZUL version, also R$4.30. The cheapest scissors in the Emilio catalogue is DF115 at 9.69; Pimpolho is 13.12 and Lillo 17.81."
+    },
+    {
+     "sku_id": "TERMOMETRO_DIGITAL",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 10.75,
+     "correct_url": "https://www.emilio.com.br/termometro-clinico-digital---thgt1027b_s---accumed/p",
+     "evidence": "Read today: Price/ListPrice 10.75, measurementUnit UN, BRANCO stock 99999. The description covers the G-Tech digital clinical thermometer: 'Verificado e aprovado pelo INMETRO', water-resistant, beep, memory, replaceable battery. The ANVISA registration number is not on the page. This is the cheapest digital clinical thermometer in the Emilio search: Incoterm 29832.xx costs 11.73-12.89 and Accumed TH150 costs 12.45. The bath thermometers are cheaper but do not conform."
+    },
+    {
+     "sku_id": "ASPIRADOR_NASAL",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 12.22,
+     "correct_url": "https://www.emilio.com.br/aspirador-nasal-perfect---8967---gala-pais---filhos/p",
+     "evidence": "The listed row checks out. Cajovil #1033 reads Price 16.16, with AZUL stock 100 and ROSA stock 10. Its description says 'ponta macia em 100% silicone', BPA-free. Neither the bulb (pera) type nor the 0-month age is stated. At the same supplier (Emilio), ASPIRADOR NASAL PERFECT #8967 Gala Pais & Filhos costs R$12.22, stock 99999 (SORTIDO). Its page says it is made 100% of soft silicone in a single piece and is squeezed to create suction ('Aperte o Aspirador... diminua aos poucos a pressão'), so it is explicitly a bulb type. It is INMETRO-certified and BPA-free. Its age is also not stated, so it conforms at least as well as #1033 and costs 24% less. Cheaper still, but not proven conforming: Prince #1200 at R$6.67 states 'recomendado para 0 a 6 meses' and ANVISA 8187401004, but its tip material is not stated. Lillo #654120 at R$10.80 is a bulb ('bombinha'), but silicone is not stated."
+    }
+   ]
   },
   {
    "prices": [
@@ -7106,7 +7356,57 @@
      "notes": "Page: 'Colônia ALFAZEMA INFANTIL ... ingredientes hipoalergênicos e dermatologicamente testada', for the sensitive skin of little ones; attributes Infantil, Hipoalergênico, Com Alfazema, 100 ml. Alfazema is lavender, so it matches T10-1 ('ÁGUA DE COLÔNIA LAVANDA 100ML P/ BEBÊ') except that it is labelled 'infantil' rather than 'bebê'. It is smaller than the 118 ml asked for in T35-6. Second source is JN Fraldas (10290457000131 SP), Deo Colônia Bebê Zero a Dois 150 ml at R$13,59 (sku 45741-UN). Its page says baby, dermatologically tested, hypoallergenic and alcohol-free. It covers T35-6 (at least 118 ml) and T12-5 ('sem álcool') but is not lavender, and at 150 ml it is not an exact 100 ml bottle. Other options read today: Água de Colônia Pom Pom 100 ml, for babies and alcohol-free, at DSP R$15,59 (stock 1); Colônia Huggies Extra Suave 100 ml at DSP R$18,99; MaxQualy (53748042000171 SP) Colônia Infantil Skafe Meu Perfuminho 120 ml at R$12,78, which has no description, so its baby suitability is unverified. Rejected: the R$13,90 'Cia da Natureza Deo Colônia Baby Lavanda 100 ml' on the DSP site is sold by a marketplace seller (Doce Beleza Cosméticos) with no stated CNPJ, and its description is a hair-care template. Baruel Baby Colônia Lavanda 120 ml exists on the manufacturer's site, but no SP supplier price was found. Granado 100 ml is about R$83-100. Buyer estimates R$14,85-35,00."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "SABONETE_BARRA_INF_80_100G",
+     "verdict": "WRONG_PRICE",
+     "correct_unit_cost": 2.94,
+     "correct_url": "https://www.drogariasaopaulo.com.br/sabonete-em-barra-infantil-protex-baby-85g/p",
+     "evidence": "Page re-read 2026-09-25 (HTTP 200, sellerId 1, availablequantity 99999). The page shows 'De: R$ 4,59 Por: R$ 2,94', with bestPrice 294, itemprop price 2.94 and productListPrice 4.59. It no longer shows R$ 4,19. R$2.94 is a promo price and may go back up toward R$4.19-4.59; this is a retail channel. The product is 1 bar of 85 g, so the price per unit is the pack price. The description states hypoallergenic, no alcohol, colourants or parabens, doesn't sting the eyes, dermatologist- and paediatrician-tested. Glycerine is NOT stated. It conforms for the generic 80-100 g lines and for T01-6 (70 g, over-size). It FAILS T33-9 (at least 90 g with oat). Conforming 90 g options read today: Granado Bebê glicerina 90 g R$8.59 at DSP (https://www.drogariasaopaulo.com.br/sabonete-em-barra-de-glicerina-infantil-granado-bebe-calendula-90g/p), and Sabonete Vegetal Giovanna Baby Classic 90 g R$4.32 at JN Fraldas (store API, sku 47602-UN). Neither contains oat."
+    },
+    {
+     "sku_id": "SABONETE_LIQ_INF_200ML",
+     "verdict": "WRONG_PRICE",
+     "correct_unit_cost": 8.99,
+     "correct_url": "https://tendaatacado.com.br/produto/sabonete-liquido-com-glicerina-baruel-baby-210ml",
+     "evidence": "Tenda page re-read 2026-09-25: itemProp price content=8.99 and product JSON price 8.99 with \"wholesalePrices\":[] (no atacado tier). Tenda's public API (api.tendaatacado.com.br/api/public/store/product/<slug>) also returns price 8.99, sku 000000000000941594-UN, EAN 7896020163114, in stock. The claimed R$8.20 single and R$7.60 from 2 units could not be reproduced; they may have been a CEP- or branch-specific promo, and none is visible on the public page without choosing a store. The product is 1 bottle of 210 ml, so it meets 'at least 200 ml'. The description states glycerine and 'oftalmo e dermatologicamente testado'. Hypoallergenic and paraben/colourant-free are NOT stated, so it is unverified for T16-10's extras. It FAILS T17-6, which names Dove Baby."
+    },
+    {
+     "sku_id": "SHAMPOO_INF_200ML",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 10.45,
+     "correct_url": "https://www.jnfraldas.com.br/produto/shampoo-pompom-cheirinho-suave-200ml",
+     "evidence": "Page re-read 2026-09-25: 'R$ 10,45', 'R$ 9,93 à vista no PIX (5% off)', ld+json price 10.45, sku 26601-UN, EAN 7898935463044, 200 ml, 1 bottle. The description says 'Testado oftalmo e dermatologicamente; Sem corantes'. It does not literally say 'não arde os olhos' or 'neutro', so it conforms for the generic 200 ml lines only. For T28-11/T31-12 (neutro), a neutral claim is unverified. For T17-1, the named Dove Baby 200 ml is R$17.59 at DSP (https://www.drogariasaopaulo.com.br/shampoo-dove-baby-hidratacao-glicerinada-200ml-unilever/p, read today). No cheaper conforming 200 ml was found at JN (Pompom Camomila 200 ml is also R$10.45) or DSP (cheapest in stock R$15.39)."
+    },
+    {
+     "sku_id": "SHAMPOO_INF_350_400ML",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 12.66,
+     "correct_url": "https://www.jnfraldas.com.br/produto/shampoo-anjinho-uso-diario-400ml",
+     "evidence": "Page re-read 2026-09-25: 'R$ 12,66', 'R$ 12,03 à vista no PIX', ld+json price 12.66, sku 60770-UN, EAN 7898172345103, 400 ml, 1 bottle. The description says 'fórmula que não arde os olhos', so it is tear-free. 400 ml exceeds T42-15's 350 ml. Caveat: the page does NOT state 'neutro' or 'pH neutro', so the neutral requirement is unverified. This is the ordinary mid-market baby shampoo, and it is the cheapest 350-400 ml infant shampoo found. At DSP the in-stock 350-400 ml options start at R$17.99 (Johnson's Baby Regular 400 ml, Palmolive Kids 350 ml), and the only 'neutro' infant shampoos listed are out of stock (Turma da Xuxinha Neutro 210 ml) or 200 ml at R$33 (Topz)."
+    },
+    {
+     "sku_id": "SHAMPOO_INF_500ML_1L",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 19.99,
+     "correct_url": "https://www.drogariasaopaulo.com.br/shampoo-infantil-nutriex-minnie-500ml/p",
+     "evidence": "Page re-read 2026-09-25: 'Por: R$ 19,99', bestPrice 1999, itemprop price 19.99, sellerId 1, in stock (VTEX search API shows AvailableQuantity 100). 1 bottle of 500 ml. The description says 'pH neutro', 'Fórmula sem lágrimas', no parabens, dermatologically tested, ANVISA registered, so it conforms to T40-9. Retail channel. No cheaper in-stock 500 ml infant shampoo was found at DSP (the Biotropic/Minnie 500 ml items listed at R$9-11 all show quantity 0). JN Fraldas has no 500 ml infant shampoo; its largest are 400 ml at R$12.66. For T40-10 (litre basis), 2 x 500 ml = R$39.98 per litre. Johnson's Baby 750 ml is R$47.99 at DSP, which is dearer per litre."
+    },
+    {
+     "sku_id": "CONDICIONADOR_INF_200ML",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 9.47,
+     "correct_url": "https://www.jnfraldas.com.br/produto/condicionador-anjinho-baby-220ml",
+     "evidence": "Page re-read 2026-09-25: 'R$ 9,47', 'R$ 9,00 à vista no PIX', ld+json price 9.47, sku 60771-UN, EAN 7898172341419, 1 bottle of 220 ml. The description says it is for babies' sensitive scalp and is dermatologically tested, so it conforms to 'infant conditioner about 200 ml'. JN's store API shows it is the cheapest infant conditioner of about 200 ml there; next are Pom Pom Camomila 200 ml at R$10.99 and Zero a Dois 250 ml at R$11.32."
+    },
+    {
+     "sku_id": "COLONIA_INF_100ML",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 13.59,
+     "correct_url": "https://www.jnfraldas.com.br/produto/deo-colonia-bebe-zero-a-dois-150ml/",
+     "evidence": "The listed price is confirmed. The DSP page, re-read 2026-09-25, shows 'Por: R$ 14,59', itemprop price 14.59, availablequantity 10, 1 bottle of 100 ml. The description says 'Colonia ALFAZEMA INFANTIL OGGI PER TE', hypoallergenic and dermatologically tested. That fits T10-1 but FAILS T35-6 (118 ml). JN Fraldas (Mensa, SP distributor) lists Deo Colônia Bebê Zero a Dois 150 ml, sku 45741-UN, in stock, at R$13.59 in its public store API (read today). That product is described as for babies, hypoallergenic, dermatologically tested and alcohol-free. It is cheaper by R$1.00 (about 7%), which is marginal. It also removes the INFANTIL_NOT_BEBE and low-stock flags and, at 150 ml, covers T35-6's 118 ml. Caveat: it is a 'deo colônia', not an 'água de alfazema', so a strict reading of T10-1 'alfazema' would keep Oggi at R$14.59. The next cheapest 100 ml at DSP is Água de Colônia Pom Pom 100 ml at R$15.59, with only 1 in stock."
+    }
+   ]
   },
   {
    "prices": [
@@ -7230,7 +7530,57 @@
      "notes": "Read 2026-09-23 from the page data. The page says 'Formulado com alcool 70%, este gel e adequado para a desinfeccao rapida das maos'. That conforms to T35-2 ('Alcool Gel') and to the article's 'liquid or gel ~500 ml'. It is Tenda's own label, and no ANVISA registration number is shown. For T27-7, which is read as liquid etilico 500 ml, no liquid 70% 500 ml bottle is sold at Tenda: its 500 ml liquid is only 46,2 INPM (R$4,59, fails). The 70% liquid comes only as 'Alcool Liquido Select Bactericida 1L', R$5,85, whose page says it is for surfaces. Second source: Tenda 'Alcool Gel Antisseptico Bacfree Coperalcool 400g', R$17,90, explicitly 70% and for hands, but only 400 g. Other options read: Tenda Tupi gel 70 INPM 500g R$9,45, whose page says 'para desinfeccao de superficies em geral', so it is not for hands; Giovanna Baby gel 500ml R$18,90 at Tenda and R$18,84 at JN, 70% not stated; Drogal compounded 'Alcool Gel 70% 500g' R$21,46. Atacadao shows Zulu 70 INPM 500g at R$10,50 in its search API but price 0 in its product API, so it is not banked. Buyer estimates 15,50-33,25; realised 15,00-15,50. If the fiscal insists on a national brand, the realistic cost is R$17,90-18,90."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "COLONIA_INF_200ML",
+     "verdict": "TOO_DEAR",
+     "correct_unit_cost": 23.99,
+     "correct_url": "https://www.paguemenos.com.br/colonia-giovanna-baby-0-a-5-anos-200ml/p",
+     "evidence": "The listed price is right. The DSP page read today shows skuBestPrice R$ 30,59 (list R$ 34,99), availablequantity 99999, sku 884871, 200 ml, so the arithmetic is correct. But R$30.59 is above every homologated price for this article (T02-5 29.50, T30-13 25.60, T12-5 25.60, T31-15 17.80, T24-7 14.50, T38-22 10.00). The DSP description gives no alcohol-free or paraben-free claim, so it is unverified for T12-5 ('sem álcool') and T38-22 (paraben-free). A cheaper product that conforms better: Pague Menos 'Colônia Infantil Giovanna Baby Giby 0 a 5 Anos 200ml' (EAN 7896044956488), R$ 23,99, AvailableQuantity 99999, seller Farmácias Pague Menos (retail, CE-seated chain). Its description says 'sem álcool, livre de corantes e parabenos, hipoalergênica, testada dermatologicamente', which also covers T12-5 and the paraben clause of T38-22. The hamamélis/alecrim base of T38-22 is still unverified. Cheaper still but weaker: Pague Menos 'Colônia Lavanda Kolene Baby 200ml' at R$21,29 (EAN 7908324409529, stock 10, no alcohol-free claim). JN Fraldas (SP) sells the same João e Maria 200ml dearer, at R$33,16, and its 200 ml Cia da Natureza splash colognes (R$21,10) are character kids' fragrances, not baby colognes."
+    },
+    {
+     "sku_id": "HIDRATANTE_INF",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 17.55,
+     "correct_url": "https://lojista.maxqualy.com.br/locao-hidratante-bebe-natureza-suave-230ml-14334/p",
+     "evidence": "Read today through the VTEX product API for this exact slug (the HTML page came back compressed): 'Loção Hidratante Bebê Natureza Suave 230ml', brand Biotropic, EAN 7908082302780, unit 'un', multiplier 1.0, seller 'B2C - MAXQUALY COMERCIO E LOGISTICA DE COSMETICOS EIRELE', Price 17.55, ListPrice 19.5, AvailableQuantity 99999. One 230 ml bottle, so R$17.55 per unit is right. It is an infant body lotion at 230 ml, at least the ~200 ml mid-market basis, and under the T40-8 estimate of R$25.90. The R$300 minimum order still applies. I found no clearly cheaper infant lotion at JN Fraldas: Granado Bebê 120 ml costs R$27,08, and the Hidramais 500 ml at R$14,20 is an adult lotion."
+    },
+    {
+     "sku_id": "TALCO_INF_80_100G",
+     "verdict": "WRONG_PRICE",
+     "correct_unit_cost": 15.2,
+     "correct_url": "https://www.jnfraldas.com.br/produto/talco-pom-pom-200gr/",
+     "evidence": "The JN Fraldas page read today ('Talco Infantil Pompom com Amido de Milho 200g', sku 17492-UN, GTIN 7896012800874) shows 'de R$ 16,47' struck through and 'R$ 15,20 ou 3x de R$ 5,07 sem juros no cartão', 'Em estoque'. The JSON-LD offer price is 15.20, InStock. This is a card/promo price, not a PIX price, so the current price is R$15.20. The R$16.47 regular price is still a conservative ceiling if the promo ends. One 200 g container: it over-conforms on size for T38-21 (80 g) and T40-17 (unspecified). Colour (branco) is not stated on the page. I found no clearly cheaper infant talc in stock: DSP Talco Meu Brotinho 100g R$7,49 is out of stock, DSP Pom Pom 200g is R$21,99, JN Granado Bebê 100g is R$18,32, and Tenda has no infant talc cheaper than R$37,59 (Tenda Barla 140g at R$10,89 is not an infant product). Even at R$15.20 it is well above the T38-21 homologated R$7.50."
+    },
+    {
+     "sku_id": "TALCO_INF_200G",
+     "verdict": "WRONG_PRICE",
+     "correct_unit_cost": 15.2,
+     "correct_url": "https://www.jnfraldas.com.br/produto/talco-pom-pom-200gr/",
+     "evidence": "Same page: today it shows 'de R$ 16,47' struck through, 'R$ 15,20' (3x R$5,07 on card), in stock, and the JSON-LD price is 15.20. One 200 g container, which matches T28-12's 200 g. Caveat: T28-12 reads 'TALCO PARA BEBÊ, 200 GRAMAS, PURA PROTEÇÃO', which is the name of Johnson's Baby 'Pura Proteção 200g' (DSP lists it at R$34,99, out of stock). If the fiscal reads that as a brand requirement, Pom Pom may be rejected."
+    },
+    {
+     "sku_id": "POMADA_ASSADURA_45G",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 11.9,
+     "correct_url": "https://www.drogariasaopaulo.com.br/pomada-para-assadura-babymed-menina-45g/p",
+     "evidence": "The DSP page read today ('Pomada para Assadura Babymed Pomada Rosa 45g', Cimed, sku 165514, EAN 7896523208985) shows skuBestPrice R$ 11,90 (list R$ 15,59), availablequantity 99999, sellerId 1 (Drogaria São Paulo). One 45 g tube, so R$11.90 is right. A 'Valor Promocional 8.33' spec field also appears, but it is not the shelf price. The DSP page gives no composition. Pague Menos, for the same EAN, states 'Óxido de Zinco ... com as Vitaminas A e D', which meets the core Hipoglós-type spec. It stays PARTLY conforming: a Babymed listing at Pague Menos gives 1000 UI/g retinol, against T04's 10000 UI/g, and allantoin (T16-3) is not shown. I found no clearly cheaper conforming tube at an SP-seated supplier: the Pague Menos marketplace Babymed Rosa at R$10,77 has a different EAN and a non-SP retail channel, and Tenda's ointments cost from R$28,99."
+    },
+    {
+     "sku_id": "ALCOOL_70_50_100ML",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 4.59,
+     "correct_url": "https://www.drogariasaopaulo.com.br/alcool-70-ever-50ml-farmax-med/p",
+     "evidence": "The DSP page read today ('Álcool Líquido 70% Ever Care 50ml') shows skuBestPrice R$ 4,59 (no list price), availablequantity 99999, sellerId 1. The page states 'Composição Álcool etílico 70% (70 INPM) e água purificada ... Embalagem portátil de 50ml ... Produto registrado na ANVISA'. One 50 ml bottle, so R$4.59 is right. It conforms to T16-12 and T17-2 (50 ml) and sits inside the R$4.61-5.12 estimates. It does not meet T25-17, which needs 100 ml. The DSP Farmax 70% 100ml at R$2,05 is out of stock (AvailableQuantity 0), so that line still needs a 100 ml source."
+    },
+    {
+     "sku_id": "ALCOOL_70_500ML",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 6.95,
+     "correct_url": "https://tendaatacado.com.br/produto/alcool-gel-bactericida-70-select-500g",
+     "evidence": "The Tenda page read today ('Álcool Gel Bactericida 70 Select - 500g', sku 000000000000948914-UN) shows price 6.95, wholesalePrices from 4 units at 6.45, availability in_stock, totalStock 500. The description says 'Álcool Gel Bactericida 70º Select ... Com 500g de gel'. One 500 g bottle, so R$6.95 is right. It conforms to T35-2 ('Álcool Gel', volume not stated). For T27-7 (liquid ethyl alcohol, 500 ML) a gel is the wrong variant. The better and cheaper conforming source there is Tenda 'Álcool Líquido Select Bactericida - 1L', read today: price 5.85, 4+ units 5.35, in stock, described as '70% de álcool etílico'. It over-conforms at 1 L (URL https://tendaatacado.com.br/produto/alcool-liquido-select-bactericida-1l). Use R$5.85 for T27-7 and R$6.95 (or R$6.45 wholesale) for the gel line. The Tenda 500 ml liquid at R$4.59 is 46.2 INPM, not 70, so it does not conform. The ANVISA registration is not shown on either Tenda page."
+    }
+   ]
   },
   {
    "prices": [
@@ -7354,7 +7704,57 @@
      "notes": "No dedicated pos-parto pad in a pack of 50 was found at any SP supplier with a readable price. Dedicated pos-parto pads are sold in packs of 15-20. What the page does state: camada interna absorvente, cobertura filtrante, camada plastica impermeavel, gel superabsorvente. T16-11 was homologated at R$21,00 (estimate R$23,23), which suggests the winner also delivered a multi-use hospital-type pad. Second source: Amazon.com.br listing 'Absorvente Geriatrico Infinity Pos Parto Pos Operatorio 50 Unidades' at R$26,99. Its seller could not be identified and its CNPJ is not verified. It states 15x45 cm and a 'camada impermeavel anti vazamento' and is also PARTLY conforming. A fully conforming dedicated alternative would be about 50 Karisma pos-parto pads at R$15,00 per 15 = R$50,00, but those come in packs of 15, not a 'pacote com 50', so the packaging fails."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "HASTE_FLEX_CX75_100",
+     "verdict": "CONFIRMED",
+     "evidence": "Re-read 2026-09-25. The page JSON has Price/ListPrice 2.49, measurementUnit CX, unitMultiplier 1, AvailableQuantity 99999, productName 'HASTES FLEXÍVEIS CREMER MINIONS - 75 UNIDADES # 410020 - CREMER'. The description says the tips are 100% cotton with antigerm treatment, and the stems are yellow. A box of 75 fits the 75-100 box basis for the lines that state no count (T11-5, T30-11, T35-4). The row's own caveat is correct: 75 fails T10-7, which asks for 100. For that line Emilio sells HASTES FLEXÍVEIS COTTON LINE 120 UNIDADES #000007 Higie-Topp at R$2,60 per CX (read today, plastic/cotton, https://www.emilio.com.br/hastes-flexiveis-cotton-line---120-unidades---000007---higie-topp/p). It is almost the same price and conforms to every line, so it could be the single SKU for this article.",
+     "correct_url": "https://www.emilio.com.br/hastes-flexiveis-cremer-minions---75-unidades---410020---cremer/p",
+     "correct_unit_cost": 2.49
+    },
+    {
+     "sku_id": "HASTE_FLEX_CX150",
+     "verdict": "CONFIRMED",
+     "evidence": "Re-read 2026-09-25. Price/ListPrice 3.99, measurementUnit PC, unitMultiplier 1, in stock. The name is 'HASTES FLEXÍVEIS TOPZ - 150 UNIDADES # 410013 - CREMER' and the description reads only 'Hastes Flexíveis Topz Cremer com 150 unidades.' This is the cheapest 150-count bud in Emilio's catalogue search: the pote #410051 is R$5,99, pote #637601 R$6,90 and personagens pote R$6,90. Other retailers (Drogasil, Mercantil Atacado) list the Topz 150 as a 'caixa' with 100% cotton tips and a flexible plastic stem, so the box/plastic-stem reading is well supported. Double tips are still not written on the Emilio page itself.",
+     "correct_url": "https://www.emilio.com.br/hastes-flexiveis-topz---150-unidades---410013---cremer/p",
+     "correct_unit_cost": 3.99
+    },
+    {
+     "sku_id": "ALGODAO_HIDROFILO_25G",
+     "verdict": "CONFIRMED",
+     "evidence": "Re-read 2026-09-25. The schema.org offer shows price 3.29, InStock. The product JSON shows 'price':3.29 and 'wholesalePrices':[{'minQuantity':2,'price':2.99}], totalStock 500, SKU 000000000000948494-UN. The title is 'Algodão Select Rolo 25g | Tenda Atacado'. R$2,99 from 2 units is correct. Notes: the page metadata gives the brand as 'Melitta', not Tenda own label. The description never says 'hidrófilo' (the row flags this). Tenda also sells 'Algodão Hidrófilo Rolo Select 50g' at R$6,49 in the search listing, which uses the word but is double the weight, so the 25 g roll remains the right basis. Tenda prices can vary by CEP.",
+     "correct_url": "https://www.tendaatacado.com.br/produto/algodao-select-rolo-25g",
+     "correct_unit_cost": 2.99
+    },
+    {
+     "sku_id": "ALGODAO_HIDROFILO_100G",
+     "verdict": "TOO_DEAR",
+     "evidence": "Row price confirmed on 2026-09-25: Price/ListPrice 5.39, unit PC, name 'ALGODÃO BOLA DENGO - 100g # 8523 - MINASREY', and the description says 'Algodão Hidrófilo em Bola Dengo 100gr'. However, the same supplier (Emilio) sells 'ALGODÃO BOLAS - 100G # 9650 - SUSSEX' at Price/ListPrice 4.53 per PT, unitMultiplier 1, stock 99999. Its description reads 'composto de fibras 100% algodão, purificadas e alvejadas ... isentas de quaisquer impurezas'. Purified, bleached cotton is by definition hydrophilic cotton, and the weight (100 g) and form (balls) are the same. It is about 16% cheaper. Caveat: the Sussex page does not use the literal word 'hidrófilo'. If the buyer insists on that wording on the label, keep Dengo at R$5,39. This covers T31-17 only; T35-3 still needs its weight.",
+     "correct_url": "https://www.emilio.com.br/algodao-bolas----100g---9650---sussex/p",
+     "correct_unit_cost": 4.53
+    },
+    {
+     "sku_id": "COMPRESSA_GAZE_PCT",
+     "verdict": "CONFIRMED",
+     "evidence": "Re-read 2026-09-25. The page shows 'Por: R$ 1,30' and 'R$ 1,24 à vista com desconto'. GA4 value is 1.3. Specs: Pacote, 10 unidades por embalagem, 13 fios, 7,5 x 7,5cm, hidrófila, 100% algodão, estéril (óxido de etileno), 8 camadas. The related-product block lists 'Compressa de Gaze Estéril 13 fios 7,5x7,5 c/10 Kit 100Pcts Hérika' at R$104,00 (data-ga4-price 104.00), which is R$1,04 per pacote. The brand inconsistency is resolved on the page itself: 'Marca: Hérika (America Medical)', so Hérika is America Medical's brand. The seller is Cirúrgica Paulista Commerce Ltda, CNPJ 05.768.154/0001-41, Av. Tiradentes 1309, Marília SP. It conforms exactly to T17-5. The same site's Cremer equivalent costs R$2,40, so no cheaper conforming option was seen. The row's caveat about T35-9's R$13 estimate (possibly a larger pack) stands.",
+     "correct_url": "https://www.cirurgicapaulista.com.br/compressa-de-gaze-esteril-hidrofila-13-fios-7-5x7-5cm-com-10un-herika",
+     "correct_unit_cost": 1.3
+    },
+    {
+     "sku_id": "ABSORVENTE_POSPARTO_PCT15",
+     "verdict": "CONFIRMED",
+     "evidence": "Re-read 2026-09-25. The title is 'Absorvente Pós-Parto Karisma C/ 45 unid Kit 3 Pacotes', code J2AV7NMFF, brand Adultcare, price R$ 45,00 (fbq value 45.00), Estoque Disponível. That is R$15,00 per pacote of 15. The related single 'Absorvente Pós-Parto Karisma C/15 unid' is R$ 15,50. The description says 'indicado para o pós parto, super absorvente e com formato muito mais anatômico ... fluxos intensos ... A embalagem contém 15 unidades.' The seller is Diniz Emporio Das Fraldas Ltda - ME, CNPJ 10.756.572/0001-59. It conforms to the article (dedicated post-partum, high flow, 15). Caveat carried from the row: pad length and width are still not published. A web search found only the package size (16x25x7 cm) and '3 linhas adesivas', so the ~35x13 cm in T42-16 is unverified. The R$15,00 rate needs a 3-pack purchase.",
+     "correct_url": "https://www.emporiumdasfraldas.com.br/absorvente-pos-parto-karisma-c-45-unid-kit-3-pacotes",
+     "correct_unit_cost": 15
+    },
+    {
+     "sku_id": "ABSORVENTE_POSPARTO_PCT50",
+     "verdict": "NONCONFORMING",
+     "evidence": "Price confirmed on 2026-09-25: 'Absorvente Geriátrico Security 50 unid', code MMJZA6GYC, R$ 28,00 (fbq value 28.00), Disponível. The related 'Security 200 unid Kit 4 pacotes' is R$108,00, which is R$27,00 per 50. Conformance to T16-11 is not shown. It is a geriatric pad, 'uso adulto e tem tamanho único', indicated 'para incontinência, pós parto e também para pós operatório'. The page mentions an impermeable layer and gel, but not anatomical shape, lateral leak barriers or adhesive fixing, all of which T16-11 requires. A web-search snippet (Amazon/Magalu, not read by me; Magalu returned 403) claims about 15x45 cm with flow channels and an anti-leak layer, but still no lateral barriers. No dedicated post-partum pad sold in a 50-pack was found. The 50-unit market is multi-use geriatric/pós-parto pads like this one, and T16-11's R$23,23 estimate fits that class. So R$28,00 (R$27,00 at the 4-pack rate) is a plausible cost only if the buyer accepts this pad, and it cannot be confirmed as conforming. The conforming fallback is the dedicated anatomical Karisma pós-parto pad at R$15,00/15 (kit rate, same supplier): about R$50,00 for 50 pads over 3.33 packs. That is not a single sealed pack of 50, so no corrected unit cost is banked.",
+     "correct_url": "https://www.emporiumdasfraldas.com.br/absorvente-geriatrico-security-50-unid",
+     "correct_unit_cost": null
+    }
+   ]
   },
   {
    "prices": [
@@ -7478,7 +7878,57 @@
      "notes": "Page: 'Kit Treinamento Infantil para introducao alimentar com Colher E Garfo'. The spec is simply T15-23 'Colher para bebe' (estimate 3,52, homologated 2,75). Equivalent at Emilio: NEW BABY Conjunto Talheres #1164 (garfo + colher, polipropileno, BPA-free) R$3,75. PEPETA Conjunto de Talheres #1009-CT is R$3,46, but the page does not state what is in the set. Standalone spoons: Emilio PETITA kit of 2 spoons with silicone tip #3976 R$12,19 = R$6,10 per spoon; TRAMONTINA stainless infant spoon R$7,09; Yanai (44040459000194, SP) Murano colher com ponta de silicone R$7,09 (second source)."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "KIT_MAMADEIRA_3",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 21.88,
+     "correct_url": "https://www.emilio.com.br/kit-mamadeira-com-bico-ortodontico-de-silicone---3-unidades---3672---fly/p",
+     "evidence": "Re-read 2026-09-25 from the page's VTEX data: Price and ListPrice both 21.88, AvailableQuantity 99999, 'Preco exclusivo para compras com CNPJ'. The description states 1 x 250 ml, 1 x 150 ml and 1 x 80 ml bottles with orthodontic silicone teats, livre de Bisfenol A, INMETRO CE-PUR/IQB-651 NBR 13793. One kit is the basis, so R$21.88 per basis unit is right. The kit conforms: the 250 ml bottle is larger than the 240 ml asked for. The cheaper Fly kit #3606 (R$19.40, 80/150/250 ml) says only 'bico silicone macio', not orthodontic, so it would fail T04's orthodontic-teat requirement. The New Baby kit #1168 (R$19.16) has a 60 ml small bottle, not 80 ml. Neither is a clearly cheaper conforming substitute. The note about the policarbonato/BPA contradiction in T04 stands."
+    },
+    {
+     "sku_id": "MAMADEIRA_150_250ML",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 9.33,
+     "correct_url": "https://www.emilio.com.br/mamadeira-acinturada---bico-de-silicone-redondo---250ml---3450---fly/p",
+     "evidence": "Re-read 2026-09-25: Price and ListPrice 9.33, AvailableQuantity 100, CNPJ-only price. The page says frasco, capuz, tosca and disco in polipropileno with a silicone teat, INMETRO CE-PUR/IQB-651 NBR 13793. That conforms for T36-8 (250 ml PP with silicone teat). Cheaper 240 ml bottles (New Baby Plus R$7.05, Pepeta R$8.34/8.53) are under 250 ml, so they do not conform to T36-8 and are not substitutes. The row's missing 150 ml price for T36-9: Fly MAMADEIRA ACINTURADA 150 ML #3455 costs R$9.13 at https://www.emilio.com.br/mamadeira-acinturada---bico-silicone---150ml---3455---fly/p (read today, stock 100). Its page explicitly says 'polipropileno atoxico, livre de Bisfenol-A' and 'bico em silicone, atoxico, antialergico'. Use R$9.13 for T36-9."
+    },
+    {
+     "sku_id": "MAMADEIRA_PEQ_50_80ML",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 2.78,
+     "correct_url": "https://www.emilio.com.br/mini-mamadeira-color---60ml---3042---petita/p",
+     "evidence": "Re-read 2026-09-25: Price and ListPrice 2.78, AvailableQuantity 100, CNPJ-only price. The product is a 60 ml Petita mini bottle, '100% atoxicas, livres de BPA e ftalatos', with a silicone teat, INMETRO CE-PUE/ICEPEX 00024-99. It conforms for the chuquinha lines T26-6 and T29-12. Caveats: (1) T36-10 asks for a 50 ml bottle with a LATEX teat. No latex-teat mini bottle turned up at Emilio. The 50 ml alternatives (Lolly 1970-01-M R$9.98, Lillo Mini Fiona R$10.19) also have silicone teats, so the deviation is not cheaper and does not change the cost. (2) The R$2.78 price looks like a clearance: the sister SKU MINI MAMADEIRA COLOR 60ML #3009 Petita is R$7.10, and that page says 'a partir de 06 meses'. If #3042 runs out, R$7.10 (Petita #3009) or R$3.48 (New Baby chuquinha 60 ml #1171, seen only in a search listing) are the fallbacks."
+    },
+    {
+     "sku_id": "CHUPETA",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 2.49,
+     "correct_url": "https://yanaiatacado.com.br/products/chupeta-silicone-n-1-redondo-murano",
+     "evidence": "Re-read 2026-09-25: og:price:amount '2,49'. The Shopify product JSON (/products/chupeta-silicone-n-1-redondo-murano.js) shows price 249 (cents) for both variants, Azul (SKU MUR. 31041) and Rosa (MUR. 31042), both available=true. The 'esta em espera' text on the page is a theme template string, not a stock-out. The description says Tamanho 1, 0 a 6 meses, livre de BPA, escudo com ventilacao, which conforms to 'CHUPETA RN'. The page shows no INMETRO number (as the row notes), so check the certification on the pack when the goods arrive."
+    },
+    {
+     "sku_id": "ESCOVA_LAVAR_MAMADEIRA",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 8.06,
+     "correct_url": "https://www.emilio.com.br/escova-para-limpeza-de-mamadeira-e-bico---2-pecas---1146---new-baby/p",
+     "evidence": "Re-read 2026-09-25: Price and ListPrice 8.06, AvailableQuantity 99999, CNPJ-only price. The description names two soft-bristle brushes, one for bottles with a sponge tip and one for teats. That conforms to 'escova para lavar mamadeira'. The cheaper New Baby #1145 at R$3.63 (read today) has only a one-line description and no construction detail, so the row's choice of the documented mid-market set is reasonable. Other readable options are dearer: RCA 2-piece #1055 R$7.80, Pepeta #1020 R$8.46, Buba #15287 R$10.45. The price is in line with them, not too dear."
+    },
+    {
+     "sku_id": "PANELA_PAPEIRO_INOX",
+     "verdict": "UNREACHABLE",
+     "correct_unit_cost": null,
+     "correct_url": "https://www.tramontina.com.br/panela-tramontina-solar-em-aco-inox-fundo-triplo-com-tampa-e-cabo-14-cm-1-1-l/62501140.html",
+     "evidence": "The row has no URL or price, so there was nothing to re-open, and I found no conforming mid-market SP-CNPJ price either. Emilio's catalogue search returns nothing for 'papeiro' or 'panela inox'. The VTEX search APIs of Tenda, Atacadao, Sam's Club and Drogaria Sao Paulo returned no usable results. T42-7's wording (14 cm, 1.1 L, stainless lid and handle) exactly matches Tramontina Solar #62501140. I read that on the manufacturer's store today at R$260.30 (schema.org offer price '260.3', InStock), but Tramontina is based in RS and that is a retail price. It conforms but is roughly 6x the buyer estimate (R$27.79-41.18), so it is not the typical mid-market cost. Leave the line UNVERIFIED and do not use R$260.30 as the typical cost. Treat it as an upper bound only."
+    },
+    {
+     "sku_id": "COLHER_BEBE",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 3.65,
+     "correct_url": "https://www.emilio.com.br/kit-talheres-01-colher-e-01-garfo----1005bd---baby-dufy/p",
+     "evidence": "Re-read 2026-09-25: Price and ListPrice 3.65, AvailableQuantity 99999, CNPJ-only price. The product is 'Kit Treinamento Infantil para introducao alimentar com Colher E Garfo', Baby Dufy, and the page does not state the material. It conforms to 'Colher para bebe' (T15-23), even though it adds a fork. It is the cheapest readable option. Single-spoon alternatives at Emilio cost more: Tramontina COLHER INFANTIL INOX #63970015 R$7.09 (stainless, documented), Buba COLHER BABY #5248 R$10.34, Cajovil silicone #1417 R$10.90. If a fiscal objects to the fork in the blister, the Tramontina spoon at R$7.09 is the documented fallback."
+    }
+   ]
   },
   {
    "prices": [
@@ -7602,7 +8052,57 @@
      "notes": "T11-15 asks for ventilation holes, a 100% cotton cover, 100% siliconised polyester fibre filling, and 32x22x3 cm. No pillow at any SP supplier read combines holes with siliconised fibre; the market's anti-suffocation pillows are foam. This one matches the name, holes, cover and exact 32x22x3 size, and fails only on filling. Same size and foam, cheaper: #780080 estampado at R$7,33 (neutral print, only 10 in stock) and #780090 liso at R$7,58 (filling not stated). The fibre-filled alternative, TRISOFT Soninho 30x40 (100% algodão, 100% fibra siliconizada HCS, R$8,87), has no holes and is the wrong size. For the unspecified lines T01-9 ('TRAVESSEIRO', paid R$8,00) and T15-24 ('Travesseiro para bebê', paid R$27,90), an ordinary anti-suffocation pillow fully conforms. The cheapest is the second source: Yanai (44040459000194, SP) Travesseiro Antissufocante Estampado Bublim, 29x3 cm, R$5,49 on the page. At Emilio, INCOMFRAL Bercinho liso #780130 (29x19x3, antissufocante, 100% algodão) is R$5,53. Buyers estimated R$13,39–28,77."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "ORGANIZADOR_MAMADEIRA",
+     "verdict": "UNREACHABLE",
+     "correct_unit_cost": null,
+     "correct_url": "https://pncp.gov.br/api/pncp/v1/orgaos/08158800000147/compras/2026/16/itens?pagina=1&tamanhoPagina=50",
+     "evidence": "There is no price or product to check. The PNCP items API for T15 (Jaçanã/RN, Dispensa 008/2026) gives item 25 only as 'Organizador para mamadeira', qty 30, est R$48.52, with no informacaoComplementar. PNCP holds just 2 files, both 1-page notices: arquivos/1 (aviso de autorização, winner J JANAINA DE ARAUJO ARMARINHO ME, total R$62,054.50) and arquivos/2 (aviso de pretensa contratação). They say the Termo de Referência must be obtained from the Secretaria or at jacana.rn.gov.br. The transparency portal (pmjacanarn.transparencia.topsolutionsrn.com.br) returns an 812-byte JavaScript shell, so it cannot be read. The article type is still unknown, so no conforming price can be measured."
+    },
+    {
+     "sku_id": "LENCOL_FRONHA_BERCO_2PC",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 13.73,
+     "correct_url": "https://www.emilio.com.br/jogo-de-berco-parapipi---2-pecas---1035---minasrey/p",
+     "evidence": "Re-read on 2026-09-25 (page markup plus the VTEX catalog API): Price/ListPrice/spotPrice 13.73, one SKU 'SORTIDO - UNICO', AvailableQuantity 100, unit PT. Contents: 01 virol 1,50m x 90cm + 01 fronha 28x40cm, 100% algodão, Minasrey. The row prices 1 set = 1 basis unit, so no division. It conforms to T01-25 'KIT LENÇOL COM FRONHA' and T09-7 'KIT LENÇOL E FRONHA P/ BERÇO 100% ALGODÃO' (a virol is a cot flat sheet). It does NOT cover T20-2 (lençol com elástico + virol, no pillowcase), as the row itself says. Not too dear: it is the cheapest 2-piece set in Emilio's catalogue. Others are Papi Karinho #280417 (lençol 140x90 + fronha) R$16.05, Baby Dufy #4558 R$20.03 and Minasrey Compose #310118 R$19.13."
+    },
+    {
+     "sku_id": "JOGO_LENCOL_BERCO_3PC",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 26.03,
+     "correct_url": "https://yanaiatacado.com.br/products/jogo-de-lencol-berco-americano-3-pecas",
+     "evidence": "Re-read on 2026-09-25 (page plus Shopify product .js): price 2603 = R$26.03 on all 3 variants (Feminino ICF.34014-1, masculino -2, neutro ICF.34014-3), all available=true. The page footer shows 'CNPJ: 44.040.459/0001-94'. Contents: 1 fronha 28x40, 1 lençol 90cm x 1,40 (flat/virol; the page's '1,40cm' is a typo), 1 lençol com elástico 70x130x15, 100% algodão, 3 pieces. This conforms to T05 (lençol com elástico + virol + fronha, 100% algodão, cores neutras, via the neutro variant) and to T30-2 (generic). The description says 'estampas delicadas', so the neutro variant is a neutral print, not plain. Cheaper than every comparable set at Emilio: Baby Dufy #4561 R$29.90, Minasrey #4206 R$31.81 (10 in stock), Compose Americano R$35.45."
+    },
+    {
+     "sku_id": "LENCOL_BERCO_UN",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 12.52,
+     "correct_url": "https://www.emilio.com.br/1/p",
+     "evidence": "Re-read on 2026-09-25: Price 12.52 on all SKUs. The BRANCO SKU has AvailableQuantity 99999 (not 100 as the row says; price unaffected), unit PC, 1 sheet. Description: malha 100% algodão, fio penteado 30/1, 120 g/m², lençol avulso com elástico 70x130x12cm, Sul Brasil linha Vivaldi. This matches T11-10 exactly (lençol com elástico, berço, 100% algodão, fio 30/1, branco); 'antialérgico' is not claimed on the page. CAVEAT: this does NOT conform to T31-11 ('LENÇOL DE FLANELA 70x90'). This one is knit (malha), not flannel. Emilio's catalogue search for 'lençol flanela' returned 0 results, so no conforming T31-11 price was measured."
+    },
+    {
+     "sku_id": "FRONHA_BEBE_PCT3",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 14.19,
+     "correct_url": "https://www.emilio.com.br/fronha-lisa-vv-baby---66-01-0012---sul-brasil/p",
+     "evidence": "Re-read on 2026-09-25: Price 4.73; BRANCO SKU AvailableQuantity 100; unit PC. 'Contém: 01 fronha malha bebê lisa 30x40cm... Fio 30/1 penteado. 100% algodão. 120 gr/m2.' Arithmetic 3 x 4.73 = 14.19 is correct. It conforms to T11-11 (about 40x28, 100% algodão, fio 30/1, branco). Caveat: sold singly, so ACOLHE must bag 3. Cheaper white 100% cotton pillowcases exist at Emilio: Papi #39350 40x28 R$4.09 (BRANCO 99999 in stock, tecido plano) and Incomfral Bublim #330060 28x40 R$4.15 (BRANCO 100 in stock). But neither page states fio 30/1, so neither is proven conforming, and I do not call this row TOO_DEAR."
+    },
+    {
+     "sku_id": "KIT_BERCO_PROTETOR",
+     "verdict": "UNREACHABLE",
+     "correct_unit_cost": null,
+     "correct_url": "https://pncp.gov.br/api/pncp/v1/orgaos/08158800000147/compras/2026/16/itens?pagina=1&tamanhoPagina=50",
+     "evidence": "There is no price or product to check. The PNCP items API gives T15 item 18 only as 'Kit para berço', qty 30, est R$174.47, with no complementary information. The only 2 PNCP files are 1-page notices (autorização and aviso de pretensa contratação). They point to a Termo de Referência held at the Secretaria / jacana.rn.gov.br, and that transparency portal is a JavaScript shell that cannot be read. The piece count and composition are unknown, so no conforming kit can be priced."
+    },
+    {
+     "sku_id": "TRAVESSEIRO_BEBE",
+     "verdict": "NONCONFORMING",
+     "correct_unit_cost": null,
+     "correct_url": "",
+     "evidence": "The price is correct: re-read on 2026-09-25, Price 7.85, AZUL and BRANCO 100 in stock each, ROSA 10, unit UN. Description: '32 cm x 22 cm x 03 cm Tecido 100% algodão, espuma de poliuretano. Com aberturas para ventilação.' The filling is PU foam. T11-15 (230 units, the largest line for this article) requires 'ENCHIMENTO DE 100% FIBRA DE POLIÉSTER SILICONIZADO', so it fails there. It does conform to T01-9 'TRAVESSEIRO' and T15-24 'Travesseiro para bebê' (both unspecified). No fully conforming replacement was found. The closest is Bublim #780030 'Travesseiro Anatômico Estampado' at Emilio, R$6.27 (antissufocante, 100% cotton cover, 'enchimento 100% poliester', some prints in stock), but its size is not stated and 'siliconizado' is not claimed (https://www.emilio.com.br/travesseiro-anatomico-estampado-bublim---780030---incomfral/p). Others checked all fail on filling or size: Yanai Bublim antissufocante R$5.49 (29x3 cm, filling not stated); Papi antissufocante at Alô Bebê R$9.50 (29x19x3); Fibrasca antissufocante (50/50 cover, per search snippet). So the T11-15 cost remains UNVERIFIED. Use R$7.85 only for the unspecified lines."
+    }
+   ]
   },
   {
    "prices": [
@@ -7726,7 +8226,111 @@
      "notes": "Read 2026-09-23; Emilio's JSON-LD shows 99.9. The second source, Emilio Espera Feliz #934 at R$113,16 (stock 110), has an embroidered bag and frasqueira with zip plus a thermal frasqueira; dimensions not stated. The kit most conforming on the thermal requirement is Yanai 'Kit Bolsa E Frasqueira Térmicas 3 Peças Espera Feliz' at R$150,19: large and medium bags both thermal, zip front pocket. T01-4, T26-14 and T37-7 are UNSPECIFIED ('kit 02 bolsas'), so an ordinary 2-bag kit conforms for them. Emilio Mimo's Teddy #809 is R$41,24: 2 embroidered bags, 38x29x12 and 30x20x11, zip pocket, shoulder strap (https://www.emilio.com.br/kit-bolsa---mimos-teddy---809---mimo-s-baby/p). Other options: Emilio Mave 219/20 at R$37,04 (37x26x12 + 33x20x10); Paulimar Mave 229 at R$38,19; Paulimar Espera Feliz Coroa Princess 815, embroidered, at R$43,91. I recommend R$41,24 for those three tenders. Homologated: T01 90.00, T26 54.45, T33 132.00, T37 43.99."
     }
    ],
-   "checks": []
+   "checks": [
+    {
+     "sku_id": "REDE_BEBE",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 74.9,
+     "correct_url": "https://www.newshoptextil.com.br/rede-de-berco-para-bebe-",
+     "evidence": "curl to the URL returned 403 'Acesso Bloqueado' (Loja Integrada WAF) twice. WebFetch read the page: 'Rede de Berço para Bebê', SKU RDBERCAMAR, R$74,90 (was R$99,90), R$71,16 via Pix, retail price. 100% cotton, 80 cm x 70 cm, ages 0-24 m. Colours: Amarelo, Azul, Cru (Bege), Cru Liso, Rosa (stock about 20/20/20/20/19) and Verde Esmeralda (5). Footer shows New Shop Têxtil Ltda, CNPJ 42.106.844/0001-61, phone (11), so it is in SP. Pack is 1 hammock, so R$74.90 per unit is correct. Conformity is PARTIAL, as the maker said. Raw cotton and the 80x70 minimum are met (T16-13). 'Sol a sol' fabric (T10-15) is not stated. The page as summarised states no reinforced cords, seams or tie-ends. I also could not confirm the maker's '30 cm cords / 30 kg' claim. The price sits inside the buyer band (69.36-85.00). Emilio's catalogue (VTEX search for 'rede') has no baby hammock, so I found no cheaper SP alternative. Stock is about 100 in total, short of T10's 120 but covering T16's 50."
+    },
+    {
+     "sku_id": "MOSQUITEIRO",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 36.54,
+     "correct_url": "https://www.paulimar.com.br/52013-mosquiteiro-para-berco-140x190x60-incomfral--bambi.221313.html",
+     "evidence": "The page loaded (curl, HTTP 200). It shows '11-BRANCO UNICO R$ 36,54 / UN', and the quantity dropdown goes 0-4, so stock is 4. Description: '52013 Mosquiteiro para Berço 1,40x1,90x6,0 Incomfral | Bambi, Tecido 100% poliéster'. Paulimar's footer gives CNPJ 60.656.782/0001-43, Brás, São Paulo. Pack is 1, so R$36.54 per unit. It is within about R$2 of T10's estimate (34.30). Conformity is still only PARTIAL. 'MOSQUITEIRO REDE' most likely means a hammock net. Neither Paulimar's search (6 results) nor Emilio's VTEX search (mosquiteiro) lists a hammock net. The cheaper options are multi-use stroller or playpen nets: Emilio Bublim 530210 1.00x1.50 m at R$9.34, Paulimar Incomfral 53021 at R$10.00, and Minasrey playpen net 130x120 at R$12.12. They are elastic-edged nets for strollers and playpens, not sized for a hammock, so I do not count them as conforming. Stock of 4 against 120 is a real supply problem."
+    },
+    {
+     "sku_id": "TROCADOR_PORTATIL",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 17.23,
+     "correct_url": "https://www.emilio.com.br/trocador-parapipi---45x80cm---1122---minasrey/p",
+     "evidence": "Page is gzip HTML; embedded VTEX data shows Price/ListPrice/spotPrice 17.23 and AvailableQuantity 100. Name: 'TROCADOR PARAPIPI - 45X80CM # 1122 - MINASREY - SORTIDO'. Description: 100% cotton, polyester filling, PVC lining, portable, 'Contém 01 peça, Estampado, Dimensões 45 cm x 80 cm'. Pack is 1, so R$17.23 per unit. It covers T20-12's 60x45: printed, with a PVC (waterproof) back, portable. I tested TOO_DEAR against the cheaper Emilio mats: Incomfral 790080 at R$13.56 is 43x65; Bublim 790060 at R$13.85 is 65x43; Pixuxu 79032 at R$14.04 is 43x65; Papi 222914/225815 at R$16.28-16.89 are 66x40; Papi Composê at R$16.42 is 63x41. All are narrower than 45 cm and fail the spec, so 1122 is the cheapest conforming mat found."
+    },
+    {
+     "sku_id": "ALMOFADA_AMAMENTACAO",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 34.52,
+     "correct_url": "https://www.paulimar.com.br/almofada-para-amamentacao-lisa-bublim------12004.230107.html",
+     "evidence": "The page loaded (HTTP 200). Every colour is R$ 34,52 / UN: 012-CINZA (dropdown 0-2), 011-BRANCO (0-4), 018-ROSA (0-2), 006-AZUL (0-2), so stock is 10. Description: 'Almofada para Amamentacao Lisa Bublim | 12004, Tecido 100% algodão, 45 x 40 x 13 cm, Enchimento 100% Poliéster, TRICOLINE 150 FIOS'. Pack is 1, so R$34.52 per unit. The spec is simply 'almofada para amamentação', so an ordinary nursing pillow conforms. Emilio's cheapest nursing pillow is Papi 266017 at R$40.80 (stock 10+10), which is dearer, so this is not TOO_DEAR. Stock of 10 plus Emilio's 20 is just enough for T15's 30."
+    },
+    {
+     "sku_id": "BOLSA_MATERNIDADE_UN",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 62.94,
+     "correct_url": "https://www.paulimar.com.br/bolsa-estampada--30x40x18cm---espera-feliz------971.256554.html",
+     "evidence": "The page loaded (HTTP 200). ASTRONAUTA-AZUL, BAILARINA, DINO and PRINCESA, all '30X40X18CM R$ 62,94 / PC'. The dropdowns go 0-7, 0-4, 0-4 and 0-3, so stock is 18. The description only repeats 'Bolsa Estampada 30X40X18CM Espera Feliz | 971': no material, zip or pockets stated. Pack is 1, so R$62.94 per unit. I looked for a cheaper single bag. Yanai Mave MAV.135 (R$23.82, 36x28x13) and MAV.131 (R$25.09) are only 13 cm deep or have no stated size, so they miss the 18 cm depth. Yanai Espera Feliz 996 costs R$73.69 and Emilio single bags R$92.13-116.91, so no cheaper bag of equal size was found. Conformity stays PARTIAL: printed not embroidered (T06-5, T09-2), below T06-5's 46x32, not nylon (T20-13, T38-17), material and waterproofing unstated. It is far above T09-2's estimate of R$19.50. Stock of 18 is thin."
+    },
+    {
+     "sku_id": "BOLSA_PLASTICA_PVC",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 23.82,
+     "correct_url": "https://yanaiatacado.com.br/products/bolsa-maternidade-unitaria-grande-mave-baby-1",
+     "evidence": "The page loaded (HTTP 200). The Shopify variants JSON on the page and in /products.json gives price 23.82 BRL for all 5 colours (MAV.135-AZE/AZC/RS/BG/VE), all available:true; Bege is one of them. CAVEAT: the rendered page shows 'Cadastre-se para ver os preços', so R$23.82 is a wholesale price behind registration that appears only in the page source, not as visible text. Description: 'Tamanho aproximado 36cmx28cmx13cm'; no material stated. Paulimar's search lists the same ref as 'MB135 Sacola Bebe Corino Coroa 1 Peça Mave Baby' at R$31,60, so the material is corino (couro ecológico). Pack is 1, so R$23.82 per unit. Conformity is still HIGH RISK. Corino only counts as 'plástica' if the fabric is PVC-coated, and that is not stated. It is 'grande' by name at 36x28x13, in a neutral Bege. Buyer estimates of R$68-96.79 are 3-4 times this price. I found no single bag that states PVC (Emilio's PVC-composition items, e.g. Mimo's 808 at 80% PVC and Espera Feliz 810 in PVC/PP, are 2-piece kits)."
+    },
+    {
+     "sku_id": "KIT_BOLSAS_MATERNIDADE_2PC",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 99.9,
+     "correct_url": "https://www.emilio.com.br/kit-bolsa-precious-3-pecas---906---espera-feliz/p",
+     "evidence": "Page is gzip HTML; embedded VTEX data shows Price/ListPrice/spotPrice 99.9 for 3 SKUs (MARINHO, ROSA, UNICA) with AvailableQuantity 10, 10 and 0, so stock is 20. Description: large bag 31x40x17, frasqueira 23x32x14, thermal frasqueira 26x20x10, corino, 'O kit é impermeável', 'napa sarja' lining, shoulder strap removable on one side, 1 front pocket on the medium piece. One kit, so R$99.90 per kit. I tested TOO_DEAR against T33-11. Cheaper 2-piece kits all have shallow bags (12-15 cm deep): Mave 219/20 at R$37.04 (37x26x12 + 33x20x10), 231/32 at R$37.90 (36x26x15), Mimo's 809 at R$41.24 (embroidered with zip pocket, but 38x29x12), Mimo's 808 at R$51.72 (39x27x11). Espera Feliz 812 at R$99.12 (32x40x19 + 24x32x14 + changing mat) has no thermal piece. Espera Feliz 995 at R$130.42 (29x42x16 + 25x30x16) is dearer and 16 cm deep. So for T33-11 no cheaper, better-conforming kit was found. Still PARTIAL for T33-11: medium piece 23x32x14 against 25x32x17, no embroidery, no external zip pocket stated. NOTE: for the unspecified lines (T01-4, T26-14, T37-7) a plain 2-piece kit conforms, and Mave 219/20 at R$37.04 (stock 200+) would be the cost there. Stock of 20 is short of T33's 120."
+    }
+   ]
+  },
+  {
+   "prices": [
+    {
+     "sku_id": "TOALHA_CAPUZ_100x70",
+     "product": "TOALHAO DE BANHO SOFT COM CAPUZ #1426 - PAPI (variant ESTRELAS E FOLHAS), 100 cm x 75 cm, '2 camadas de fralda soft 100% algodao', capuz de centro",
+     "supplier": "CONFECCOES EMILIO LTDA (Emilio Atacado)",
+     "supplier_cnpj": "50191584000106",
+     "supplier_uf": "SP",
+     "pack_size": "1 unit",
+     "listed_price": "R$32,49 / UN (Price = ListPrice, 100 in stock per variant, seller 'Emilio Atacado'; read 2026-09-25 via the store's public VTEX catalog API /api/catalog_system/pub/products/search/toalhao-de-banho-soft-com-capuz---1426---papi/p)",
+     "unit_cost": 32.49,
+     "url": "https://www.emilio.com.br/toalhao-de-banho-soft-com-capuz---1426---papi/p",
+     "conforms": "YES",
+     "confidence": "MEASURED",
+     "spec_risk": "COLOUR_PRINT_ON_WHITE;PRICE_HIGH",
+     "second_source_cost": 34.82,
+     "second_source_url": "https://www.emilio.com.br/toalhao-com-capuz-dupla-face---1745---minasrey/p",
+     "notes": "I read the edital text myself (Milhã/CE PNCP file, item 12): 'Toalha fralda de banho com capuz, infantil, 100% algodao, tamanho 0,70cm x 1,00m, nas opcoes de cores branca, verde bebe e amarelo claro'. Papi #1426 matches that wording closely. The page states it is made of toalha-fralda fabric ('2 camadas de fralda soft 100% algodao'), is hooded and measures 100 x 75 cm, so it meets the >=1.00 x 0.70 m size. The only open point is colour. None of the three variants is a solid colour. The product image for ESTRELAS E FOLHAS shows a white muslin with small beige and green stars and a white hood, which a fiscal would probably accept as 'branca', but this is not certain. Against the homologated R$31,00 (estimate R$31,05), this line loses R$1,49 per unit.\n\nSECOND SOURCE (same CNPJ): Minasrey #1745 TOALHAO COM CAPUZ DUPLA FACE at R$34,82. The page says '100% algodao', 'dupla face com forro em fralda' and '70cm x 1,08', so it conforms on size, fabric and composition. The only colour offered is SORTIDO, and the API stock of 99999 looks like a placeholder. Other conforming options at Emilio: Minasrey Alvinha #3618 100x85, 100% algodao, R$38,31 (NEUTRO variant, white ground); Minasrey Dengo #3684 100x85, 100% algodao, R$39,78, with a VERDE variant (print on a white ground). Mafessoni #001976 at R$28,26 is cheaper but FAILS: it is 84% algodao / 16% poliester and no size is stated. The whole cheaper 65x65 / 70x70 / 70x90 / 80x80 / 90x70 range FAILS the 1.00 m side.\n\nOTHER CNPJs: Yanai (44040459000194, SP) Toalhao Alvinha Cloud Soft 100x85 is R$38,29 but OUT OF STOCK. Its Toalhao Soft Papi 1,05x85 is R$53,32, and that page does not mention a hood. Paulimar (60656782000143, SP) Toalhao Soft Color 3 Camadas Minas Rey #5313 100x85 is R$39,45 with a VERDE variant, but the page states neither a hood nor 100% algodao. Paulimar #1045 Toalha Felpa Forro Fralda 70x108 Minasrey is R$34,61, but the page does not say it has a hood.\n\nWARNING ON THE v2 ROW: the existing v2 row TOALHAO COM CAPUZ 100X85CM LOUPIOT NATURE #530944 (R$39,60, re-read today and unchanged) has a size problem. Its title says 100x85, but the Ficha Tecnica on the same Emilio page reads 'Medidas: 85cm x 85cm'. Yanai also sells what looks like the same article as 'Toalha Soft 85x85 Loupiot Nature Minasrey'. That row may FAIL the 1.00 m length, so do not REUSE it for this spec."
+    },
+    {
+     "sku_id": "FRALDA_DESC_P_PCT38",
+     "product": "Fralda Turma da Monica Baby, tamanho P, pacote com 44 fraldas (variation SKU 62267-PC; parent 62266-PAI)",
+     "supplier": "MENSA DISTRIBUIDORA LTDA. (JN FRALDAS)",
+     "supplier_cnpj": "10290457000131",
+     "supplier_uf": "SP",
+     "pack_size": "44 nappies per sealed pack (spec asks for 38; this over-conforms by 6)",
+     "listed_price": "R$26,99 per pack (P variation in stock; read 2026-09-25 from the WooCommerce Store API /wp-json/wc/store/v1/products/62267 and from the product page JSON-LD offer price 26.99, InStock)",
+     "unit_cost": 26.99,
+     "url": "https://www.jnfraldas.com.br/produto/fralda-turma-da-monica-baby-2/?attribute_pa_size=p",
+     "conforms": "YES",
+     "confidence": "MEASURED",
+     "spec_risk": "PACK_44_NOT_38",
+     "second_source_cost": 56.9,
+     "second_source_url": "https://tendaatacado.com.br/produto/fralda-galinha-pintadinha-ultrasec-mega-p-babysec-42-unidade",
+     "notes": "No exact 38-unit P pack was found at any CNPJ-verified SP supplier, so this is the cheapest sealed P pack with at least 38 nappies. The page states: 'Esta apresentacao contem P com 44 ... fraldas', up to 12 hours of protection, barreiras antivazamento, cintura elastica. The basis is one pack, and the kit needs a sealed pack, so I count the full R$26,99. The pro-rata cost for 38 nappies would be R$23,31 (R$0,613 per nappy). Warning: the same brand's P30 pack (R$23,99, SKU 62261-PC) FAILS the 38 count. So do Pom Pom Derma Protek P (30 units) and Pampers Pants P (26 units).\n\nOther packs of at least 38 at JN (same CNPJ): Pampers SuperSequinha Baby Shark P 42 at R$40,16; BabySec Ultrasec Mega P at R$41,50 (count not on the JN page; Tenda says 42); Pampers Confort Sec Mega P 50 at R$64,88.\n\nSECOND SOURCE (different CNPJ): TENDA ATACADO SA 01157555001186 SP, Fralda Galinha Pintadinha Ultrasec Mega P Babysec 42 unidades. Price is R$61,90 per pack, or R$56,90 each when buying 2 or more (the page's wholesalePrices field). Tenda's cheaper Capricho Baby Hiper P 80 (R$36,90 atacado / R$40,90) is not a 38-unit pack.\n\nThis costs a component of the T15-1 Jaçanã/RN whole-kit wrapper, which is mapped NOT_KIT."
+    }
+   ],
+   "checks": [
+    {
+     "sku_id": "TOALHA_CAPUZ_100x70",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 32.49,
+     "correct_url": "https://www.emilio.com.br/toalhao-de-banho-soft-com-capuz---1426---papi/p",
+     "evidence": "Checked 2026-09-25 through Emilio's public VTEX API (/api/catalog_system/pub/products/search/toalhao-de-banho-soft-com-capuz---1426---papi/p). The product is TOALHAO DE BANHO SOFT COM CAPUZ #1426 PAPI, ref 09013210. All 3 variants (Tratorzinho, Estrelas e Folhas, Flores do Amanhecer) show Price = ListPrice = 32.49, 100 in stock each, seller 'Emilio Atacado'. unitMultiplier is 1, so R$32.49 for one towel is right. The description says '2 camadas de fralda soft 100% algodao', capuz de centro, and 'O produto contem: 1 Toalhao de banho com capuz - 100 cm x 75 cm'. Conformity against T12-12 (Milha/CE, 100% cotton hooded 'toalha fralda de banho', at least 0.70 x 1.00 m, white/verde bebe/amarelo claro): size passes (100 x 75 is at least 100 x 70), fabric passes (fralda fabric, 100% cotton), hood passes. Colour is the one soft point: the Estrelas e Folhas photo shows a white base with small pale green leaves and yellow stars, not a plain white/green/yellow towel. A strict fiscal could reject it; the COLOUR_PRINT_ON_WHITE flag is justified. I looked for anything cheaper that fully conforms and did not find one I could verify at Emilio. Two partial candidates: (a) TOALHAO DE BANHO SOFT CIA DO NENEM #53-44 MINASREY, R$29.81, 100 in stock, 'Medidas: 100x85cm', photo shows a corner hood, but the page gives no composition (https://www.emilio.com.br/toalhao-de-banho-soft---cia-do-nenem---53---44---minasrey/p). (b) TOALHAO DE BANHO SOFT BABY NICE #54-44 MINASREY, R$29.01, '100% algodao', hood stated, variant GATINHO (VERDE) 100 in stock, but no dimensions on the page (https://www.emilio.com.br/toalhao-de-banho-soft---baby-nice---54-44---minasrey/p). If either gap is closed, that towel becomes TOO_DEAR evidence of about R$29. All other hooded towels under R$32.49 at Emilio that state a size are 94x70 or smaller, which fails the 100 cm length. Commercial note: T12-12 paid R$31.00 per unit, so R$32.49 is above the awarded price (PRICE_HIGH is justified)."
+    },
+    {
+     "sku_id": "FRALDA_DESC_P_PCT38",
+     "verdict": "CONFIRMED",
+     "correct_unit_cost": 26.99,
+     "correct_url": "https://www.jnfraldas.com.br/produto/fralda-turma-da-monica-baby-2/?attribute_pa_size=p",
+     "evidence": "The claimed evidence path is partly stale. /wp-json/wc/store/v1/products/62267 now returns 404 'ID de produto invalido', because the site has moved to a new frontend and the product id is now 66373. I read the product page itself on 2026-09-25 (it redirects to the URL without the trailing slash). Title: 'Fralda Turma da Monica Baby P44 M40 G32 XG26 XXG22'. The buybox shows 'de R$ 29,19 / R$ 26,99 (-8%)', 'Em estoque - pronta entrega'. The JSON-LD offer (sku 62266-PAI) shows price 26.99, InStock, and view_item shows value 26.99. The size chip P reads data-qtd='44 tiras', data-ppm=0.6634, EAN 7898133020001; 44 x 0.6634 = 29.19, which matches the list price. Every size chip multiplies to the same 29.19, so every size, P included, sells at the single R$26.99. That makes R$26.99 for a sealed pack of 44 P nappies, R$0.613 per nappy. The seller shown in the footer is 'Mensa Distribuidora Ltda - CNPJ 10.290.457/0001-31'. It conforms: the spec asks only for size P in a pack of 38 (T15-1 wrapper, no brand or features given), and 44 is 6 over. It is taped ('tiras'), with leak barriers and an elastic waist per the description. I found nothing cheaper at JN: PomPom Derma Protek Jumbo P is only 30 (fails); Personal Soft Protect Mega P44 costs R$30.80; BabySec Ultrasec Mega P42 costs R$41.50; Scooby Doo Mega has no P size; Scooby Doo Hiper P80 costs R$42.99 and is a different basis. Only the price-source note needs updating (the Woo Store API id no longer resolves); the price, pack size and conformity all hold."
+    }
+   ]
   }
  ]
 }
