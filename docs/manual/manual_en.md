@@ -2,7 +2,7 @@
 
 # Page 1 — The business on one page
 
-**Baby layette kits for city governments, sold by you alone. Nobody knows yet whether they make a profit.**
+**Baby layette kits for city governments, sold by you alone. Half of purchases make no profit; the rest can pay well.**
 
 | The essentials | Where it stands |
 |---|---|
@@ -16,20 +16,20 @@
 **The expensive Itaquaquecetuba kit fails the cost test.** Materials: R$ 250,98, above the R$ 230 limit written down in advance. At the real price (R$ 359,05), after materials and the backpack, R$ 9,56 per kit is left, before tax, shipping and assembly: a loss (details in D1). **Don't bid on kits like this; the standard kit is a different one.**
 :::
 
-:::THE NUMBER THAT DECIDES EVERYTHING
-**What a standard dispensa kit costs.** Being measured: 42 real purchases (587 items), each item with a São Paulo (SP) price, a link and a double check.
-**Why it decides:** the price of each purchase is already known; the cost is not. **Who measures:** the person who prepared this manual, not you. **The result will be written in this box** when it comes out.
-**GO requires:** a surplus that pays for your hours and fixed costs, **and** a batch your money can cover. **If it says STOP:** don't open the company; the person who prepared this manual will measure medals (plan B) the same way.
-- Typical cost per kit: *to be filled in* · Kits that pass: *to be filled in*
-- Does the batch fit the money? *to be filled in* · GO or STOP: *to be filled in*
+:::THE NUMBER THAT DECIDES EVERYTHING — MEASURED
+**Measured on 31 real dispensa purchases:** every item priced in SP and checked, freight measured to each town, 4% Simples tax and the month's fixed cost.
+- **Half don't pay:** the middle purchase leaves about R$ 100; 15 of 31 lose money.
+- **14 of 31 pass the cutoff** (≥ R$ 800 left): median **R$ 4.192** per order; the best 4, R$ 14.600 to R$ 22.300.
+- **Money decides:** an order that passes needs about **R$ 19 thousand** in cash (median); only 5 of the 14 fit in R$ 12.894.
+**Answer: GO only with strict selection, order by order, and with capital or supplier credit for the big orders.** Catalogue prices, no wholesale discount; assembly not included.
 :::
 
 :::FIRST STEPS, IN ORDER
 1. **Write down how much of your money goes into the business**, with no debt.
-2. **Write down what your hour is worth and your cutoff**, before the result. Cutoff: how much an order must leave, after costs, to pay for your hours.
+2. **Write down what your hour is worth and your cutoff**, before looking at orders. Cutoff: how much an order must leave, after costs, to pay for your hours.
 3. **Understand Resolução CNAS 213/2025:** it asks for the benefit *preferably in cash* (the kit is still allowed); municipalities have until **28/10/2026** to comply.
-4. **When the measurement comes out,** apply the cutoff to the result.
-**Until then: don't open the company, don't buy anything, don't make sales calls.**
+4. **Decide the money:** good orders need about R$ 19 thousand in cash; with less, only the small ones.
+**Until the money is decided: don't open the company, don't buy anything, don't make sales calls.**
 :::
 
 # Part A — Understanding the business
@@ -331,7 +331,7 @@ Roadmap taken from 7 pregão editais; no dispensa has been followed through to t
 
 # Part D — The money
 
-**Price already has a first measurement; the standard kit's cost does not. Until it comes out, there is no margin to announce.**
+**Measured on 31 real purchases: half don't pay, but 1 in 2 or 3 pays well. The profit is in choosing the order.**
 
 ## D1. Three cases that never mix
 **Only compare cost and price for the same kit, with the same specification.**
@@ -340,7 +340,7 @@ Roadmap taken from 7 pregão editais; no dispensa has been followed through to t
 |---|---|---|---|
 | (a) Itaquaquecetuba kit, in the real pregão | R$ 359,05 | R$ 250,98 in materials + R$ 98,51 for the backpack (buyer's estimate; provisional) | R$ 9,56 left before tax, vinyl, shipping and assembly: **loss** |
 | (b) The same kit in a dispensa | No city has bought it that way | — | Assumption, not a result |
-| (c) Standard aviso kit | Median R$ 236,72 (different kits) | **Being measured** | Margin: can't say yet |
+| (c) 31 real dispensa purchases | What each town paid | Checked items + freight to the town | Middle: ~R$ 100; 14 pass (median R$ 4.192) |
 
 - **Cost test (Step 0), written in advance:** up to R$ 200 in materials, go ahead; R$ 200 to R$ 230, only after negotiating price and opening an account with the supplier; above R$ 230, stop. R$ 250,98 means **STOP** for that specification.
 
@@ -407,7 +407,7 @@ Tax: Simples at 4% up to R$ 180 thousand in revenue over 12 months; in the 1st y
 
 | Risk | Why it matters | Defense |
 |---|---|---|
-| Standard kit too expensive | It's the entire margin | Measurement; cutoff |
+| Wrong order | Half of real purchases lose money or make almost nothing | Cutoff, order by order |
 | Late sweep | Half of avisos close in about 5 days, 29% within 3; the loss is silent | Daily system with failure alert |
 | Deadline and distance | A 5-day deadline only works in SP; 18 states unmeasured | Measure PR and GO first |
 | Product rejected | A 24–48 h replacement can't get out of SP by PAC | Check color, size and volume |
@@ -422,7 +422,7 @@ Tax: Simples at 4% up to R$ 180 thousand in revenue over 12 months; in the 1st y
 
 | Not known yet | How to find out |
 |---|---|
-| Standard kit cost | Measurement under way |
+| Cost at wholesale prices | Ask Emilio for the price list |
 | Win rate and real payment time | Only by bidding and logging |
 | Assembly time; space at home | Time 10 kits; measure the space |
 | Shipping to inland cities; acceptance of a private atestado | Prices to real addresses; try it |
@@ -456,7 +456,7 @@ Tax: Simples at 4% up to R$ 180 thousand in revenue over 12 months; in the 1st y
 1. **Write down your money** (one hour, together with step 2): on paper, dated, how much of your own money can go into the business without debt. Whoever runs the system will enter it there.
 2. **Write down what your hour is worth and your cutoff.** Hour: what you would earn in an hour of other work (D3 uses R$ 100). Cutoff: hour × 8 + monthly fixed cost ÷ orders in the month (D3). Do it before the result, so the result doesn't change the rule.
 3. **Read Resolução CNAS 213/2025** (National Social Assistance Council; search "Resolução CNAS 213"). It is dated 28/10/2025, asks for the benefit preferably in cash but still allows the kit, and gives municipalities until 28/10/2026 to comply. If the municipalities you follow switch to cash, reassess before spending.
-4. **When the measurement comes out:** write the numbers on Page 1 and apply the cutoff: GO or STOP.
+4. **Decide the money** (Page 1): what you have or can borrow decides which orders fit.
 
 ## Your first 30 days
 **First decide, then prepare. The company opens only at the end.**

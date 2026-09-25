@@ -2,7 +2,7 @@
 
 # Página 1 — O negócio em uma página
 
-**Kits de enxoval para prefeituras, vendidos só por você. Ainda não se sabe se dão lucro.**
+**Kits de enxoval para prefeituras, vendidos só por você. Metade das compras não dá lucro; a outra parte pode dar bem.**
 
 | O essencial | Como está |
 |---|---|
@@ -16,20 +16,20 @@
 **O kit caro de Itaquaquecetuba não passa no teste de custo.** Materiais: R$ 250,98, acima do limite de R$ 230 escrito antes. No preço real (R$ 359,05), depois de materiais e mochila sobram R$ 9,56 por kit, antes de imposto, frete e montagem: prejuízo (detalhe na D1). **Não dispute kits assim; o kit comum é outro.**
 :::
 
-:::O NÚMERO QUE DECIDE TUDO
-**Quanto custa um kit comum de dispensa.** Em medição: 42 compras reais (587 itens), cada item com preço de SP, link e dupla conferência.
-**Por que decide:** o preço de cada compra já se sabe; o custo, não. **Quem mede:** quem preparou este manual, não você. **O resultado será escrito nesta caixa** quando sair.
-**SIGA exige:** sobra que pague suas horas e custos fixos, **e** lote que caiba no dinheiro. **Se der PARE:** não abra a empresa; quem preparou este manual mede as medalhas (o plano B) do mesmo jeito.
-- Custo típico por kit: *a preencher* · Kits que passam: *a preencher*
-- Lote cabe no dinheiro? *a preencher* · SIGA ou PARE: *a preencher*
+:::O NÚMERO QUE DECIDE TUDO — MEDIDO
+**Medido em 31 compras reais por dispensa:** cada item com preço de SP conferido, frete medido até a cidade, Simples de 4% e custo fixo do mês.
+- **Metade não paga:** a compra do meio sobra uns R$ 100; 15 de 31 dão prejuízo.
+- **14 de 31 passam na nota de corte** (sobra ≥ R$ 800): mediana de **R$ 4.192** por pedido; as 4 melhores, R$ 14.600 a R$ 22.300.
+- **O dinheiro decide:** um pedido que passa pede uns **R$ 19 mil** de caixa (mediana); só 5 dos 14 cabem em R$ 12.894.
+**Resposta: SIGA só com seleção rígida, pedido a pedido, e com capital ou prazo de fornecedor para os pedidos grandes.** Preços de catálogo, sem desconto de atacado; montagem não incluída.
 :::
 
 :::OS PRIMEIROS PASSOS, EM ORDEM
 1. **Escreva quanto do seu dinheiro vai para o negócio**, sem dívida.
-2. **Escreva o valor da sua hora e a nota de corte**, antes do resultado. Nota de corte: quanto um pedido deve deixar, pagos os custos, para suas horas.
+2. **Escreva o valor da sua hora e a nota de corte**, antes de olhar pedidos. Nota de corte: quanto um pedido deve deixar, pagos os custos, para suas horas.
 3. **Entenda a Resolução CNAS 213/2025:** ela pede benefício *preferencialmente em dinheiro* (o kit continua permitido); as prefeituras têm até **28/10/2026** para se adequar.
-4. **Quando a medição sair,** aplique a nota de corte ao resultado.
-**Até lá: não abra a empresa, não compre nada, não ligue para vender.**
+4. **Decida o dinheiro:** os bons pedidos pedem uns R$ 19 mil de caixa; com menos, só os pequenos.
+**Até decidir o dinheiro: não abra a empresa, não compre nada, não ligue para vender.**
 :::
 
 # Parte A — Entender o negócio
@@ -331,7 +331,7 @@ Roteiro de 7 editais de pregão; nenhuma dispensa foi seguida até o fim.
 
 # Parte D — O dinheiro
 
-**O preço já tem uma primeira medida; o custo do kit comum, não. Até ele sair, não há margem para anunciar.**
+**Medido em 31 compras reais: metade não paga, mas 1 em cada 2 ou 3 paga bem. O lucro está em escolher o pedido.**
 
 ## D1. Três casos que nunca se misturam
 **Só compare custo e preço do mesmo kit, com a mesma especificação.**
@@ -340,7 +340,7 @@ Roteiro de 7 editais de pregão; nenhuma dispensa foi seguida até o fim.
 |---|---|---|---|
 | (a) Kit de Itaquaquecetuba, no pregão real | R$ 359,05 | R$ 250,98 de materiais + R$ 98,51 de mochila (estimativa do comprador; provisório) | Sobram R$ 9,56 antes de imposto, vinil, frete e montagem: **prejuízo** |
 | (b) O mesmo kit numa dispensa | Nenhuma prefeitura o comprou assim | — | Suposição, não resultado |
-| (c) Kit comum de aviso | Mediana R$ 236,72 (kits diferentes) | **Sendo medido** | Margem: ainda não dá para dizer |
+| (c) 31 compras reais por dispensa | O que cada prefeitura pagou | Itens conferidos + frete até a cidade | Do meio: ~R$ 100; 14 passam (mediana R$ 4.192) |
 
 - **Teste de custo (Passo 0), escrito antes:** até R$ 200 de materiais, siga; de R$ 200 a R$ 230, só depois de negociar preço e cadastro com o fornecedor; acima de R$ 230, pare. R$ 250,98 dá **PARE** para essa especificação.
 
@@ -407,7 +407,7 @@ Imposto: Simples de 4% até R$ 180 mil de faturamento em 12 meses; no 1º ano a 
 
 | Risco | Por que importa | Defesa |
 |---|---|---|
-| Kit comum caro demais | É a margem inteira | Medição; nota de corte |
+| Pedido errado | Metade das compras reais dá prejuízo ou quase nada | Nota de corte, pedido a pedido |
 | Varredura atrasada | Metade dos avisos fecha em uns 5 dias, 29% em até 3; a perda é silenciosa | Sistema diário com aviso de falha |
 | Prazo e distância | Prazo de 5 dias só dá em SP; 18 estados sem medição | Medir PR e GO primeiro |
 | Produto recusado | Troca em 24–48 h não sai de SP pelo PAC | Conferir cor, tamanho e volume |
@@ -422,7 +422,7 @@ Imposto: Simples de 4% até R$ 180 mil de faturamento em 12 meses; no 1º ano a 
 
 | Ainda não se sabe | Como descobrir |
 |---|---|
-| Custo do kit comum | Medição em andamento |
+| Custo com preço de atacado | Pedir a tabela do Emilio |
 | Taxa de vitória e prazo real de pagamento | Só dando lances e registrando |
 | Tempo de montagem; espaço em casa | Cronometrar 10 kits; medir o espaço |
 | Frete ao interior; aceitação do atestado privado | Preços para endereços reais; tentar |
@@ -456,7 +456,7 @@ Imposto: Simples de 4% até R$ 180 mil de faturamento em 12 meses; no 1º ano a 
 1. **Escreva o seu dinheiro** (uma hora, com o passo 2): num papel, com a data, quanto dinheiro seu pode ir para o negócio sem dívida. Quem cuida do sistema o põe lá.
 2. **Escreva o valor da sua hora e a nota de corte.** Hora: o que você ganharia numa hora de outro trabalho (a D3 usa R$ 100). Nota de corte: hora × 8 + custo fixo do mês ÷ pedidos do mês (D3). Antes do resultado, para ele não mudar a regra.
 3. **Leia a Resolução CNAS 213/2025** (Conselho Nacional de Assistência Social; busque "Resolução CNAS 213"). Ela é de 28/10/2025, pede o benefício preferencialmente em dinheiro mas ainda permite o kit, e dá às prefeituras até 28/10/2026 para se adequar. Se as prefeituras que você acompanha mudarem para dinheiro, reavalie antes de gastar.
-4. **Quando a medição sair:** escreva os números na Página 1 e aplique a nota de corte: SIGA ou PARE.
+4. **Decida o dinheiro** (Página 1): quanto você tem ou consegue emprestado define quais pedidos cabem.
 
 ## Seus primeiros 30 dias
 **Primeiro decidir, depois preparar. A empresa só abre no fim.**
